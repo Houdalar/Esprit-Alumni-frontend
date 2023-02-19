@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
         filled: true,
         fillColor: AppColors.darkwhite,
         prefixIcon: const Icon(
-          Icons.email,
+          Icons.lock,
           color: AppColors.darkgray,
         ),
       ),
@@ -261,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               width: double.infinity,
               height: 200.0,
-              margin: const EdgeInsets.fromLTRB(0, 30, 0, 30),
+              margin: const EdgeInsets.fromLTRB(0, 30, 0, 10),
               child: logo,
             ),
             Container(
@@ -305,11 +305,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.fromLTRB(35, 40, 35, 20),
+              margin: const EdgeInsets.fromLTRB(35, 35, 35, 20),
               child: loginButton,
             ),
             Container(
-              margin: const EdgeInsets.fromLTRB(35, 25, 35, 30),
+              margin: const EdgeInsets.fromLTRB(35, 20, 35, 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
