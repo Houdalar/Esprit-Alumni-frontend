@@ -30,6 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  email_validator: ^2.0.1 # Add this line
+  http: ^0.13.5
+  provider: ^6.0.2
+  shared_preferences: ^2.0.15
+  path: ^1.8.1
+  fluttertoast: ^8.0.7
+  get_it: ^7.2.0
+  
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -59,8 +68,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - media/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
