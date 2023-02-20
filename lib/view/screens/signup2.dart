@@ -26,15 +26,96 @@ class Signin2Page extends StatefulWidget {
 
 enum Gender { male, female }
 
+List<String> _level = [
+  'First Year',
+  'Second Year',
+  'Third Year',
+  'Fourth Year',
+  'Fifth Year',
+];
+
+List<String> _speciality = [
+  'Tic',
+  'Tc',
+  'Gc',
+  'Ge',
+];
+
+List<String> _tcoptions = [
+  'First Year',
+  'Second Year',
+  'Third Year',
+  'Fourth Year',
+  'Fifth Year',
+];
+
+List<String> _gcoptions = [
+  'First Year',
+  'Second Year',
+  'Third Year',
+  'Fourth Year',
+  'Fifth Year',
+];
+
+List<String> _ticoptions = [
+  'SIM',
+  'TWIN',
+  'DS',
+  'ARCTIC',
+  'INFINI',
+  'SAE',
+  'SE',
+  'ERP-BI',
+  'SLEAM',
+  'NIDS',
+];
+
+List<String> _geoptions = [
+  'First Year',
+  'Second Year',
+  'Third Year',
+  'Fourth Year',
+  'Fifth Year',
+];
+
 class _Signin2PageState extends State<Signin2Page> {
   Gender? selectedGender;
   int? _selectedValue;
 
-  late String? _DateOfBirth;
-  late String? _speciality;
-  late String? _option;
+  DateTime? _selectedDate;
+  String? _selectedLevel;
+  String? _selectedSpecialization;
+  String? _selectedOption;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: AppColors.primary, // header background color
+            accentColor: AppColors.primaryDark, // selection color
+            colorScheme: ColorScheme.light(primary: AppColors.primaryDark),
+            buttonTheme: ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -50,6 +131,23 @@ class _Signin2PageState extends State<Signin2Page> {
       margin: const EdgeInsets.fromLTRB(50, 0, 50, 10),
       child: Image.asset("media/logo.png"),
     );
+    List<String> _getDropdownItems() {
+      switch (_selectedSpecialization) {
+        case 'Tic':
+          return _ticoptions;
+
+        case 'Tc':
+          return _tcoptions;
+        case 'Gc':
+          return _tcoptions;
+
+        case 'Ge':
+          return _tcoptions;
+
+        default:
+          return [];
+      }
+    }
 
     final signupButton = Container(
       //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
@@ -83,17 +181,178 @@ class _Signin2PageState extends State<Signin2Page> {
           side: const BorderSide(color: AppColors.primaryDark, width: 1),
         ),
       ),
-      onPressed: () {},
+      onPressed: () {
+        _selectDate(context);
+      },
       icon: const Icon(
         Icons.calendar_today,
         color: AppColors.primaryDark,
       ),
-      label: const Text('Sign in with Google',
+      label: const Text('choose date',
           style: TextStyle(
             color: Colors.black,
             fontSize: 17.0,
             fontFamily: 'Mukata Malar',
           )),
+    );
+
+    final level = DropdownButtonFormField<String>(
+      value: _selectedLevel,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        hintText: 'Choose your level',
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+      ),
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      ),
+      icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+      iconSize: 24,
+      isExpanded: true,
+      items: _level
+          .map((option) => DropdownMenuItem<String>(
+                value: option,
+                child: Text(option),
+              ))
+          .toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedLevel = value;
+        });
+      },
+    );
+
+    final speciality = DropdownButtonFormField<String>(
+      value: _selectedSpecialization,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        hintText: 'Choose your speciality',
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+      ),
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      ),
+      icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+      iconSize: 24,
+      isExpanded: true,
+      items: _speciality
+          .map((option) => DropdownMenuItem<String>(
+                value: option,
+                child: Text(option),
+              ))
+          .toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedSpecialization = value;
+        });
+      },
+    );
+
+    final option = DropdownButtonFormField<String>(
+      value: _selectedOption,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        hintText: 'Choose your option',
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32),
+          borderSide: const BorderSide(
+            color: AppColors.primaryDark,
+            width: 1,
+          ),
+        ),
+      ),
+      style: const TextStyle(
+        fontSize: 16,
+        color: Colors.black,
+      ),
+      icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+      iconSize: 24,
+      isExpanded: true,
+      items: _getDropdownItems()
+          .map((option) => DropdownMenuItem<String>(
+                value: option,
+                child: Text(option),
+              ))
+          .toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedOption = value;
+        });
+      },
     );
 
     return Scaffold(
@@ -146,7 +405,7 @@ class _Signin2PageState extends State<Signin2Page> {
                     onChanged: (value) =>
                         setState(() => _selectedValue = value),
                   ),
-                  Text('Female'),
+                  const Text('Female'),
                 ],
               ),
             ),
@@ -163,8 +422,56 @@ class _Signin2PageState extends State<Signin2Page> {
             ),
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.fromLTRB(35, 35, 35, 20),
+              margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
               child: dateButton,
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(35, 10, 35, 20),
+              child: const Text(
+                "Level :",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
+              child: level,
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(35, 10, 35, 20),
+              child: const Text(
+                "Speciality :",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
+              child: speciality,
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(35, 10, 35, 20),
+              child: const Text(
+                "Option :",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
+              child: speciality,
             ),
             Container(
               width: double.infinity,
