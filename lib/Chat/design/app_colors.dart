@@ -14,7 +14,7 @@ class AppColors {
   static const Color darkred = Color.fromARGB(255, 19, 5, 4);
   static const Color primaryDark = Color.fromARGB(255, 126, 23, 23);
   static const Color primary = Color.fromRGBO(244, 67, 54, 1);
-  static const Color converBackgroundClr = Color.fromARGB(255, 240, 232, 232);
+  static const Color converBackgroundClr = Color.fromARGB(255, 225, 218, 218);
   static const gradient1 = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
