@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
-import 'package:email_validator/email_validator.dart';
-import 'package:provider/provider.dart';
-//import 'package:google_sign_in/google_sign_in.dart';
+
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 import './home.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-//import 'package:path/path.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
-//import '../components/constum_componenets/googleButton.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../../viewmodel/userViewModel.dart';
 
-class Signin2Page extends StatefulWidget {
-  static String tag = 'login-page';
+class Signup2Page extends StatefulWidget {
+  final String? email;
+  final String? password;
+  final String? name;
 
-  const Signin2Page({super.key});
+  const Signup2Page(this.email, this.name, this.password, {Key? key})
+      : super(key: key);
 
   @override
-  _Signin2PageState createState() => new _Signin2PageState();
+  _Signup2PageState createState() => _Signup2PageState();
 }
-
-enum Gender { male, female }
 
 List<String> _level = [
   'First Year',
@@ -35,57 +27,51 @@ List<String> _level = [
 ];
 
 List<String> _speciality = [
-  'Tic',
-  'Tc',
-  'Gc',
-  'Ge',
+  'ITC',
+  'TC',
+  'GC',
+  'GE',
 ];
 
-List<String> _tcoptions = [
-  'First Year',
-  'Second Year',
-  'Third Year',
-  'Fourth Year',
-  'Fifth Year',
+List<String> _tic = [
+  "ds",
+  "arctic",
+  "twin",
+  "infini",
+  "sae",
+  "erp-bi",
+  "sleam",
+  "sim",
+  "nids",
+  "se"
 ];
 
-List<String> _gcoptions = [
-  'First Year',
-  'Second Year',
-  'Third Year',
-  'Fourth Year',
-  'Fifth Year',
-];
-
-List<String> _ticoptions = [
-  'SIM',
-  'TWIN',
-  'DS',
-  'ARCTIC',
-  'INFINI',
-  'SAE',
-  'SE',
-  'ERP-BI',
-  'SLEAM',
-  'NIDS',
-];
-
-List<String> _geoptions = [
-  'First Year',
-  'Second Year',
-  'Third Year',
-  'Fourth Year',
-  'Fifth Year',
-];
-
-class _Signin2PageState extends State<Signin2Page> {
-  Gender? selectedGender;
+class _Signup2PageState extends State<Signup2Page> {
+  final Map<String, List<String>> _options = {
+    'ITC': [
+      "ds",
+      "arctic",
+      "twin",
+      "infini",
+      "sae",
+      "erp-bi",
+      "sleam",
+      "sim",
+      "nids",
+      "se"
+    ],
+    'TC': ['Siamese', 'Persian', 'Bengal'],
+    'GC': ['Arabian', 'Thoroughbred', 'Quarter Horse'],
+    'GE': ['Arabian', 'Thoroughbred', 'Quarter Horse'],
+  };
+  String? selectedGender;
   int? _selectedValue;
 
   DateTime? _selectedDate;
   String? _selectedLevel;
   String? _selectedSpecialization;
   String? _selectedOption;
+  List<String> _optionsList = [];
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
 
@@ -120,7 +106,6 @@ class _Signin2PageState extends State<Signin2Page> {
   @override
   void initState() {
     super.initState();
-    //_userViewModel = UserViewModel(context: context);
   }
 
   @override
@@ -131,23 +116,6 @@ class _Signin2PageState extends State<Signin2Page> {
       margin: const EdgeInsets.fromLTRB(50, 0, 50, 10),
       child: Image.asset("media/logo.png"),
     );
-    List<String> _getDropdownItems() {
-      switch (_selectedSpecialization) {
-        case 'Tic':
-          return _ticoptions;
-
-        case 'Tc':
-          return _tcoptions;
-        case 'Gc':
-          return _tcoptions;
-
-        case 'Ge':
-          return _tcoptions;
-
-        default:
-          return [];
-      }
-    }
 
     final signupButton = Container(
       //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
@@ -165,19 +133,32 @@ class _Signin2PageState extends State<Signin2Page> {
             fontFamily: 'Mukata Malar',
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (_keyForm.currentState!.validate()) {
+            _keyForm.currentState!.save();
+            UserViewModel.signup(
+                widget.email,
+                widget.password,
+                widget.name,
+                selectedGender.toString(),
+                _selectedOption,
+                _selectedDate.toString(),
+                _selectedLevel,
+                _selectedSpecialization,
+                context);
+          }
+        },
       ),
     );
 
     final dateButton = ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        fixedSize: const Size.fromHeight(60),
+        fixedSize: const Size.fromHeight(40),
         primary: Colors.white,
         onPrimary: AppColors.primaryDark,
-        elevation: 3,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(32),
           side: const BorderSide(color: AppColors.primaryDark, width: 1),
         ),
       ),
@@ -298,6 +279,7 @@ class _Signin2PageState extends State<Signin2Page> {
       onChanged: (value) {
         setState(() {
           _selectedSpecialization = value;
+          _optionsList = _options[_selectedSpecialization]!;
         });
       },
     );
@@ -342,10 +324,10 @@ class _Signin2PageState extends State<Signin2Page> {
       icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
       iconSize: 24,
       isExpanded: true,
-      items: _getDropdownItems()
-          .map((option) => DropdownMenuItem<String>(
-                value: option,
-                child: Text(option),
+      items: _optionsList
+          .map((value) => DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
               ))
           .toList(),
       onChanged: (value) {
@@ -364,7 +346,7 @@ class _Signin2PageState extends State<Signin2Page> {
               width: double.infinity,
               margin: const EdgeInsets.fromLTRB(35, 35, 35, 10),
               child: const Text(
-                "Genre :",
+                "Gender :",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -377,11 +359,11 @@ class _Signin2PageState extends State<Signin2Page> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Radio(
-                    value: 0,
-                    groupValue: _selectedValue,
+                    value: "Male",
+                    groupValue: selectedGender,
                     fillColor: MaterialStateProperty.all(AppColors.primary),
-                    onChanged: (int? value) =>
-                        setState(() => _selectedValue = value),
+                    onChanged: (value) =>
+                        setState(() => selectedGender = value?.toString()),
                   ),
                   const Text(
                     'Male',
@@ -399,11 +381,11 @@ class _Signin2PageState extends State<Signin2Page> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Radio(
-                    value: 1,
-                    groupValue: _selectedValue,
+                    value: "Female",
+                    groupValue: selectedGender,
                     fillColor: MaterialStateProperty.all(AppColors.primary),
                     onChanged: (value) =>
-                        setState(() => _selectedValue = value),
+                        setState(() => selectedGender = value?.toString()),
                   ),
                   const Text('Female'),
                 ],
@@ -471,7 +453,7 @@ class _Signin2PageState extends State<Signin2Page> {
             Container(
               width: double.infinity,
               margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
-              child: speciality,
+              child: option,
             ),
             Container(
               width: double.infinity,

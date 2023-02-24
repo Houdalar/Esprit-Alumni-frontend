@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
@@ -29,13 +30,11 @@ class _LoginPageState extends State<LoginPage> {
   late String? _password;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
-  static String _baseUrl = "10.0.2.2:8081";
   bool _rememberMe = false;
 
   @override
   void initState() {
     super.initState();
-    //_userViewModel = UserViewModel(context: context);
   }
 
   @override
@@ -89,12 +88,13 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final password = TextFormField(
+      obscureText: true,
       onSaved: (String? value) {
         _password = value;
       },
       minLines: 1,
       maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.visiblePassword,
       autofocus: true,
       decoration: InputDecoration(
         hintText: 'password',
@@ -121,6 +121,33 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
+    final rememberMe = Container(
+      child: Row(
+        children: [
+          Checkbox(
+            value: _rememberMe,
+            onChanged: (value) {
+              setState(() async {
+                _rememberMe = value!;
+                // saved in shared preferences to be used later
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString("rememberme", _rememberMe.toString());
+              });
+            },
+            activeColor: AppColors.primaryDark,
+          ),
+          const Text(
+            'Remember me',
+            style: TextStyle(
+              color: AppColors.darkgray,
+              fontSize: 17.0,
+              fontFamily: 'Mukata Malar',
+            ),
+          ),
+        ],
+      ),
+    );
+
     final loginButton = Container(
       //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
       width: double.infinity,
@@ -140,94 +167,11 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           if (_keyForm.currentState!.validate()) {
             _keyForm.currentState!.save();
-            // setState(() {
-            //   _hasError = false;
-            // });
-            Map<String, dynamic> userData = {
-              "email": _email,
-              "password": _password
-            };
-
-            Map<String, String> headers = {
-              "Content-Type": "application/json; charset=UTF-8"
-            };
-
-            http
-                .post(Uri.http(_baseUrl, "/login"),
-                    body: json.encode(userData), headers: headers)
-                .then((http.Response response) async {
-              if (response.statusCode == 200) {
-                // Map<String, dynamic> userData = json.decode(response.body);
-
-                // Shared preferences
-                // SharedPreferences prefs = await SharedPreferences.getInstance();
-                // prefs.setString("userId", userData["_id"]);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              } else if (response.statusCode == 400) {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const AlertDialog(
-                          title: Text("Sign in failed",
-                              style: TextStyle(color: AppColors.primary)),
-                          content: Text("Wrong password"));
-                    });
-              } else if (response.statusCode == 402) {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const AlertDialog(
-                          title: Text("Sign in failed",
-                              style: TextStyle(color: AppColors.primary)),
-                          content: Text(
-                              "Your Email has not been verified. Please check your mail"));
-                    });
-              } else {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const AlertDialog(
-                          title: Text("Sign in failed",
-                              style: TextStyle(color: AppColors.primary)),
-                          content: Text(
-                              "The email address is not associated with any account. please check and try again!"));
-                    });
-              }
-            });
+            UserViewModel.login(_email, _password, context);
           }
         },
       ),
     );
-
-    // final loginButton = Container(
-    //   //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
-    //   width: double.infinity,
-    //   child: gradientButton(
-    //     borderRadius: BorderRadius.circular(30.0),
-    //     width: double.infinity,
-    //     height: 60.0,
-    //     gradient: AppColors.gradient1,
-    //     child: const Text(
-    //       'SIGN IN',
-    //       style: TextStyle(
-    //         color: Colors.white,
-    //         fontSize: 23.0,
-    //         fontFamily: 'Mukata Malar',
-    //       ),
-    //     ),
-    //     onPressed: () {
-    //       if (_keyForm.currentState!.validate()) {
-    //         _keyForm.currentState!.save();
-    //         final UserViewModel _userViewModel =
-    //             UserViewModel.fromBuildContext(context);
-    //         _userViewModel.login(_email, _password);
-    //       }
-    //     },
-    //   ),
-    // );
 
     final googleButton = ElevatedButton.icon(
       style: ElevatedButton.styleFrom(

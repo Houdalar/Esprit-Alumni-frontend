@@ -1,3 +1,4 @@
+import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 import 'package:email_validator/email_validator.dart';
@@ -14,28 +15,25 @@ import 'dart:convert';
 //import '../components/constum_componenets/googleButton.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../viewmodel/userViewModel.dart';
+import 'package:esprit_alumni_frontend/view/screens/signup2.dart';
 
-class SigninPage extends StatefulWidget {
-  static String tag = 'login-page';
-
-  const SigninPage({super.key});
-
+class SignupPage extends StatefulWidget {
+  const SignupPage({Key? key}) : super(key: key);
   @override
-  _SigninPageState createState() => new _SigninPageState();
+  _SignupPageState createState() => new _SignupPageState();
 }
 
-class _SigninPageState extends State<SigninPage> {
-  late String? _email;
-  late String? _password;
-  late String? _username;
-  late String? _confirmPassword;
+class _SignupPageState extends State<SignupPage> {
+  String? _email;
+  String? _password;
+  String? _username;
+  String? _confirmPassword;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    //_userViewModel = UserViewModel(context: context);
   }
 
   @override
@@ -93,7 +91,7 @@ class _SigninPageState extends State<SigninPage> {
       },
       minLines: 1,
       maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.name,
       autofocus: true,
       decoration: InputDecoration(
         hintText: 'username',
@@ -125,8 +123,9 @@ class _SigninPageState extends State<SigninPage> {
       },
       minLines: 1,
       maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.visiblePassword,
       autofocus: true,
+      obscureText: true,
       decoration: InputDecoration(
         hintText: 'password',
         focusedBorder: OutlineInputBorder(
@@ -157,8 +156,9 @@ class _SigninPageState extends State<SigninPage> {
       },
       minLines: 1,
       maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.visiblePassword,
       autofocus: true,
+      obscureText: true,
       decoration: InputDecoration(
         hintText: 'confirm password',
         focusedBorder: OutlineInputBorder(
@@ -177,14 +177,17 @@ class _SigninPageState extends State<SigninPage> {
         ),
       ),
       validator: (value) {
+        _keyForm.currentState!.save();
         if (value == null || value.isEmpty) {
-          return 'Please enter your password';
+          return 'Please confirm your password';
+        }
+        if (value != _password) {
+          return 'Passwords do not match';
         }
         return null;
       },
     );
     final nextButton = Container(
-      //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
       width: double.infinity,
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),
@@ -199,7 +202,23 @@ class _SigninPageState extends State<SigninPage> {
             fontFamily: 'Mukata Malar',
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (_keyForm.currentState!.validate()) {
+            // print the value of all the fields
+
+            _keyForm.currentState!.save();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Signup2Page(
+                  _email,
+                  _username,
+                  _password,
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
 
@@ -254,7 +273,12 @@ class _SigninPageState extends State<SigninPage> {
                         style:
                             TextStyle(color: AppColors.primary, fontSize: 15),
                         textAlign: TextAlign.center),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                    },
                   )
                 ],
               ),
