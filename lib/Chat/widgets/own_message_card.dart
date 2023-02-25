@@ -16,17 +16,16 @@ class OwnMessageCard extends StatelessWidget {
         ),
         child: Card(
           elevation: 1,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(36)),
-          color: const Color(0xFFE0E0E0),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          color: const Color(0xFFFFF0DC),
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 15,
+                  left: 10,
                   right: 30,
-                  top: 8,
+                  top: 5,
                   bottom: 20,
                 ),
                 child: Text(
@@ -37,7 +36,7 @@ class OwnMessageCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                bottom: 2,
+                bottom: 4,
                 right: 10,
                 child: Row(
                   children: [
@@ -53,7 +52,7 @@ class OwnMessageCard extends StatelessWidget {
                     ),
                     const Icon(
                       Icons.done_all,
-                      size: 18,
+                      size: 20,
                     ),
                   ],
                 ),

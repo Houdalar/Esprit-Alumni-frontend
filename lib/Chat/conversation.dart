@@ -1,13 +1,19 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:esprit_alumni_frontend/Chat/widgets/own_message_card.dart';
+import 'package:esprit_alumni_frontend/Chat/widgets/reply_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'Models/chat_model.dart';
 import 'design/app_colors.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class Conversation extends StatefulWidget {
-  const Conversation({Key? key, required this.chatModel}) : super(key: key);
+  const Conversation(
+      {Key? key, required this.chatModel, required this.sourchat})
+      : super(key: key);
   final ChatModel chatModel;
+  final ChatModel sourchat;
 
   @override
   State<Conversation> createState() => _ConversationState();
@@ -17,10 +23,13 @@ class _ConversationState extends State<Conversation> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool emojiShowed = false;
+  late io.Socket socket;
+  bool sendButton = false;
 
   @override
   void initState() {
     super.initState();
+    connect();
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         setState(() {
@@ -28,6 +37,18 @@ class _ConversationState extends State<Conversation> {
         });
       }
     });
+  }
+
+  void connect() {
+    socket = io.io("http://192.168.43.241:5000", <String, dynamic>{
+      "transports": ["websocket"],
+      "autoConnect": false,
+    });
+    //connecter le socket manuellement
+    socket.connect();
+    socket.emit("/test", "Hello world !");
+    socket.onConnect((data) => print("Connected"));
+    print(socket.connected);
   }
 
   @override
@@ -52,7 +73,12 @@ class _ConversationState extends State<Conversation> {
     return Stack(children: [
       Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.primaryColor,
+          backgroundColor: AppColors.transparent,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: AppColors.gradientColor,
+            ),
+          ),
           leadingWidth: 110,
           leading: InkWell(
             onTap: () {
@@ -100,7 +126,83 @@ class _ConversationState extends State<Conversation> {
             child: WillPopScope(
               child: Stack(
                 children: [
-                  ListView(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height - 158,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: const [
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
+                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
+                          OwnMessageCard(
+                              message:
+                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
+                              time: "23:51"),
+                        ],
+                      ),
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
@@ -115,15 +217,27 @@ class _ConversationState extends State<Conversation> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.07,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 11.0),
+                                  padding: const EdgeInsets.only(bottom: 6.0),
                                   child: TextFormField(
                                     controller: _controller,
                                     focusNode: _focusNode,
+                                    onChanged: (value) {
+                                      if (value.isNotEmpty) {
+                                        setState(() {
+                                          sendButton = true;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          sendButton = false;
+                                        });
+                                      }
+                                    },
                                     textAlignVertical: TextAlignVertical.center,
                                     keyboardType: TextInputType.multiline,
                                     maxLines: 5,
                                     minLines: 1,
                                     decoration: InputDecoration(
+                                        fillColor: AppColors.transparent,
                                         hintText: "Type a message ",
                                         hintStyle:
                                             const TextStyle(fontSize: 13.5),

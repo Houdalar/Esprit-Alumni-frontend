@@ -38,6 +38,7 @@ dependencies:
   flutter_svg: ^2.0.2
   emoji_picker_flutter: ^1.5.2
   shared_preferences: ^2.0.18
+  socket_io_client: ^2.0.1
 
 dev_dependencies:
   flutter_test:

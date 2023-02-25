@@ -1,4 +1,5 @@
-import 'package:esprit_alumni_frontend/Chat/widgets/reply_message.dart';
+import 'package:esprit_alumni_frontend/Chat/messages.dart';
+import 'package:esprit_alumni_frontend/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -26,10 +27,7 @@ class MyApp extends StatelessWidget {
 
             ),
         debugShowCheckedModeBanner: false,
-        home: const ReplyCard(
-          message: 'Bonsoir !',
-          time: '23:27',
-        )
+        home: const LoginScreen()
         /*Conversation(
         chatModel: ChatModel(
             name: "Ines Said",
