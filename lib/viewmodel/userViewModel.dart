@@ -1,6 +1,9 @@
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../view/screens/home.dart';
@@ -8,6 +11,7 @@ import '../../view/components/themes/colors.dart';
 import '../view/screens/rsetpassword2.dart';
 
 class UserViewModel extends ChangeNotifier {
+  static final LocalAuthentication _localAuthentication = LocalAuthentication();
   //final BuildContext context;
   static String baseUrl = "10.0.2.2:8081";
 
@@ -256,5 +260,24 @@ class UserViewModel extends ChangeNotifier {
             });
       }
     });
+  }
+
+  static Future<void> authenticate(BuildContext context) async {
+    bool isAuthenticated = false;
+    try {
+      isAuthenticated = await _localAuthentication.authenticate(
+        localizedReason: 'Scan your fingerprint to authenticate',
+        biometricOnly: true,
+        useErrorDialogs: true,
+        stickyAuth: true,
+      );
+    } catch (e) {
+      print(e);
+    }
+    if (isAuthenticated) {
+      print("User is authenticated");
+    } else {
+      print("User is not authenticated");
+    }
   }
 }

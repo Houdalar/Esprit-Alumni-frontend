@@ -1,21 +1,11 @@
 import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
 import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:provider/provider.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:google_sign_in/google_sign_in.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
-import './home.dart';
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-//import 'package:path/path.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
-//import '../components/constum_componenets/googleButton.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../../viewmodel/userViewModel.dart';
 
 class LoginPage extends StatefulWidget {
@@ -33,10 +23,41 @@ class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   bool _rememberMe = false;
+  final LocalAuthentication _localAuthentication = LocalAuthentication();
+  bool _isBiometricSupported = false;
+  bool _isBiometricEnabled = false;
 
   @override
   void initState() {
     super.initState();
+    _checkBiometric();
+  }
+
+  Future<void> _checkBiometric() async {
+    try {
+      _isBiometricSupported = await _localAuthentication.isDeviceSupported();
+      _isBiometricEnabled = await _localAuthentication.canCheckBiometrics;
+    } catch (e) {
+      print(e);
+    }
+    if (!_isBiometricSupported) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Fingerprint Authentication'),
+          content:
+              Text('Your device does not support biometric authentication'),
+        ),
+      );
+    } else if (!_isBiometricEnabled) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Fingerprint Authentication'),
+          content: Text('You have not enabled biometric authentication'),
+        ),
+      );
+    }
   }
 
   @override
@@ -47,6 +68,37 @@ class _LoginPageState extends State<LoginPage> {
       margin: const EdgeInsets.fromLTRB(50, 0, 50, 10),
       child: Image.asset("media/logo.png"),
     );
+
+    final fingerprint = Container(
+        height: 100.0,
+        width: double.infinity,
+        margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+        child: GestureDetector(
+          child: Image.asset("media/fgprint.png"),
+          onTap: () async {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                      title: const Text("Login with fingerprint",
+                          style: TextStyle(color: AppColors.primary)),
+                      content: Container(
+                          child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            "media/Fingerprint-cuate.png",
+                            height: 300,
+                            width: 300,
+                          ),
+                          const Text(
+                              "Please place your finger on the fingerprint sensor"),
+                        ],
+                      )));
+                });
+            UserViewModel.authenticate(context);
+          },
+        ));
 
     final email = TextFormField(
       onSaved: (String? value) {
@@ -189,7 +241,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       onPressed: () {},
       icon: Image.asset("media/google-icon.png", height: 24),
-      label: const Text('Sign in with Google',
+      label: const Text('Continue with Google',
           style: TextStyle(
             color: Colors.black,
             fontSize: 17.0,
@@ -261,7 +313,7 @@ class _LoginPageState extends State<LoginPage> {
               child: loginButton,
             ),
             Container(
-              margin: const EdgeInsets.fromLTRB(35, 20, 35, 30),
+              margin: const EdgeInsets.fromLTRB(35, 20, 35, 25),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -289,10 +341,10 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               width: double.infinity,
               margin: const EdgeInsets.fromLTRB(35, 0, 35, 0),
-              child: googleButton,
+              child: fingerprint,
             ),
             Container(
-              margin: const EdgeInsets.fromLTRB(35, 35, 35, 10),
+              margin: const EdgeInsets.fromLTRB(35, 25, 35, 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -303,8 +355,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     child: const Text("Sign up",
-                        style:
-                            TextStyle(color: AppColors.primary, fontSize: 15),
+                        style: TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center),
                     onTap: () {
                       Navigator.push(
