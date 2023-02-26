@@ -1,3 +1,5 @@
+import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
+import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 import 'package:email_validator/email_validator.dart';
@@ -242,7 +244,13 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: TextDecoration.underline,
                         ),
                         textAlign: TextAlign.center),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const reset1Page()),
+                      );
+                    },
                   )
                 ],
               ),
@@ -298,7 +306,14 @@ class _LoginPageState extends State<LoginPage> {
                         style:
                             TextStyle(color: AppColors.primary, fontSize: 15),
                         textAlign: TextAlign.center),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignupPage(),
+                        ),
+                      );
+                    },
                   )
                 ],
               ),
