@@ -36,12 +36,12 @@ class ReplyCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                bottom: 4,
+                bottom: 1.5,
                 right: 10,
                 child: Text(
                   time,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 11.5,
                     color: Colors.grey[600],
                   ),
                 ),

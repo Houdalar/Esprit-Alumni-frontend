@@ -23,7 +23,7 @@ class OwnMessageCard extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                  left: 10,
+                  left: 20,
                   right: 30,
                   top: 5,
                   bottom: 20,
@@ -36,14 +36,14 @@ class OwnMessageCard extends StatelessWidget {
                 ),
               ),
               Positioned(
-                bottom: 4,
-                right: 10,
+                bottom: 1.5,
+                right: 3,
                 child: Row(
                   children: [
                     Text(
                       time,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 11.5,
                         color: Colors.grey[600],
                       ),
                     ),
@@ -52,7 +52,7 @@ class OwnMessageCard extends StatelessWidget {
                     ),
                     const Icon(
                       Icons.done_all,
-                      size: 20,
+                      size: 15,
                     ),
                   ],
                 ),

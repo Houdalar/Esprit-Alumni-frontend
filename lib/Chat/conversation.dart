@@ -1,10 +1,12 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:esprit_alumni_frontend/Chat/widgets/input_message.dart';
 import 'package:esprit_alumni_frontend/Chat/widgets/own_message_card.dart';
 import 'package:esprit_alumni_frontend/Chat/widgets/reply_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'Models/chat_model.dart';
+import 'Models/message_model.dart';
 import 'design/app_colors.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -25,6 +27,7 @@ class _ConversationState extends State<Conversation> {
   bool emojiShowed = false;
   late io.Socket socket;
   bool sendButton = false;
+  List<MessageModel> messages = [];
 
   @override
   void initState() {
@@ -40,15 +43,37 @@ class _ConversationState extends State<Conversation> {
   }
 
   void connect() {
-    socket = io.io("http://192.168.43.241:5000", <String, dynamic>{
+    socket = io.io("http://172.16.5.166:5000", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
     //connecter le socket manuellement
     socket.connect();
-    socket.emit("/test", "Hello world !");
-    socket.onConnect((data) => print("Connected"));
+    socket.emit("signin", widget.sourchat.id);
+    socket.onConnect((data) {
+      print("Connected");
+      socket.on("message", (msg) {
+        print(msg);
+        setMessage("destination", msg["message"]);
+      });
+    });
     print(socket.connected);
+  }
+
+  void sendMessage(String message, int sourceId, int targetId) {
+    setMessage("source", message);
+    socket.emit("message",
+        {"message": message, "sourceId": sourceId, "targetId": targetId});
+  }
+
+  void setMessage(String type, String msg) {
+    MessageModel messsageModel = MessageModel(
+        type: type,
+        message: msg,
+        time: DateTime.now().toString().substring(10, 16));
+    setState(() {
+      messages.add(messsageModel);
+    });
   }
 
   @override
@@ -61,6 +86,7 @@ class _ConversationState extends State<Conversation> {
   void toggleEmojiPicker() {
     setState(() {
       emojiShowed = !emojiShowed;
+      FocusScope.of(context).unfocus();
     });
   }
 
@@ -71,278 +97,219 @@ class _ConversationState extends State<Conversation> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.transparent,
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: AppColors.gradientColor,
+      GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: AppColors.gradientColor,
+              ),
+            ),
+            leadingWidth: 110,
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.arrow_back,
+                    size: 24,
+                  ),
+                  const SizedBox(
+                    width: 13,
+                  ),
+                  CircleAvatar(
+                      radius: 20,
+                      backgroundColor: AppColors.svgBackgroundClr,
+                      child: SvgPicture.asset(
+                        widget.chatModel.isGroup
+                            ? "assets/images/groups_icon.svg"
+                            : "assets/images/person_icon.svg",
+                        color: AppColors.primaryColorDark,
+                        height: 28,
+                        width: 28,
+                      )),
+                ],
+              ),
+            ),
+            title: Text(
+              widget.chatModel.name,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          leadingWidth: 110,
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.arrow_back,
-                  size: 24,
+          body: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: AppColors.converBackgroundClr,
+              /** 
+               * WillPopScope : ki tenzel 3al bouton back me to5rejch mel app 
+               * juste tetna7a el emoji picker khw*/
+              child: WillPopScope(
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height - 158,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            if (messages[index].type == "source") {
+                              return OwnMessageCard(
+                                message: messages[index].message,
+                                time: messages[index].time,
+                              );
+                            } else {
+                              return ReplyCard(
+                                message: messages[index].message,
+                                time: messages[index].time,
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: AppColors.converBackgroundClr),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width:
+                                        MediaQuery.of(context).size.width - 55,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.07,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 6.0),
+                                      child: InputMessage(
+                                        controller: _controller,
+                                        focusNode: _focusNode,
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            setState(() {
+                                              sendButton = true;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              sendButton = false;
+                                            });
+                                          }
+                                        },
+                                        toggleEmojiPicker: toggleEmojiPicker,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5),
+                                        child: sendButton
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  if (sendButton) {
+                                                    sendMessage(
+                                                        _controller.text,
+                                                        widget.sourchat.id,
+                                                        widget.chatModel.id);
+                                                    _controller.clear();
+                                                  }
+                                                },
+                                                icon: SvgPicture.asset(
+                                                    "assets/images/send_icon.svg"))
+                                            : IconButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {},
+                                                icon: SvgPicture.asset(
+                                                  "assets/images/mic_icon.svg",
+                                                  width: 15,
+                                                ),
+                                                //iconSize: 50,
+                                              )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            _PickEmoji(
+                              controller: _controller,
+                              emojiShowed: emojiShowed,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  width: 13,
-                ),
-                CircleAvatar(
-                    radius: 20,
-                    backgroundColor: AppColors.svgBackgroundClr,
-                    child: SvgPicture.asset(
-                      widget.chatModel.isGroup
-                          ? "assets/images/groups_icon.svg"
-                          : "assets/images/person_icon.svg",
-                      color: AppColors.primaryColorDark,
-                      height: 28,
-                      width: 28,
-                    )),
-              ],
-            ),
-          ),
-          title: Text(
-            widget.chatModel.name,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
+                onWillPop: () {
+                  if (emojiShowed) {
+                    setState(() {
+                      emojiShowed = false;
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                  return Future.value(false);
+                },
+              )),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _PickEmoji extends StatelessWidget {
+  _PickEmoji({Key? key, required this.controller, required this.emojiShowed})
+      : super(key: key);
+  TextEditingController controller = TextEditingController();
+  bool emojiShowed = false;
+  @override
+  Widget build(BuildContext context) {
+    return Offstage(
+      offstage: !emojiShowed,
+      child: SizedBox(
+        height: 250,
+        child: EmojiPicker(
+          textEditingController: controller,
+          config: Config(
+            emojiSizeMax: 32 *
+                (foundation.defaultTargetPlatform == TargetPlatform.iOS
+                    ? 1.30
+                    : 1.0),
+            bgColor: const Color(0xFFF2F2F2),
+            indicatorColor: AppColors.primaryColor,
+            iconColor: Colors.grey,
+            iconColorSelected: Colors.blue,
+            backspaceColor: Colors.blue,
+            skinToneDialogBgColor: Colors.white,
+            skinToneIndicatorColor: Colors.grey,
+            noRecents: const Text(
+              'No Recents',
+              style: TextStyle(fontSize: 20, color: Colors.black26),
+              textAlign: TextAlign.center,
             ),
           ),
         ),
-        body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            color: AppColors.converBackgroundClr,
-            /** 
-             * WillPopScope : ki tenzel 3al bouton back me to5rejch mel app 
-             * juste tetna7a el emoji picker khw*/
-            child: WillPopScope(
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height - 158,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: const [
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                          OwnMessageCard(message: "Bonsoir !", time: "23:44"),
-                          ReplyCard(message: "Bonsoir Ines !", time: "23:50"),
-                          OwnMessageCard(
-                              message:
-                                  "HjdpqjsyE <QBSDLIzv nbfvobdfopegoidf qfbliue vqmvkqmsv mqosvnlishfv qsvm oisbvli",
-                              time: "23:51"),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width - 55,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.07,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 6.0),
-                                  child: TextFormField(
-                                    controller: _controller,
-                                    focusNode: _focusNode,
-                                    onChanged: (value) {
-                                      if (value.isNotEmpty) {
-                                        setState(() {
-                                          sendButton = true;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          sendButton = false;
-                                        });
-                                      }
-                                    },
-                                    textAlignVertical: TextAlignVertical.center,
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: 5,
-                                    minLines: 1,
-                                    decoration: InputDecoration(
-                                        fillColor: AppColors.transparent,
-                                        hintText: "Type a message ",
-                                        hintStyle:
-                                            const TextStyle(fontSize: 13.5),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(31),
-                                        ),
-                                        prefixIcon: IconButton(
-                                            onPressed: toggleEmojiPicker,
-                                            icon: const Icon(
-                                              Icons.emoji_emotions,
-                                              color: AppColors.primaryColor,
-                                            )),
-                                        suffixIcon: IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.camera_alt,
-                                              color: AppColors.primaryColor,
-                                            )),
-                                        contentPadding:
-                                            const EdgeInsets.all(5)),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 3,
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(bottom: 20),
-                                  child: CircleAvatar(
-                                      radius: 15,
-                                      backgroundColor:
-                                          AppColors.converBackgroundClr,
-                                      child:
-                                          /*SvgPicture.asset(
-                                        "assets/images/send_icon.svg")),*/
-                                          IconButton(
-                                              onPressed: () {},
-                                              icon: const Icon(
-                                                Icons.mic,
-                                                color: AppColors.primaryColor,
-                                              )))),
-                            ],
-                          ),
-                          Offstage(
-                            offstage: !emojiShowed,
-                            child: SizedBox(
-                              height: 250,
-                              child: EmojiPicker(
-                                textEditingController: _controller,
-                                config: Config(
-                                  columns: 7,
-                                  emojiSizeMax: 32 *
-                                      (foundation.defaultTargetPlatform ==
-                                              TargetPlatform.iOS
-                                          ? 1.30
-                                          : 1.0),
-                                  verticalSpacing: 0,
-                                  horizontalSpacing: 0,
-                                  gridPadding: EdgeInsets.zero,
-                                  initCategory: Category.RECENT,
-                                  bgColor: const Color(0xFFF2F2F2),
-                                  indicatorColor: Colors.blue,
-                                  iconColor: Colors.grey,
-                                  iconColorSelected: Colors.blue,
-                                  backspaceColor: Colors.blue,
-                                  skinToneDialogBgColor: Colors.white,
-                                  skinToneIndicatorColor: Colors.grey,
-                                  enableSkinTones: true,
-                                  showRecentsTab: true,
-                                  recentsLimit: 28,
-                                  replaceEmojiOnLimitExceed: false,
-                                  noRecents: const Text(
-                                    'No Recents',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black26),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  loadingIndicator: const SizedBox.shrink(),
-                                  tabIndicatorAnimDuration: kTabScrollDuration,
-                                  categoryIcons: const CategoryIcons(),
-                                  buttonMode: ButtonMode.MATERIAL,
-                                  checkPlatformCompatibility: true,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              onWillPop: () {
-                if (emojiShowed) {
-                  setState(() {
-                    emojiShowed = false;
-                  });
-                } else {
-                  Navigator.pop(context);
-                }
-                return Future.value(false);
-              },
-            )),
       ),
-    ]);
+    );
   }
 }

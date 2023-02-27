@@ -45,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
           itemCount: chatmodels.length,
           itemBuilder: (contex, index) => InkWell(
               onTap: () {
+                // the source chat will act like a user
                 sourceChat = chatmodels.removeAt(index);
                 Navigator.pushReplacement(
                     context,
