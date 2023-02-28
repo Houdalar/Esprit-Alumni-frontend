@@ -15,17 +15,17 @@ class _LoginScreenState extends State<LoginScreen> {
   late ChatModel sourceChat;
   List<ChatModel> chatmodels = [
     ChatModel(
-      name: "Ines Said",
+      name: "User 1",
       isGroup: false,
-      currentMessage: "Hi Houda",
+      currentMessage: "Hi user 2",
       time: "4:00",
       icon: "person.svg",
       id: 1,
     ),
     ChatModel(
-      name: "Houda Lariani",
+      name: "User 2",
       isGroup: false,
-      currentMessage: "Hi Ines",
+      currentMessage: "Hi user 1",
       time: "13:00",
       icon: "person.svg",
       id: 2,

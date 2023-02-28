@@ -23,6 +23,7 @@ class Conversation extends StatefulWidget {
 
 class _ConversationState extends State<Conversation> {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
   bool emojiShowed = false;
   late io.Socket socket;
@@ -43,7 +44,7 @@ class _ConversationState extends State<Conversation> {
   }
 
   void connect() {
-    socket = io.io("http://172.16.5.166:5000", <String, dynamic>{
+    socket = io.io("http://172.17.2.233:5000", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
@@ -55,6 +56,8 @@ class _ConversationState extends State<Conversation> {
       socket.on("message", (msg) {
         print(msg);
         setMessage("destination", msg["message"]);
+        _scrollController.animateTo(_scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
       });
     });
     print(socket.connected);
@@ -154,35 +157,38 @@ class _ConversationState extends State<Conversation> {
                * WillPopScope : ki tenzel 3al bouton back me to5rejch mel app 
                * juste tetna7a el emoji picker khw*/
               child: WillPopScope(
-                child: Stack(
+                child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height - 158,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            if (messages[index].type == "source") {
-                              return OwnMessageCard(
-                                message: messages[index].message,
-                                time: messages[index].time,
-                              );
-                            } else {
-                              return ReplyCard(
-                                message: messages[index].message,
-                                time: messages[index].time,
-                              );
-                            }
-                          },
-                        ),
+                    Expanded(
+                      // height: MediaQuery.of(context).size.height - 158,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        controller: _scrollController,
+                        itemCount: messages.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == messages.length) {
+                            return Container(
+                              height: 50,
+                            );
+                          }
+                          if (messages[index].type == "source") {
+                            return OwnMessageCard(
+                              message: messages[index].message,
+                              time: messages[index].time,
+                            );
+                          } else {
+                            return ReplyCard(
+                              message: messages[index].message,
+                              time: messages[index].time,
+                            );
+                          }
+                        },
                       ),
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                      child: SizedBox(
+                        height: 70,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -228,11 +234,23 @@ class _ConversationState extends State<Conversation> {
                                             ? IconButton(
                                                 onPressed: () {
                                                   if (sendButton) {
+                                                    _scrollController.animateTo(
+                                                        _scrollController
+                                                            .position
+                                                            .maxScrollExtent,
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    100),
+                                                        curve: Curves.easeOut);
                                                     sendMessage(
                                                         _controller.text,
                                                         widget.sourchat.id,
                                                         widget.chatModel.id);
                                                     _controller.clear();
+                                                    setState(() {
+                                                      sendButton = false;
+                                                    });
                                                   }
                                                 },
                                                 icon: SvgPicture.asset(
