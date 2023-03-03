@@ -1,3 +1,5 @@
+import 'package:esprit_alumni_frontend/view/screens/Profile/home.dart';
+import 'package:esprit_alumni_frontend/view/screens/Profile/nav_bottom.dart';
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../../view/screens/home.dart';
 import '../../view/components/themes/colors.dart';
 import '../view/screens/rsetpassword2.dart';
 
@@ -37,7 +38,7 @@ class UserViewModel extends ChangeNotifier {
         // prefs.setString("userId", userData["_id"]);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => NavigationBottom()),
         );
       } else if (response.statusCode == 400) {
         showDialog(
