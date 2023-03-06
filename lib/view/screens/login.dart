@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       )));
                 });
-            UserViewModel.authenticate(context);
+            // UserViewModel.authenticate(context);
           },
         ));
 

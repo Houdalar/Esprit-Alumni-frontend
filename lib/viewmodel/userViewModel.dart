@@ -9,6 +9,7 @@ import 'dart:convert';
 import '../../view/screens/home.dart';
 import '../../view/components/themes/colors.dart';
 import '../view/screens/rsetpassword2.dart';
+import '../model/postmodel.dart';
 
 class UserViewModel extends ChangeNotifier {
   static final LocalAuthentication _localAuthentication = LocalAuthentication();
@@ -262,22 +263,17 @@ class UserViewModel extends ChangeNotifier {
     });
   }
 
-  static Future<void> authenticate(BuildContext context) async {
-    bool isAuthenticated = false;
-    try {
-      isAuthenticated = await _localAuthentication.authenticate(
-        localizedReason: 'Scan your fingerprint to authenticate',
-        biometricOnly: true,
-        useErrorDialogs: true,
-        stickyAuth: true,
-      );
-    } catch (e) {
-      print(e);
-    }
-    if (isAuthenticated) {
-      print("User is authenticated");
+  Future<List<PostModel>> getFollowingPosts(String token) async {
+    final response =
+        await http.get(Uri.http(baseUrl + "/getFollowingPosts/{$token}"));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      List<PostModel> posts =
+          responseData.map((post) => PostModel.fromJson(post)).toList();
+      return posts;
     } else {
-      print("User is not authenticated");
+      throw Exception('Failed to load following posts');
     }
   }
 }

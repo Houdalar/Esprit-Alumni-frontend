@@ -1,10 +1,10 @@
-import 'package:esprit_alumni_frontend/view/screens/restpassword3.dart';
-import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
-import 'package:esprit_alumni_frontend/view/screens/rsetpassword2.dart';
+import 'package:esprit_alumni_frontend/view/screens/home.dart';
+//import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
+//import 'package:esprit_alumni_frontend/view/screens/rsetpassword2.dart';
 import 'package:flutter/material.dart';
-import 'package:esprit_alumni_frontend/view/screens/login.dart';
-import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
-import 'package:esprit_alumni_frontend/view/screens/getstarted.dart';
+//import 'package:esprit_alumni_frontend/view/screens/login.dart';
+//import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
+//import 'package:esprit_alumni_frontend/view/screens/getstarted.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: const HomePage(),
     );
   }
 }
