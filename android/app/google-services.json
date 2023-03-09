@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "702651377428",
+    "project_id": "espritalumni",
+    "storage_bucket": "espritalumni.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702651377428:android:cda991d5e0a8dff8088401",
+        "android_client_info": {
+          "package_name": "com.example.esprit_alumni_frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "702651377428-t8dj39k53hkbsailthf6u6ol7pm6ugc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlrp-fm9LOqoC8Y3Td2sDXF-Ln_LSiy-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "702651377428-t8dj39k53hkbsailthf6u6ol7pm6ugc3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "702651377428-gahojnahi6879lpqgv72sbh1q98m2kfe.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.espritAlumniFrontend"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

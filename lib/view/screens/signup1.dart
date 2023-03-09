@@ -221,7 +221,29 @@ class _SignupPageState extends State<SignupPage> {
         },
       ),
     );
-
+    final googleButton = ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        fixedSize: const Size.fromHeight(60),
+        primary: Colors.white,
+        onPrimary: AppColors.primaryDark,
+        elevation: 3,
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+          side: const BorderSide(color: AppColors.primaryDark, width: 1),
+        ),
+      ),
+      onPressed: () {
+        UserViewModel.signupWithGoogle(context);
+      },
+      icon: Image.asset("media/google-icon.png", height: 24),
+      label: const Text('Continue with Google',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 17.0,
+            fontFamily: 'Mukata Malar',
+          )),
+    );
     return Scaffold(
       body: Form(
         key: _keyForm,
@@ -230,7 +252,7 @@ class _SignupPageState extends State<SignupPage> {
             Container(
               width: double.infinity,
               height: 200.0,
-              margin: const EdgeInsets.fromLTRB(0, 30, 0, 10),
+              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               child: logo,
             ),
             Container(
@@ -259,7 +281,38 @@ class _SignupPageState extends State<SignupPage> {
               child: nextButton,
             ),
             Container(
-              margin: const EdgeInsets.fromLTRB(35, 35, 35, 10),
+              margin: const EdgeInsets.fromLTRB(35, 10, 35, 25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50.0,
+                    child: const Divider(
+                      color: Colors.black,
+                      height: 30.0,
+                    ),
+                  ),
+                  const Text(
+                    '  Or sign up with  ',
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                  const SizedBox(
+                    width: 50.0,
+                    child: Divider(
+                      color: Colors.black,
+                      height: 30.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(35, 0, 35, 20),
+              child: googleButton,
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(35, 0, 35, 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
