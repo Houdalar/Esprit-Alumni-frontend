@@ -12,7 +12,7 @@ import '../../view/components/themes/colors.dart';
 import '../view/screens/rsetpassword2.dart';
 
 class UserViewModel extends ChangeNotifier {
-  static String baseUrl = "localhost:8081";
+  static String baseUrl = "10.0.2.2:8081";
 
   UserViewModel();
 
@@ -263,6 +263,7 @@ class UserViewModel extends ChangeNotifier {
 
   static Future<UserCredential?> signInWithGoogle(BuildContext context) async {
     try {
+      await GoogleSignIn().signOut();
       // Trigger the Google sign-in flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -359,6 +360,7 @@ class UserViewModel extends ChangeNotifier {
 
   static Future<UserCredential?> signupWithGoogle(BuildContext context) async {
     try {
+      await GoogleSignIn().signOut();
       // Trigger the Google sign-in flow
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -414,6 +416,7 @@ class UserViewModel extends ChangeNotifier {
         }
       });
     } catch (e) {
+      print(e);
       //show a dialog with the error message
       showDialog(
           context: context,

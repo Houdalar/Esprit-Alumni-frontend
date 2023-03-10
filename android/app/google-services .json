@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "702651377428-t8dj39k53hkbsailthf6u6ol7pm6ugc3.apps.googleusercontent.com",
+          "client_id": "702651377428-h18d6q2tjj0h4foo05a9jpavcjhs3rgg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.esprit_alumni_frontend",
+            "certificate_hash": "ab5b8bdf174322f069ec8b601427ba12e2a67399"
+          }
+        },
+        {
+          "client_id": "702651377428-4g5h0tniv01sj065q7mggfhftf74lakn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +35,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "702651377428-t8dj39k53hkbsailthf6u6ol7pm6ugc3.apps.googleusercontent.com",
+              "client_id": "702651377428-4g5h0tniv01sj065q7mggfhftf74lakn.apps.googleusercontent.com",
               "client_type": 3
             },
             {
