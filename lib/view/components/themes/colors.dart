@@ -15,4 +15,12 @@ class AppColors {
         AppColors.primaryDark,
         AppColors.primary,
       ]);
+  static const gradient2 = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color.fromARGB(255, 174, 86, 80),
+        AppColors.primaryDark,
+        AppColors.primary,
+      ]);
 }

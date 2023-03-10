@@ -31,11 +31,13 @@ class UserViewModel extends ChangeNotifier {
             body: json.encode(userData), headers: headers)
         .then((http.Response response) async {
       if (response.statusCode == 200) {
+        //String token = jsonDecode(response.body);
         // Map<String, dynamic> userData = json.decode(response.body);
 
         // Shared preferences
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString("userId", userData["_id"]);
+        //SharedPreferences prefs = await SharedPreferences.getInstance();
+        // prefs.setString("token", token);
+
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => NavigationBottom()),

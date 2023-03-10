@@ -26,13 +26,13 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         "/": (context) {
-          return SplashScreen();
+          return NavigationBottom();
         },
         "login": (context) {
           return LoginPage();
         },
         "homeBottom": (context) {
-          return NavigationBottom();
+          return SplashScreen();
         },
       },
     );

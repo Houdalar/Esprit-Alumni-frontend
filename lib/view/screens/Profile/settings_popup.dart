@@ -12,7 +12,7 @@ class SettingsPopup extends StatelessWidget {
           children: <Widget>[
             ListTile(
               leading: Icon(Icons.person),
-              title: Text('Edit Profile'),
+              title: Text('Edit Credentials'),
               onTap: () {
                 // TODO: Add functionality for editing profile
               },
