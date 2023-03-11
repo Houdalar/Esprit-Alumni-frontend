@@ -43,19 +43,23 @@ class _ConversationState extends State<Conversation> {
     });
   }
 
+  /// connect the app to the socket.io server
+  /// so every app will be treated as a socket.io client
   void connect() {
-    socket = io.io("http://172.17.2.233:5000", <String, dynamic>{
+    socket = io.io("http://192.168.1.149:3000", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
-    //connecter le socket manuellement
+    //connecter le socket server manuellement
     socket.connect();
     socket.emit("signin", widget.sourchat.id);
     socket.onConnect((data) {
       print("Connected");
       socket.on("message", (msg) {
         print(msg);
+        //add the msg to the messages' list and specify its type as a destination msg
         setMessage("destination", msg["message"]);
+        //scroll to the bottom of the listview
         _scrollController.animateTo(_scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
       });
@@ -64,11 +68,15 @@ class _ConversationState extends State<Conversation> {
   }
 
   void sendMessage(String message, int sourceId, int targetId) {
+    //add the msg to the messages' list and specify its type as a source msg
     setMessage("source", message);
+    //send a json objetct from the source to the target
+    //"message" is the event name and with its help we'll listen to it on the socket server
     socket.emit("message",
         {"message": message, "sourceId": sourceId, "targetId": targetId});
   }
 
+  //whenever we'll send a msg or receive a message we'll add it to the messages' list
   void setMessage(String type, String msg) {
     MessageModel messsageModel = MessageModel(
         type: type,
@@ -203,8 +211,8 @@ class _ConversationState extends State<Conversation> {
                                     height: MediaQuery.of(context).size.height *
                                         0.07,
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 6.0),
+                                      padding: const EdgeInsets.only(
+                                          bottom: 6.0, left: 10),
                                       child: InputMessage(
                                         controller: _controller,
                                         focusNode: _focusNode,
@@ -228,8 +236,8 @@ class _ConversationState extends State<Conversation> {
                                   ),
                                   Expanded(
                                     child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5),
+                                        padding: const EdgeInsets.only(
+                                            bottom: 5, right: 10),
                                         child: sendButton
                                             ? IconButton(
                                                 onPressed: () {
