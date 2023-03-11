@@ -11,7 +11,9 @@ import 'Models/chat_model.dart';
 import 'design/app_colors.dart';
 
 class Conversation extends StatefulWidget {
-  const Conversation({Key? key, required this.chatModel, required this.sourchat}) : super(key: key);
+  const Conversation(
+      {Key? key, required this.chatModel, required this.sourchat})
+      : super(key: key);
   final ChatModel chatModel;
   final ChatModel sourchat;
 
@@ -26,15 +28,15 @@ class _ConversationState extends State<Conversation> {
   //bool emojiShowed = false;
   // late io.Socket socket;
   // bool sendButton = false;
-  // List<MessageModel> messages = [];
+  // List<MessageModel> messagesList = [];
 
   final controller = Get.put(ConversationController());
 
   @override
   void initState() {
     super.initState();
-
     controller.connect(widget.sourchat.id);
+    controller.getConversationMessages(widget.sourchat.id, widget.chatModel.id);
 
     //! Done
     // _focusNode.addListener(() {
@@ -55,7 +57,7 @@ class _ConversationState extends State<Conversation> {
   //     "transports": ["websocket"],
   //     "autoConnect": false,
   //   });
-  //   //connecter le socket server manuellement
+  //connecter le socket server manuellement
   //   socket.connect();
   //   socket.emit("signin", widget.sourchat.id);
   //   socket.onConnect((data) {
@@ -150,7 +152,9 @@ class _ConversationState extends State<Conversation> {
                           radius: 20,
                           backgroundColor: AppColors.svgBackgroundClr,
                           child: SvgPicture.asset(
-                            widget.chatModel.isGroup ? "assets/images/groups_icon.svg" : "assets/images/person_icon.svg",
+                            widget.chatModel.isGroup
+                                ? "assets/images/groups_icon.svg"
+                                : "assets/images/person_icon.svg",
                             color: AppColors.primaryColorDark,
                             height: 28,
                             width: 28,
@@ -181,22 +185,29 @@ class _ConversationState extends State<Conversation> {
                           child: ListView.builder(
                             shrinkWrap: true,
                             controller: controller.scrollController,
-                            itemCount: controller.messages.length + 1,
+                            itemCount: controller.messagesList.length + 1,
                             itemBuilder: (context, index) {
-                              if (index == controller.messages.length) {
+                              if (index == controller.messagesList.length) {
                                 return Container(
                                   height: 50,
                                 );
                               }
-                              if (controller.messages[index].type == "source") {
+                              if (controller.messagesList[index].sourceId ==
+                                  widget.sourchat.id) {
                                 return OwnMessageCard(
-                                  message: controller.messages[index].message,
-                                  time: controller.messages[index].time,
+                                  message:
+                                      controller.messagesList[index].message,
+                                  time: controller.formatDateTime(controller
+                                          .messagesList[index].createdAt ??
+                                      ''),
                                 );
                               } else {
                                 return ReplyCard(
-                                  message: controller.messages[index].message,
-                                  time: controller.messages[index].time,
+                                  message:
+                                      controller.messagesList[index].message,
+                                  time: controller.formatDateTime(controller
+                                          .messagesList[index].createdAt ??
+                                      ''),
                                 );
                               }
                             },
@@ -210,25 +221,35 @@ class _ConversationState extends State<Conversation> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Container(
-                                  decoration: const BoxDecoration(color: AppColors.converBackgroundClr),
+                                  decoration: const BoxDecoration(
+                                      color: AppColors.converBackgroundClr),
                                   child: Row(
                                     children: [
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width - 55,
-                                        height: MediaQuery.of(context).size.height * 0.07,
+                                        width:
+                                            MediaQuery.of(context).size.width -
+                                                55,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.07,
                                         child: Padding(
-                                          padding: const EdgeInsets.only(bottom: 6.0, left: 10),
+                                          padding: const EdgeInsets.only(
+                                              bottom: 6.0, left: 10),
                                           child: InputMessage(
-                                            controller: controller.textEditingcontroller,
+                                            controller: controller
+                                                .textEditingcontroller,
                                             focusNode: controller.focusNode,
                                             onChanged: (value) {
                                               if (value.isNotEmpty) {
-                                                controller.sendButton.value = true;
+                                                controller.sendButton.value =
+                                                    true;
                                               } else {
-                                                controller.sendButton.value = false;
+                                                controller.sendButton.value =
+                                                    false;
                                               }
                                             },
-                                            toggleEmojiPicker: () => controller.toggleEmojiPicker(context),
+                                            toggleEmojiPicker: () => controller
+                                                .toggleEmojiPicker(context),
                                           ),
                                         ),
                                       ),
@@ -237,23 +258,41 @@ class _ConversationState extends State<Conversation> {
                                       ),
                                       Expanded(
                                         child: Padding(
-                                            padding: const EdgeInsets.only(bottom: 5, right: 10),
+                                            padding: const EdgeInsets.only(
+                                                bottom: 5, right: 10),
                                             child: controller.sendButton.value
                                                 ? IconButton(
                                                     onPressed: () {
-                                                      if (controller.sendButton.value) {
+                                                      if (controller
+                                                          .sendButton.value) {
                                                         controller.scrollController.animateTo(
-                                                            controller.scrollController.position.maxScrollExtent,
-                                                            duration: const Duration(milliseconds: 100),
-                                                            curve: Curves.easeOut);
-                                                        controller.sendMessage(controller.textEditingcontroller.text,
-                                                            widget.sourchat.id, widget.chatModel.id);
-                                                        controller.textEditingcontroller.clear();
+                                                            controller
+                                                                .scrollController
+                                                                .position
+                                                                .maxScrollExtent,
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        100),
+                                                            curve:
+                                                                Curves.easeOut);
+                                                        controller.sendMessage(
+                                                            controller
+                                                                .textEditingcontroller
+                                                                .text,
+                                                            widget.sourchat.id,
+                                                            widget
+                                                                .chatModel.id);
+                                                        controller
+                                                            .textEditingcontroller
+                                                            .clear();
 
-                                                        controller.sendButton.value = false;
+                                                        controller.sendButton
+                                                            .value = false;
                                                       }
                                                     },
-                                                    icon: SvgPicture.asset("assets/images/send_icon.svg"))
+                                                    icon: SvgPicture.asset(
+                                                        "assets/images/send_icon.svg"))
                                                 : IconButton(
                                                     padding: EdgeInsets.zero,
                                                     onPressed: () {},
@@ -297,7 +336,8 @@ class _ConversationState extends State<Conversation> {
 }
 
 class _PickEmoji extends StatelessWidget {
-  _PickEmoji({Key? key, required this.controller, required this.emojiShowed}) : super(key: key);
+  _PickEmoji({Key? key, required this.controller, required this.emojiShowed})
+      : super(key: key);
   TextEditingController controller = TextEditingController();
   bool emojiShowed = false;
   @override
@@ -309,7 +349,10 @@ class _PickEmoji extends StatelessWidget {
         child: EmojiPicker(
           textEditingController: controller,
           config: Config(
-            emojiSizeMax: 32 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.30 : 1.0),
+            emojiSizeMax: 32 *
+                (foundation.defaultTargetPlatform == TargetPlatform.iOS
+                    ? 1.30
+                    : 1.0),
             bgColor: const Color(0xFFF2F2F2),
             indicatorColor: AppColors.primaryColor,
             iconColor: Colors.grey,

@@ -1,5 +1,7 @@
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:esprit_alumni_frontend/Chat/Models/message.dart';
 import 'package:esprit_alumni_frontend/Chat/Models/message_model.dart';
+import 'package:esprit_alumni_frontend/Chat/services/conversation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +16,7 @@ class ConversationController extends GetxController {
   late io.Socket socket;
   RxBool sendButton = false.obs;
   RxList<MessageModel> messages = <MessageModel>[].obs;
+  RxList<Message> messagesList = <Message>[].obs;
 
   @override
   void onInit() {
@@ -24,6 +27,7 @@ class ConversationController extends GetxController {
         update();
       }
     });
+
     super.onInit();
   }
 
@@ -56,12 +60,16 @@ class ConversationController extends GetxController {
     setMessage("source", message);
     //send a json objetct from the source to the target
     //"message" is the event name and with its help we'll listen to it on the socket server
-    socket.emit("message", {"message": message, "sourceId": sourceId, "targetId": targetId});
+    socket.emit("message",
+        {"message": message, "sourceId": sourceId, "targetId": targetId});
   }
 
   //whenever we'll send a msg or receive a message we'll add it to the messages' list
   void setMessage(String type, String msg) {
-    MessageModel messsageModel = MessageModel(type: type, message: msg, time: DateTime.now().toString().substring(10, 16));
+    MessageModel messsageModel = MessageModel(
+        type: type,
+        message: msg,
+        time: DateTime.now().toString().substring(10, 16));
 
     messages.add(messsageModel);
     messages.refresh();
@@ -77,6 +85,17 @@ class ConversationController extends GetxController {
 
   void onEmojiSelected(Emoji emoji) {
     textEditingcontroller.text += emoji.emoji;
+    update();
+  }
+
+  String formatDateTime(String date) {
+    DateTime dateTime = DateTime.parse(date);
+    return "${dateTime.hour}:${dateTime.minute}";
+  }
+
+  getConversationMessages(int sourceId, int targetId) async {
+    ConversationService.getConversationMessages(sourceId, targetId)
+        .then((value) => messagesList.addAll(value));
     update();
   }
 
