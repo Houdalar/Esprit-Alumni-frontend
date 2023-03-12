@@ -1,5 +1,5 @@
 class PostModel {
-  final String owner;
+  final Map<String, dynamic> owner;
   final String caption;
   final String image;
   final List<String> likes;
@@ -25,7 +25,11 @@ class PostModel {
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     return PostModel(
-      owner: json['owner'],
+      owner: {
+        "_id": json['owner']['_id'],
+        "username": json['owner']['username'],
+        "profile_image": json['owner']['profile']['profile_image']
+      },
       caption: json['caption'],
       image: json['image'],
       likes: List<String>.from(json['likes']),

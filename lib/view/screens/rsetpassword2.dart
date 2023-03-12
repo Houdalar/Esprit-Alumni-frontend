@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, library_private_types_in_public_api, sized_box_for_whitespace
+
 import 'package:esprit_alumni_frontend/view/screens/restpassword3.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +28,7 @@ class _reset2PageState extends State<reset2Page> {
   Widget build(BuildContext context) {
     Future<String?> _getEmail() async {
       final prefs = await SharedPreferences.getInstance();
-      return prefs.getString("email") as String?;
+      return prefs.getString("email");
     }
 
     final TextEditingController controller1 = TextEditingController();
@@ -63,22 +65,20 @@ class _reset2PageState extends State<reset2Page> {
           controller3.text +
           controller4.text;
 
-      if (widget.token == code)
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => reset3Page()));
-      else {
+      if (widget.token == code) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const reset3Page()));
+      } else {
         showDialog(
             context: context,
             builder: (context) {
               return AlertDialog(
                   title: const Text("Wrong Code",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                    child: Image.asset(
-                      "media/Warning-cuate.png",
-                      height: 300,
-                      width: 300,
-                    ),
+                  content: Image.asset(
+                    "media/Warning-cuate.png",
+                    height: 300,
+                    width: 300,
                   ));
             });
       }
@@ -214,7 +214,7 @@ class _reset2PageState extends State<reset2Page> {
               FocusScope.of(context).nextFocus();
               // save the value to the code and let the field not empty
             }
-            if (value.length == 0 && first == false) {
+            if (value.isEmpty && first == false) {
               FocusScope.of(context).previousFocus();
             }
           },
@@ -225,12 +225,13 @@ class _reset2PageState extends State<reset2Page> {
           keyboardType: TextInputType.number,
           maxLength: 1,
           decoration: InputDecoration(
-            counter: Offstage(),
+            counter: const Offstage(),
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(width: 2, color: AppColors.lightgray),
                 borderRadius: BorderRadius.circular(12)),
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 2, color: AppColors.primary),
+                borderSide:
+                    const BorderSide(width: 2, color: AppColors.primary),
                 borderRadius: BorderRadius.circular(12)),
           ),
         ),

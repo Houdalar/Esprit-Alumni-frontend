@@ -1,6 +1,5 @@
 import 'package:esprit_alumni_frontend/view/screens/home.dart';
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
 //import 'package:esprit_alumni_frontend/view/screens/rsetpassword2.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +25,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignupPage(),
+      home: const HomePage(),
       routes: {
-        '/login': (context) => LoginPage(),
-        '/home': (context) => HomePage(),
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
         //  '/signup2': (context) => Signup2Page(),
-        '/signup1': (context) => SignupPage(),
+        '/signup1': (context) => const SignupPage(),
         //'/getstarted': (context) => GetStarted(),
         //'/rsetpassword1': (context) => Rsetpassword1(),
         //'/rsetpassword2': (context) => Rsetpassword2(),

@@ -1,6 +1,10 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 class GoogleSignInButton extends StatefulWidget {
+  const GoogleSignInButton({super.key});
+
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
@@ -27,7 +31,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
         });
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 100),
+        duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOut,
         width: double.infinity,
         height: 50,
@@ -39,8 +43,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('media/google-icon.png', height: 24),
-            SizedBox(width: 10),
-            Text('Sign in with Google'),
+            const SizedBox(width: 10),
+            const Text('Sign in with Google'),
           ],
         ),
       ),

@@ -26,4 +26,38 @@ class User {
     required this.status,
     required this.profile,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      email: json['email'],
+      password: json['password'],
+      username: json['username'],
+      googleUserId: json['googleUserId'],
+      token: json['token'],
+      gender: json['gender'],
+      dateOfBirth: json['dateOfBirth'],
+      level: json['level'],
+      speciality: json['speciality'],
+      option: json['option'],
+      status: json['status'],
+      profile: json['profile'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'password': password,
+      'username': username,
+      'googleUserId': googleUserId,
+      'token': token,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth,
+      'level': level,
+      'speciality': speciality,
+      'option': option,
+      'status': status,
+      'profile': profile,
+    };
+  }
 }
