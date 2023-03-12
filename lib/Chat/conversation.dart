@@ -10,43 +10,43 @@ import 'package:get/get.dart';
 import 'Models/chat_model.dart';
 import 'design/app_colors.dart';
 
-class Conversation extends StatefulWidget {
-  const Conversation(
-      {Key? key, required this.chatModel, required this.sourchat})
-      : super(key: key);
+class Conversation extends GetView<ConversationController> {
+  const Conversation({Key? key, required this.chatModel, required this.sourchat}) : super(key: key);
   final ChatModel chatModel;
   final ChatModel sourchat;
 
-  @override
-  State<Conversation> createState() => _ConversationState();
-}
+  //const Conversation({super.key});
 
-class _ConversationState extends State<Conversation> {
+//   @override
+//   State<Conversation> createState() => _ConversationState();
+// }
+
+//class _ConversationState extends State<Conversation> {
   // final TextEditingController _controller = TextEditingController();
   // final ScrollController _scrollController = ScrollController();
 //  final FocusNode _focusNode = FocusNode();
   //bool emojiShowed = false;
   // late io.Socket socket;
   // bool sendButton = false;
-  // List<MessageModel> messagesList = [];
+  // // List<MessageModel> messagesList = [];
 
-  final controller = Get.put(ConversationController());
+  // final controller = Get.put(ConversationController());
 
-  @override
-  void initState() {
-    super.initState();
-    controller.connect(widget.sourchat.id, widget.chatModel.id);
-    controller.getConversationMessages(widget.sourchat.id, widget.chatModel.id);
+  // @override
+  // void initState() {
+  //   super.initState();
+  // const controller.connect(widget.sourchat., {super.key}id, widget.chatModel.id);
+  // const controller.getConversationMessages(widget.sourchat., {super.key}id, widget.chatModel.id);
 
-    //! Done
-    // _focusNode.addListener(() {
-    //   if (_focusNode.hasFocus) {
-    //     setState(() {
-    //       emojiShowed = false;
-    //     });
-    //   }
-    // });
-  }
+  //! Done
+  // _focusNode.addListener(() {
+  //   if (_focusNode.hasFocus) {
+  //     setState(() {
+  //       emojiShowed = false;
+  //     });
+  //   }
+  // });
+  // }
 
   //! Done
 
@@ -116,75 +116,75 @@ class _ConversationState extends State<Conversation> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ConversationController>(
-      init: ConversationController(),
-      initState: (_) {},
-      builder: (controller) {
-        controller.getConversationMessages(
-            widget.sourchat.id, widget.chatModel.id);
-        return Stack(children: [
-          GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: AppColors.transparent,
-                flexibleSpace: Container(
-                  decoration: const BoxDecoration(
-                    gradient: AppColors.gradientColor,
-                  ),
-                ),
-                leadingWidth: 110,
-                leading: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.arrow_back,
-                        size: 24,
-                      ),
-                      const SizedBox(
-                        width: 13,
-                      ),
-                      CircleAvatar(
-                          radius: 20,
-                          backgroundColor: AppColors.svgBackgroundClr,
-                          child: SvgPicture.asset(
-                            widget.chatModel.isGroup
-                                ? "assets/images/groups_icon.svg"
-                                : "assets/images/person_icon.svg",
-                            color: AppColors.primaryColorDark,
-                            height: 28,
-                            width: 28,
-                          )),
-                    ],
-                  ),
-                ),
-                title: Text(
-                  widget.chatModel.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+    controller.connect(sourchat.id, chatModel.id);
+    controller.getConversationMessages(sourchat.id, chatModel.id);
+    // return GetBuilder<ConversationController>(
+    //   init: ConversationController(),
+    //   initState: (_) {},
+    //   builder: (controller) {
+    //     controller.getConversationMessages(sourchat.id, chatModel.id);
+
+    return Stack(children: [
+      GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: AppColors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: AppColors.gradientColor,
               ),
-              body: Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  color: AppColors.converBackgroundClr,
-                  /** 
+            ),
+            leadingWidth: 110,
+            leading: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.arrow_back,
+                    size: 24,
+                  ),
+                  const SizedBox(
+                    width: 13,
+                  ),
+                  CircleAvatar(
+                      radius: 20,
+                      backgroundColor: AppColors.svgBackgroundClr,
+                      child: SvgPicture.asset(
+                        chatModel.isGroup ? "assets/images/groups_icon.svg" : "assets/images/person_icon.svg",
+                        color: AppColors.primaryColorDark,
+                        height: 28,
+                        width: 28,
+                      )),
+                ],
+              ),
+            ),
+            title: Text(
+              chatModel.name,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          body: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              color: AppColors.converBackgroundClr,
+              /** 
                    * WillPopScope : ki tenzel 3al bouton back me to5rejch mel app 
                    * juste tetna7a el emoji picker khw*/
-                  child: WillPopScope(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          // height: MediaQuery.of(context).size.height - 158,
-                          child: ListView.builder(
+              child: WillPopScope(
+                child: Column(
+                  children: [
+                    Expanded(
+                      // height: MediaQuery.of(context).size.height - 158,
+                      child: Obx(() => ListView.builder(
                             shrinkWrap: true,
                             controller: controller.scrollController,
                             itemCount: controller.messagesList.length + 1,
@@ -194,156 +194,115 @@ class _ConversationState extends State<Conversation> {
                                   height: 50,
                                 );
                               }
-                              if (controller.messagesList[index].sourceId ==
-                                  widget.sourchat.id) {
-                                return OwnMessageCard(
-                                    message:
-                                        controller.messagesList[index].message,
-                                    time: "20:47"
+                              if (controller.messagesList[index].sourceId == sourchat.id) {
+                                return OwnMessageCard(message: controller.messagesList[index].message, time: "20:47"
                                     // controller.formatDateTime(controller
                                     //         .messagesList[index].createdAt ??
                                     //     ''),
                                     );
                               } else {
                                 return ReplyCard(
-                                  message:
-                                      controller.messagesList[index].message,
-                                  time: controller.formatDateTime(controller
-                                          .messagesList[index].createdAt ??
-                                      ''),
+                                  message: controller.messagesList[index].message,
+                                  time: controller.formatDateTime(controller.messagesList[index].createdAt ?? ''),
                                 );
                               }
                             },
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: SizedBox(
-                            height: 70,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  decoration: const BoxDecoration(
-                                      color: AppColors.converBackgroundClr),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                55,
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.07,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 6.0, left: 10),
-                                          child: InputMessage(
-                                            controller: controller
-                                                .textEditingcontroller,
-                                            focusNode: controller.focusNode,
-                                            onChanged: (value) {
-                                              if (value.isNotEmpty) {
-                                                controller.sendButton.value =
-                                                    true;
-                                              } else {
-                                                controller.sendButton.value =
-                                                    false;
-                                              }
-                                            },
-                                            toggleEmojiPicker: () => controller
-                                                .toggleEmojiPicker(context),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 3,
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 5, right: 10),
-                                            child: controller.sendButton.value
-                                                ? IconButton(
-                                                    onPressed: () {
-                                                      if (controller
-                                                          .sendButton.value) {
-                                                        controller.scrollController.animateTo(
-                                                            controller
-                                                                .scrollController
-                                                                .position
-                                                                .maxScrollExtent,
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        100),
-                                                            curve:
-                                                                Curves.easeOut);
-                                                        controller.sendMessage(
-                                                            controller
-                                                                .textEditingcontroller
-                                                                .text,
-                                                            widget.sourchat.id,
-                                                            widget.chatModel.id,
-                                                            DateTime.now()
-                                                                .toString()
-                                                                .substring(
-                                                                    10, 16));
-                                                        controller
-                                                            .textEditingcontroller
-                                                            .clear();
-
-                                                        controller.sendButton
-                                                            .value = false;
-                                                      }
-                                                    },
-                                                    icon: SvgPicture.asset(
-                                                        "assets/images/send_icon.svg"))
-                                                : IconButton(
-                                                    padding: EdgeInsets.zero,
-                                                    onPressed: () {},
-                                                    icon: SvgPicture.asset(
-                                                      "assets/images/mic_icon.svg",
-                                                      width: 15,
-                                                    ),
-                                                    //iconSize: 50,
-                                                  )),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                _PickEmoji(
-                                  controller: controller.textEditingcontroller,
-                                  emojiShowed: controller.emojiShowed,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
+                          )),
                     ),
-                    onWillPop: () {
-                      if (controller.emojiShowed) {
-                        setState(() {
-                          controller.emojiShowed = false;
-                        });
-                      } else {
-                        Navigator.pop(context);
-                      }
-                      return Future.value(false);
-                    },
-                  )),
-            ),
-          ),
-        ]);
-      },
-    );
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        height: 70,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(color: AppColors.converBackgroundClr),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width - 55,
+                                    height: MediaQuery.of(context).size.height * 0.07,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 6.0, left: 10),
+                                      child: InputMessage(
+                                        controller: controller.textEditingcontroller,
+                                        focusNode: controller.focusNode,
+                                        onChanged: (value) {
+                                          if (value.isNotEmpty) {
+                                            controller.sendButton.value = true;
+                                          } else {
+                                            controller.sendButton.value = false;
+                                          }
+                                        },
+                                        toggleEmojiPicker: () => controller.toggleEmojiPicker(context),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 3,
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                        padding: const EdgeInsets.only(bottom: 5, right: 10),
+                                        child: controller.sendButton.value
+                                            ? IconButton(
+                                                onPressed: () {
+                                                  if (controller.sendButton.value) {
+                                                    controller.scrollController.animateTo(
+                                                        controller.scrollController.position.maxScrollExtent,
+                                                        duration: const Duration(milliseconds: 100),
+                                                        curve: Curves.easeOut);
+                                                    controller.sendMessage(controller.textEditingcontroller.text, sourchat.id,
+                                                        chatModel.id, DateTime.now().toString().substring(10, 16));
+                                                    controller.textEditingcontroller.clear();
+
+                                                    controller.sendButton.value = false;
+                                                  }
+                                                },
+                                                icon: SvgPicture.asset("assets/images/send_icon.svg"))
+                                            : IconButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {},
+                                                icon: SvgPicture.asset(
+                                                  "assets/images/mic_icon.svg",
+                                                  width: 15,
+                                                ),
+                                                //iconSize: 50,
+                                              )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            _PickEmoji(
+                              controller: controller.textEditingcontroller,
+                              emojiShowed: controller.emojiShowed,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                onWillPop: () {
+                  if (controller.emojiShowed) {
+                    controller.emojiShowed = false;
+                  } else {
+                    Navigator.pop(context);
+                  }
+                  return Future.value(false);
+                },
+              )),
+        ),
+      ),
+    ]);
+    // },
+    // );
   }
 }
 
 class _PickEmoji extends StatelessWidget {
-  _PickEmoji({Key? key, required this.controller, required this.emojiShowed})
-      : super(key: key);
+  _PickEmoji({Key? key, required this.controller, required this.emojiShowed}) : super(key: key);
   TextEditingController controller = TextEditingController();
   bool emojiShowed = false;
   @override
@@ -355,10 +314,7 @@ class _PickEmoji extends StatelessWidget {
         child: EmojiPicker(
           textEditingController: controller,
           config: Config(
-            emojiSizeMax: 32 *
-                (foundation.defaultTargetPlatform == TargetPlatform.iOS
-                    ? 1.30
-                    : 1.0),
+            emojiSizeMax: 32 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.30 : 1.0),
             bgColor: const Color(0xFFF2F2F2),
             indicatorColor: AppColors.primaryColor,
             iconColor: Colors.grey,
