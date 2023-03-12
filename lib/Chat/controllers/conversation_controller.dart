@@ -17,7 +17,7 @@ class ConversationController extends GetxController {
   late io.Socket socket;
   RxBool sendButton = false.obs;
   //RxList<MessageModel> messages = <MessageModel>[].obs;
-  RxList<Message> messagesList = <Message>[].obs;
+  var messagesList = <Message>[].obs;
 
   @override
   void onInit() {
@@ -28,7 +28,8 @@ class ConversationController extends GetxController {
         update();
       }
     });
-
+    // messagesList.bindStream(ConversationService.getConversationMessages(
+    //     Get.arguments["sourceId"], Get.arguments["targetId"]));
     super.onInit();
   }
 
@@ -47,13 +48,15 @@ class ConversationController extends GetxController {
       socket.on("message", (msg) {
         print(msg);
         //add the msg to the messages' list and specify its type as a destination msg
-        setMessage(sourchatId, targetId, msg["message"], msg["createdAt"]);
+        setMessage(
+            msg["sourceId"], msg["targetId"], msg["message"], msg["createdAt"]);
         update();
         //scroll to the bottom of the listview
         scrollController.animateTo(scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
       });
     });
+    // getConversationMessages(sourchatId, targetId);
     print(socket.connected);
   }
 
@@ -117,6 +120,9 @@ class ConversationController extends GetxController {
         .then((value) {
       messagesList = <Message>[].obs;
       messagesList.addAll(value);
+      log(messagesList.toString());
+      messagesList.refresh();
+      update();
     });
     messagesList.refresh();
     update();
