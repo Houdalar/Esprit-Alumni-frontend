@@ -27,21 +27,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: true,
+      top: true,
+      left: true,
+      right: true,
       child: Scaffold(
         body: Container(
+          color: Colors.white,
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              FutureBuilder(
-                future: UserViewModel.getUser(token, context),
-                builder: (context, snapshot) =>
-                    snapshot.connectionState == ConnectionState.waiting
-                        ? const CreatePost("")
-                        : snapshot.hasError
-                            ? Text('Error: ${snapshot.error}')
-                            : CreatePost(snapshot.data!['profile_image']),
-              ),
               Expanded(
                 child: FutureBuilder(
                   future: ProfileViewModel.getHomepage(token, context),
@@ -55,6 +51,18 @@ class _HomePageState extends State<HomePage> {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
+                            FutureBuilder(
+                              future: UserViewModel.getUser(token, context),
+                              builder: (context, snapshot) =>
+                                  snapshot.connectionState ==
+                                          ConnectionState.waiting
+                                      ? const CreatePost("")
+                                      : snapshot.hasError
+                                          ? Text('Error: ${snapshot.error}')
+                                          : CreatePost(
+                                              snapshot.data!['profile_image']),
+                            ),
+                            const SizedBox(height: 10),
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),

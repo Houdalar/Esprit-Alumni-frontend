@@ -1,0 +1,107 @@
+child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    DropdownButtonFormField(
+                                        value: _selectedCategory,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Category',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        items: _categories.map((category) {
+                                          return DropdownMenuItem(
+                                            value: category,
+                                            child: Text(category),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _selectedCategory = value as String;
+                                          });
+                                        }),
+                                    const SizedBox(height: 12.0),
+                                    TextField(
+                                      controller: _textEditingController,
+                                      focusNode: _focusNode,
+                                      maxLines: null,
+                                      decoration: const InputDecoration(
+                                        labelText: 'Post',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12.0),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              _focusNode.unfocus();
+                                              setState(() {
+                                                _isExpanded = false;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12.0),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            onPressed: () {
+                                              _focusNode.unfocus();
+                                              setState(() {
+                                                _isExpanded = false;
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Post'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+
+
+
+
+                              --------------------
+Column(
+                                  children: [
+                                    Container(
+                                      height: 250,
+                                      child: EmojiPicker(
+                                        onEmojiSelected: (category, emoji) {
+                                          _textEditingController.text =
+                                              _textEditingController.text +
+                                                  emoji.emoji;
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          const Spacer(),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text(
+                                              'Cancel',
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
