@@ -33,8 +33,8 @@ class ConversationController extends GetxController {
 
   /// connect the app to the socket.io server
   /// so every app will be treated as a socket.io client
-  void connect(int sourchatId) {
-    socket = io.io("http://192.168.1.149:3000", <String, dynamic>{
+  void connect(int sourchatId, int targetId) {
+    socket = io.io("http://172.17.0.105:3000", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
@@ -65,6 +65,17 @@ class ConversationController extends GetxController {
   }
 
   //whenever we'll send a msg or receive a message we'll add it to the messages' list
+  // void setMessage(int sourceId, int targetId, String msg, String date) {
+  //   Message messageModel = Message(
+  //       sourceId: sourceId,
+  //       targetId: targetId,
+  //       message: msg,
+  //       createdAt: DateTime.now().toString().substring(10, 16));
+  //   messagesList.add(messageModel);
+  //   messagesList.refresh();
+  //   update();
+  // }
+
   void setMessage(String type, String msg) {
     MessageModel messsageModel = MessageModel(
         type: type,
@@ -95,7 +106,11 @@ class ConversationController extends GetxController {
 
   getConversationMessages(int sourceId, int targetId) async {
     ConversationService.getConversationMessages(sourceId, targetId)
-        .then((value) => messagesList.addAll(value));
+        .then((value) {
+      //messagesList = <Message>[].obs;
+      messagesList.addAll(value);
+    });
+    messagesList.refresh();
     update();
   }
 

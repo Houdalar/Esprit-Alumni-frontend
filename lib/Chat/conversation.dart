@@ -35,7 +35,7 @@ class _ConversationState extends State<Conversation> {
   @override
   void initState() {
     super.initState();
-    controller.connect(widget.sourchat.id);
+    controller.connect(widget.sourchat.id, widget.chatModel.id);
     controller.getConversationMessages(widget.sourchat.id, widget.chatModel.id);
 
     //! Done
@@ -120,6 +120,8 @@ class _ConversationState extends State<Conversation> {
       init: ConversationController(),
       initState: (_) {},
       builder: (controller) {
+        controller.getConversationMessages(
+            widget.sourchat.id, widget.chatModel.id);
         return Stack(children: [
           GestureDetector(
             onTap: () {
