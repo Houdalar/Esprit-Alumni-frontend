@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:esprit_alumni_frontend/Chat/Models/message.dart';
 import 'package:esprit_alumni_frontend/Chat/Models/message_model.dart';
@@ -34,7 +36,7 @@ class ConversationController extends GetxController {
   /// connect the app to the socket.io server
   /// so every app will be treated as a socket.io client
   void connect(int sourchatId, int targetId) {
-    socket = io.io("http://172.17.0.105:3000", <String, dynamic>{
+    socket = io.io("http://192.168.43.241:3000", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
@@ -46,7 +48,7 @@ class ConversationController extends GetxController {
       socket.on("message", (msg) {
         print(msg);
         //add the msg to the messages' list and specify its type as a destination msg
-        setMessage("destination", msg["message"]);
+        setMessage(sourchatId, targetId, msg["message"], msg["createdAt"]);
         //scroll to the bottom of the listview
         scrollController.animateTo(scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
@@ -55,37 +57,41 @@ class ConversationController extends GetxController {
     print(socket.connected);
   }
 
-  void sendMessage(String message, int sourceId, int targetId) {
+  void sendMessage(String message, int sourceId, int targetId, String date) {
     //add the msg to the messages' list and specify its type as a source msg
-    setMessage("source", message);
+    setMessage(sourceId, targetId, message, date);
     //send a json objetct from the source to the target
     //"message" is the event name and with its help we'll listen to it on the socket server
-    socket.emit("message",
-        {"message": message, "sourceId": sourceId, "targetId": targetId});
+    socket.emit("message", {
+      "message": message,
+      "sourceId": sourceId,
+      "targetId": targetId,
+      "createdAt": date
+    });
   }
 
   //whenever we'll send a msg or receive a message we'll add it to the messages' list
-  // void setMessage(int sourceId, int targetId, String msg, String date) {
-  //   Message messageModel = Message(
-  //       sourceId: sourceId,
-  //       targetId: targetId,
-  //       message: msg,
-  //       createdAt: DateTime.now().toString().substring(10, 16));
-  //   messagesList.add(messageModel);
-  //   messagesList.refresh();
-  //   update();
-  // }
-
-  void setMessage(String type, String msg) {
-    MessageModel messsageModel = MessageModel(
-        type: type,
+  void setMessage(int sourceId, int targetId, String msg, String date) {
+    Message messageModel = Message(
+        sourceId: sourceId,
+        targetId: targetId,
         message: msg,
-        time: DateTime.now().toString().substring(10, 16));
-
-    messages.add(messsageModel);
-    messages.refresh();
+        createdAt: DateTime.now().toString().substring(10, 16));
+    messagesList.add(messageModel);
+    messagesList.refresh();
     update();
   }
+
+  // void setMessage(String type, String msg) {
+  //   MessageModel messsageModel = MessageModel(
+  //       type: type,
+  //       message: msg,
+  //       time: DateTime.now().toString().substring(10, 16));
+
+  //   messages.add(messsageModel);
+  //   messages.refresh();
+  //   update();
+  // }
 
   void toggleEmojiPicker(BuildContext context) {
     emojiShowed = !emojiShowed;
@@ -100,6 +106,7 @@ class ConversationController extends GetxController {
   }
 
   String formatDateTime(String date) {
+    log(date);
     DateTime dateTime = DateTime.parse(date);
     return "${dateTime.hour}:${dateTime.minute}";
   }

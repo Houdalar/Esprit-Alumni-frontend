@@ -7,7 +7,7 @@ class ConversationService {
   static Future<List<Message>> getConversationMessages(
       int sourceId, int targetId) async {
     final response = await http.post(
-        Uri.parse('http://172.17.0.105:3000/chats/getConversationMessages'),
+        Uri.parse('http://192.168.43.241:3000/chats/getConversationMessages'),
         body: json.encode({'sourceId': sourceId, 'targetId': targetId}),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',

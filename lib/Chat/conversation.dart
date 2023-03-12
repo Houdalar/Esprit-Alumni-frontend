@@ -283,8 +283,11 @@ class _ConversationState extends State<Conversation> {
                                                                 .textEditingcontroller
                                                                 .text,
                                                             widget.sourchat.id,
-                                                            widget
-                                                                .chatModel.id);
+                                                            widget.chatModel.id,
+                                                            DateTime.now()
+                                                                .toString()
+                                                                .substring(
+                                                                    10, 16));
                                                         controller
                                                             .textEditingcontroller
                                                             .clear();
