@@ -5,6 +5,8 @@ import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'ceatePostDialog.dart';
+
 class CreatePost extends StatefulWidget {
   final String? profileimage;
   const CreatePost(this.profileimage, {Key? key}) : super(key: key);
@@ -55,127 +57,12 @@ class _CreatePostState extends State<CreatePost> {
                     child: GestureDetector(
                       onTap: () {
                         showDialog(
-                          context: context,
-                          builder: (context) {
-                            return Dialog(
-                              child: Container(
-                                height: 300,
-                                width: 300,
-                                child: Container(
-                                  margin: EdgeInsets.all(20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 20.0,
-                                            backgroundImage: NetworkImage(
-                                                widget.profileimage!),
-                                          ),
-                                          const SizedBox(width: 12.0),
-                                          Text("user"),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 20.0),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: TextField(
-                                                controller:
-                                                    _textEditingController,
-                                                focusNode: _focusNode,
-                                                maxLines: null,
-                                                decoration: InputDecoration(
-                                                  hintText: "What's new ?",
-                                                  border: InputBorder.none,
-                                                ),
-                                              ),
-                                            ),
-                                            IconButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  EmojiPicker(
-                                                    onEmojiSelected:
-                                                        (category, emoji) {
-                                                      _textEditingController
-                                                              .text =
-                                                          _textEditingController
-                                                                  .text +
-                                                              emoji.emoji;
-                                                    },
-                                                  );
-                                                  _isExpanded1 = !_isExpanded1;
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.emoji_emotions,
-                                                color: Colors.grey,
-                                                size: 30,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 15.0),
-                                      Container(
-                                        child: Column(children: [
-                                          Container(
-                                            height: 200,
-                                            width: 200,
-                                            child: _image == null
-                                                ? IconButton(
-                                                    onPressed: () {
-                                                      _pickImage(
-                                                          ImageSource.gallery);
-                                                      setState(() {
-                                                        _image = _pickImage(
-                                                                ImageSource
-                                                                    .gallery)
-                                                            as File;
-                                                      });
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons.add_a_photo))
-                                                : Image.file(_image),
-                                          ),
-                                          Text(
-                                            "Add a photo",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 16.0),
-                                          ),
-                                          Spacer(),
-                                          DropdownButton(
-                                            items: _categories.map((category) {
-                                              return DropdownMenuItem(
-                                                child: Text(category),
-                                                value: category,
-                                              );
-                                            }).toList(),
-                                            onChanged:
-                                                (String? selectedCategory) {
-                                              setState(() {
-                                                _selectedCategory =
-                                                    selectedCategory!;
-                                              });
-                                            },
-                                            value: _selectedCategory,
-                                          ),
-                                        ]),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: PostCreateComponent(),
+                              );
+                            });
                       },
                       child: Container(
                         padding: const EdgeInsets.all(12.0),
