@@ -439,4 +439,26 @@ class UserViewModel extends ChangeNotifier {
           });
     }
   }
+
+  static Future<Map<String, dynamic>> getUser(
+      String? token, BuildContext context) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.http(baseUrl, "/getUserById/$token"), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        final jsonBody = json.decode(response.body);
+        print(jsonBody);
+        return {
+          'username': jsonBody['username'],
+          'profile_image': jsonBody['profile']['profile_image'],
+        };
+      } else {
+        throw Exception('Failed to load user');
+      }
+    });
+  }
 }

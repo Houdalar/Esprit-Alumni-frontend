@@ -41,6 +41,7 @@ dependencies:
   google_sign_in: ^5.4.3
   crypto: ^3.0.1
   local_auth: ^1.1.6
+  image_picker: ^0.8.4+3
   
 
   
