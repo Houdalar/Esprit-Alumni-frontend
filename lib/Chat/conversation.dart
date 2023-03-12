@@ -197,12 +197,13 @@ class _ConversationState extends State<Conversation> {
                               if (controller.messagesList[index].sourceId ==
                                   widget.sourchat.id) {
                                 return OwnMessageCard(
-                                  message:
-                                      controller.messagesList[index].message,
-                                  time: controller.formatDateTime(controller
-                                          .messagesList[index].createdAt ??
-                                      ''),
-                                );
+                                    message:
+                                        controller.messagesList[index].message,
+                                    time: "20:47"
+                                    // controller.formatDateTime(controller
+                                    //         .messagesList[index].createdAt ??
+                                    //     ''),
+                                    );
                               } else {
                                 return ReplyCard(
                                   message:

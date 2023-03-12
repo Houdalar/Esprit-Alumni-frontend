@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:esprit_alumni_frontend/Chat/Models/message.dart';
-import 'package:esprit_alumni_frontend/Chat/Models/message_model.dart';
 import 'package:esprit_alumni_frontend/Chat/services/conversation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +16,7 @@ class ConversationController extends GetxController {
   bool emojiShowed = false;
   late io.Socket socket;
   RxBool sendButton = false.obs;
-  RxList<MessageModel> messages = <MessageModel>[].obs;
+  //RxList<MessageModel> messages = <MessageModel>[].obs;
   RxList<Message> messagesList = <Message>[].obs;
 
   @override
@@ -49,6 +48,7 @@ class ConversationController extends GetxController {
         print(msg);
         //add the msg to the messages' list and specify its type as a destination msg
         setMessage(sourchatId, targetId, msg["message"], msg["createdAt"]);
+        update();
         //scroll to the bottom of the listview
         scrollController.animateTo(scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
@@ -66,17 +66,18 @@ class ConversationController extends GetxController {
       "message": message,
       "sourceId": sourceId,
       "targetId": targetId,
-      "createdAt": date
     });
+    update();
   }
 
   //whenever we'll send a msg or receive a message we'll add it to the messages' list
   void setMessage(int sourceId, int targetId, String msg, String date) {
     Message messageModel = Message(
-        sourceId: sourceId,
-        targetId: targetId,
-        message: msg,
-        createdAt: DateTime.now().toString().substring(10, 16));
+      sourceId: sourceId,
+      targetId: targetId,
+      message: msg,
+      createdAt: date,
+    );
     messagesList.add(messageModel);
     messagesList.refresh();
     update();
@@ -114,7 +115,7 @@ class ConversationController extends GetxController {
   getConversationMessages(int sourceId, int targetId) async {
     ConversationService.getConversationMessages(sourceId, targetId)
         .then((value) {
-      //messagesList = <Message>[].obs;
+      messagesList = <Message>[].obs;
       messagesList.addAll(value);
     });
     messagesList.refresh();
