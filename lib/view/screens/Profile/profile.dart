@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:esprit_alumni_frontend/view/components/themes/profile_clipper.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/career_fragment.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:esprit_alumni_frontend/model/profile.dart';
+import 'package:image_picker/image_picker.dart';
 
 /*class Profile extends StatelessWidget {
   const Profile({Key? key, required this.profile}) : super(key: key);
@@ -24,6 +26,9 @@ class Profile extends StatefulWidget {
   @override
   State<Profile> createState() => _ProfileState();
 }
+
+final token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MGYxMmFmMDNlYTdiNTE3NWZkZjQ3NiIsImlhdCI6MTY3ODcwOTQ0NH0.567VZliyP2HTkI6giOK41YKGB2CsynQxhcKjm7Iawb4";
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   // For the posts and career
@@ -41,10 +46,38 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+  final picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
-    final token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MDVlMjE4OWI3MTgzODNiYTZlMWJiZiIsImlhdCI6MTY3ODEwNzIyMn0._PZVkfoErOlRj8G5RqSe3nAkh1YkJBHev8drD_8aI5A";
+    //////////////////// upload image -------------------------------------
+    Future<void> uploadPic(
+        BuildContext context, String token, File imageFile) async {
+      String apiUrl = 'http://10.0.2.2:8081/updateProfileImage/$token';
+
+      var request = http.MultipartRequest('PUT', Uri.parse(apiUrl))
+        ..files.add(
+            await http.MultipartFile.fromPath('profile_image', imageFile.path));
+
+      var response = await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 200) {
+        var profile = ProfileModel.fromJson(json.decode(response.body));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Profile picture uploaded'),
+          backgroundColor: Colors.grey,
+        ));
+        ProfileViewModel.fetchProfile(token);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error uploading profile picture'),
+          backgroundColor: Colors.grey,
+        ));
+      }
+    }
+
+//////////////////
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.red,
       systemNavigationBarColor: Colors.white,
@@ -110,43 +143,103 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           ],
                         ),
                         child: Container(
-                          child: ClipOval(
-                            child: Image.network(
-                              //"http://172.16.11.227:8081/img/pdp.PNG1678107749613.png",
-                              profile.profileImage,
-                              fit: BoxFit.cover,
-                              width: 105.0,
-                              height: 105.0,
-                              errorBuilder: (BuildContext context,
-                                  Object exception, StackTrace? stackTrace) {
-                                // Return a placeholder or error image if the image fails to load
-                                return Icon(Icons.error);
-                                /*Image(
-                                  image: AssetImage(
-                                      'Assets/images/profile_image.png'),
-                                  fit: BoxFit.cover,
-                                  width: 105.0,
-                                  height: 105.0,
-                                );*/
-                              },
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                // Show a progress indicator while the image is loading
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                );
-                              },
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          GestureDetector(
+                                            child: Text('Show Image'),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                        content: Container(
+                                                          width:
+                                                              double.maxFinite,
+                                                          child: Image.network(
+                                                            profile
+                                                                .profileImage,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ));
+                                                  });
+                                            },
+                                          ),
+                                          Padding(padding: EdgeInsets.all(8.0)),
+                                          GestureDetector(
+                                            child: Text('Edit Image'),
+                                            onTap: () async {
+                                              final pickedFile =
+                                                  await picker.getImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              // Use the pickedFile variable to access the selected image
+                                              await uploadPic(context, token,
+                                                  File(pickedFile!.path));
+                                              Navigator.of(context).pop();
+                                              // display the image
+                                              setState(() {
+                                                ProfileViewModel.fetchProfile(
+                                                    token);
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: ClipOval(
+                              child: Image.network(
+                                //"http://172.16.11.227:8081/img/pdp.PNG1678107749613.png",
+                                profile.profileImage,
+                                fit: BoxFit.cover,
+                                width: 105.0,
+                                height: 105.0,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace? stackTrace) {
+                                  // Return a placeholder or error image if the image fails to load
+                                  return //Icon(Icons.error);
+                                      Image(
+                                    image: AssetImage(
+                                        'Assets/images/profile_image.png'),
+                                    fit: BoxFit.cover,
+                                    width: 105.0,
+                                    height: 105.0,
+                                  );
+                                },
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  // Show a progress indicator while the image is loading
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value:
+                                          loadingProgress.expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -242,12 +335,20 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               SizedBox(height: 10.0),
               Container(
                 height: MediaQuery.of(context).size.height * 3,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: <Widget>[
-                    CareerFragment(profile.summary, profile.status),
-                    PostsFragment(),
-                  ],
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      CareerFragment(
+                        profile.summary,
+                        profile.status,
+                        profile.education,
+                        profile.skills,
+                      ),
+                      PostsFragment(),
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -5,11 +5,11 @@ class ProfileModel {
   final String username;
   final String location;
   final String summary;
-  final List<String> education;
+  final String education;
   final String status;
   final List<String> experience;
   final List<String> skills;
-  final String profileImage;
+  late final String profileImage;
   final List<String> following;
   final List<String> followers;
   final int numberOfFollowers;
@@ -48,7 +48,7 @@ class ProfileModel {
       username: json['username'],
       location: json['location'],
       summary: json['summary'],
-      education: List<String>.from(json['education'].map((x) => x)),
+      education: json['education'],
       status: json['status'],
       experience: List<String>.from(json['experience'].map((x) => x)),
       skills: List<String>.from(json['skills'].map((x) => x)),
