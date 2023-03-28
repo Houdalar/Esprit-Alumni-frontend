@@ -11,6 +11,7 @@ class User {
   final String option;
   final String status;
   final String profile;
+  final String profileImage;
 
   User({
     required this.email,
@@ -25,6 +26,7 @@ class User {
     required this.option,
     required this.status,
     required this.profile,
+    required this.profileImage,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,7 @@ class User {
       option: json['option'],
       status: json['status'],
       profile: json['profile'],
+      profileImage: json['profile']?['profile_image'] ?? '',
     );
   }
 

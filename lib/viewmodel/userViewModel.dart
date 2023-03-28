@@ -29,14 +29,19 @@ class UserViewModel extends ChangeNotifier {
             body: json.encode(userData), headers: headers)
         .then((http.Response response) async {
       if (response.statusCode == 200) {
-        // Map<String, dynamic> userData = json.decode(response.body);
+        Map<String, dynamic> userData = json.decode(response.body);
 
         // Shared preferences
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString("userId", userData["_id"]);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("userId", userData["id"]);
+        //prefs.setString("email", userData["email"]);
+        prefs.setString("username", userData["username"]);
+        prefs.setString("profile_image", userData["profile_image"]);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(
+              builder: (context) => HomePage(userData["username"],
+                  userData["profile_image"], userData["id"])),
         );
       } else if (response.statusCode == 400) {
         showDialog(
@@ -281,9 +286,12 @@ class UserViewModel extends ChangeNotifier {
               headers: headers)
           .then((http.Response response) {
         if (response.statusCode == 200) {
+          Map<String, dynamic> userData = json.decode(response.body);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(
+                builder: (context) => HomePage(userData["username"],
+                    userData["profile_image"], userData["id"])),
           );
         } else if (response.statusCode == 201) {
           // show a dialog to ask the user to register
@@ -378,9 +386,12 @@ class UserViewModel extends ChangeNotifier {
               headers: headers)
           .then((http.Response response) {
         if (response.statusCode == 200) {
+          Map<String, dynamic> userData = json.decode(response.body);
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(
+                builder: (context) => HomePage(userData["username"],
+                    userData["profile_image"], userData["id"])),
           );
         } else if (response.statusCode == 201) {
           // show a dialog to ask the user to register

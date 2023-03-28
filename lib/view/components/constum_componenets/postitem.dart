@@ -1,65 +1,6 @@
-import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:flutter/material.dart';
-
-/*class PostItem extends StatelessWidget {
-  final String postImage;
-  final String description;
-  final int likesCount;
-  final int commentsCount;
-  final String ownerName;
-  final String ownerProfileImage;
-
-  const PostItem({
-    Key? key,
-    required this.postImage,
-    required this.description,
-    required this.likesCount,
-    required this.commentsCount,
-    required this.ownerName,
-    required this.ownerProfileImage,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            leading: CircleAvatar(
-              backgroundImage: AssetImage(ownerProfileImage),
-            ),
-            title: Text(ownerName),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(description),
-          ),
-          Image.asset(postImage),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 20, 8, 10),
-            child: Row(
-              children: [
-                const Icon(Icons.favorite_border,
-                    color: Colors.red, size: 30.0),
-                const SizedBox(width: 4.0),
-                Text(likesCount.toString()),
-                const SizedBox(width: 25.0),
-                const Icon(Icons.comment_outlined,
-                    color: AppColors.darkgray, size: 30.0),
-                const SizedBox(width: 4.0),
-                Text(commentsCount.toString()),
-                const Spacer(),
-                const Icon(Icons.reply_rounded,
-                    color: AppColors.darkgray, size: 30.0),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}*/
+import 'package:timeago/timeago.dart' as timeago;
+import 'commentDialog.dart';
 
 class PostItem extends StatelessWidget {
   final String username;
@@ -68,6 +9,7 @@ class PostItem extends StatelessWidget {
   final String postPhotoUrl;
   final int numLikes;
   final int numComments;
+  final DateTime createdAt;
 
   PostItem({
     required this.username,
@@ -76,19 +18,35 @@ class PostItem extends StatelessWidget {
     required this.postPhotoUrl,
     required this.numLikes,
     required this.numComments,
+    required this.createdAt,
   });
 
   @override
   Widget build(BuildContext context) {
+    final elapsedTimeString = timeago.format(createdAt);
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 10),
           ListTile(
             leading: CircleAvatar(
+              radius: 25,
               backgroundImage: NetworkImage(profilePhotoUrl),
             ),
-            title: Text(username),
+            title: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(elapsedTimeString,
+                      style: TextStyle(fontSize: 12, color: Colors.grey)),
+                ],
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 15, 5, 20),
@@ -110,13 +68,33 @@ class PostItem extends StatelessWidget {
                 ),
                 Text(numLikes.toString()),
                 SizedBox(width: 30),
-                Icon(
-                  Icons.comment,
-                  color: Colors.grey,
-                  size: 24,
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: // set the height automatically
+                              MediaQuery.of(context).size.height,
+                          child:
+                              CommentDialog(postId: "640d1e006c7bd6cd759d691a"),
+                        );
+                      },
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.comment,
+                        color: Colors.grey,
+                        size: 24,
+                      ),
+                      SizedBox(width: 8),
+                      Text(numComments.toString()),
+                    ],
+                  ),
                 ),
-                SizedBox(width: 8),
-                Text(numComments.toString()),
                 Spacer(),
                 Icon(
                   Icons.share,

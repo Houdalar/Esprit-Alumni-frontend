@@ -7,6 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 //import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
+
+import 'view/components/constum_componenets/commentitem.dart';
 //import 'package:esprit_alumni_frontend/view/screens/getstarted.dart';
 
 void main() async {
@@ -25,10 +27,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: LoginPage(),
       routes: {
         '/login': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(),
+
         //  '/signup2': (context) => Signup2Page(),
         '/signup1': (context) => const SignupPage(),
         //'/getstarted': (context) => GetStarted(),

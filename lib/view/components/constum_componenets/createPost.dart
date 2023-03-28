@@ -9,7 +9,9 @@ import 'ceatePostDialog.dart';
 
 class CreatePost extends StatefulWidget {
   final String? profileimage;
-  const CreatePost(this.profileimage, {Key? key}) : super(key: key);
+  final String? username;
+  const CreatePost(this.profileimage, this.username, {Key? key})
+      : super(key: key);
   @override
   _CreatePostState createState() => _CreatePostState();
 }
@@ -57,12 +59,18 @@ class _CreatePostState extends State<CreatePost> {
                     child: GestureDetector(
                       onTap: () {
                         showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                content: PostCreateComponent(),
-                              );
-                            });
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(20, 20, 20, 20),
+                              content: SingleChildScrollView(
+                                child: PostCreateComponent(
+                                    widget.username, widget.profileimage),
+                              ),
+                            );
+                          },
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.all(12.0),
@@ -70,9 +78,9 @@ class _CreatePostState extends State<CreatePost> {
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(20.0),
                         ),
-                        child: const Text(
-                          'What\'s on your mind?',
-                          style: TextStyle(
+                        child: Text(
+                          'What\'s on your mind, ${widget.username}?',
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 16.0,
                           ),
@@ -84,7 +92,7 @@ class _CreatePostState extends State<CreatePost> {
               ),
               Container(
                 margin: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                width: double.infinity,
+                //width: double.infinity,
                 child: const Divider(
                   color: Colors.grey,
                   height: 2.0,
@@ -122,7 +130,19 @@ class _CreatePostState extends State<CreatePost> {
                             setState(() {
                               _isExpanded = false;
                             });
-                            _pickImage(ImageSource.gallery);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                  content: SingleChildScrollView(
+                                    child: PostCreateComponent(
+                                        widget.username, widget.profileimage),
+                                  ),
+                                );
+                              },
+                            );
                           },
                           icon: const Icon(Icons.image,
                               color: Color.fromARGB(255, 4, 160, 87)),

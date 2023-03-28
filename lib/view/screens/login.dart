@@ -65,16 +65,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       validator: (value) {
-        const String pattern = r'^[a-zA-Z0-9]+.[a-zA-Z0-9]+@esprit\.tn$';
-        RegExp regExp = RegExp(pattern);
         if (value == null || value.isEmpty) {
           return 'Please enter an email address';
         }
         if (!EmailValidator.validate(value)) {
           return 'Please enter a valid email address';
-        }
-        if (!regExp.hasMatch(value)) {
-          return 'Please enter an email address from esprit.tn';
         }
         return null;
       },
