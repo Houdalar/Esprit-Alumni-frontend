@@ -175,4 +175,38 @@ class ProfileViewModel extends ChangeNotifier {
       return null;
     }
   }
+
+  static Future<PostModel> likePost(String postId, String token) async {
+    final response = await http.post(
+      Uri.http(baseUrl, '/likePost'),
+      headers: {"Content-Type": "application/json; charset=UTF-8"},
+      body: jsonEncode({'id': postId, 'token': token}),
+    );
+
+    if (response.statusCode == 200) {
+      return PostModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to like the post');
+    }
+  }
+
+  static Future<CommentModel?> likeComment(
+    String userId,
+    String commentId,
+    BuildContext context,
+  ) async {
+    final response = await http.patch(
+      Uri.http(baseUrl, '/likeComment'), // Replace with your API URL
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'token': userId, 'commentId': commentId}),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      return CommentModel.fromJson(jsonResponse);
+    } else {
+      throw Exception('Failed to like the comment');
+      return null;
+    }
+  }
 }

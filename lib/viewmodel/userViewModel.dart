@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../view/screens/home.dart';
 import '../../view/components/themes/colors.dart';
+import '../model/serchUser.dart';
 import '../view/screens/rsetpassword2.dart';
+import '../../model/usermodel.dart' as CustomUser;
 
 class UserViewModel extends ChangeNotifier {
   static String baseUrl = "10.0.2.2:8081";
@@ -469,6 +470,27 @@ class UserViewModel extends ChangeNotifier {
         };
       } else {
         throw Exception('Failed to load user');
+      }
+    });
+  }
+
+  static Future<List<SearchUser>> searchUsers(String query) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.parse('http://$baseUrl/search?search=$query'),
+            headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = json.decode(response.body);
+        List<SearchUser> users = jsonData
+            .map<SearchUser>((userJson) => SearchUser.fromJson(userJson))
+            .toList();
+        return users;
+      } else {
+        throw Exception('Failed to load users');
       }
     });
   }

@@ -9,9 +9,10 @@ import 'commentitem.dart';
 
 class CommentDialog extends StatefulWidget {
   final String? postId;
-  late SharedPreferences _prefs;
 
-  CommentDialog({required this.postId});
+  final Function() onCommentAdded;
+
+  CommentDialog({required this.postId, required this.onCommentAdded});
 
   @override
   _CommentDialogState createState() => _CommentDialogState();
@@ -52,6 +53,9 @@ class _CommentDialogState extends State<CommentDialog> {
               comment: comment.content,
               timestamp: comment.elapsedTimeString,
               likes: comment.numberOfLikes,
+              userId: comment.owner["_id"],
+              commentId: comment.id,
+              likesList: comment.likes,
             );
           }).toList();
           return AlertDialog(
@@ -75,6 +79,9 @@ class _CommentDialogState extends State<CommentDialog> {
                           comment: comment.comment,
                           timestamp: comment.timestamp,
                           likes: comment.likes,
+                          userId: comment.userId,
+                          commentId: comment.commentId,
+                          likesList: comment.likesList,
                         );
                       },
                     ),
@@ -127,6 +134,9 @@ class _CommentDialogState extends State<CommentDialog> {
                                   comment: newComment.content,
                                   timestamp: newComment.elapsedTimeString,
                                   likes: newComment.numberOfLikes,
+                                  userId: _prefs.getString('userId')!,
+                                  commentId: newComment.id,
+                                  likesList: newComment.likes,
                                 ),
                               );
                             });
@@ -136,6 +146,7 @@ class _CommentDialogState extends State<CommentDialog> {
                               curve: Curves.easeOut,
                               duration: const Duration(milliseconds: 300),
                             );
+                            widget.onCommentAdded();
                           }
                         },
                         icon: Icon(Icons.send),

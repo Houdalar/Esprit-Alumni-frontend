@@ -8,6 +8,7 @@ class CommentModel {
   final DateTime createdAt;
   final int numberOfLikes;
   final String elapsedTimeString;
+  final String id;
 
   CommentModel({
     required this.owner,
@@ -17,6 +18,7 @@ class CommentModel {
     required this.createdAt,
     required this.numberOfLikes,
     required this.elapsedTimeString,
+    required this.id,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
@@ -35,8 +37,8 @@ class CommentModel {
       likes: List<String>.from(json['likes']),
       createdAt: createdAt,
       numberOfLikes: json['numberOfLikes'],
-      elapsedTimeString:
-          elapsedTimeString, // Store the elapsed time as a string
+      elapsedTimeString: elapsedTimeString,
+      id: json['_id'],
     );
   }
 

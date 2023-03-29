@@ -1,12 +1,18 @@
 import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class CommentItem extends StatelessWidget {
+import '../../../viewmodel/profileViewModel.dart';
+
+class CommentItem extends StatefulWidget {
   final String username;
   final String profilePictureUrl;
   final String comment;
   final String timestamp;
-  final int likes;
+  int likes;
+  final String userId;
+  final String commentId;
+  final List<String> likesList;
 
   CommentItem({
     required this.username,
@@ -14,7 +20,33 @@ class CommentItem extends StatelessWidget {
     required this.comment,
     required this.timestamp,
     required this.likes,
+    required this.userId,
+    required this.commentId,
+    required this.likesList,
   });
+
+  @override
+  State<CommentItem> createState() => _CommentItemState();
+}
+
+class _CommentItemState extends State<CommentItem> {
+  bool _isLiked = false;
+  late SharedPreferences _prefs;
+  String? token = "";
+
+  Future<void> _initializePrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = _prefs.getString('userId') ?? "";
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isLiked = widget.likesList.contains(widget.userId);
+    _initializePrefs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +56,7 @@ class CommentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(profilePictureUrl),
+            backgroundImage: NetworkImage(widget.profilePictureUrl),
             radius: 24.0,
           ),
           SizedBox(width: 5.0),
@@ -46,32 +78,61 @@ class CommentItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            username,
+                            widget.username,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.0,
                             ),
                           ),
                           SizedBox(height: 5.0),
-                          Text(comment,
+                          Text(widget.comment,
                               style: TextStyle(fontSize: 16, height: 1.5)),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 8.0),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(width: 8.0),
-                    Icon(
-                      Icons.favorite_border,
-                      size: 18.0,
+                    SizedBox(width: 2.0),
+                    IconButton(
+                      icon: _isLiked ?? false
+                          ? Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                              size: 20,
+                            )
+                          : Icon(
+                              Icons.favorite_border,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                      onPressed: () async {
+                        if (token != null) {
+                          print("token is ${token}");
+                          final updatedComment =
+                              await ProfileViewModel.likeComment(
+                            token!,
+                            widget.commentId,
+                            context,
+                          );
+                          if (updatedComment != null) {
+                            setState(() {
+                              _isLiked = !_isLiked;
+                              widget.likes = updatedComment.numberOfLikes;
+                            });
+                          }
+                        } else {
+                          print("Token is not initialized yet");
+                        }
+                      },
                     ),
-                    SizedBox(width: 4.0),
-                    Text(likes.toString(), style: TextStyle(fontSize: 15.5)),
-                    SizedBox(width: 8.0),
-                    Text(timestamp, style: TextStyle(color: Colors.grey)),
+                    Text(widget.likes.toString(),
+                        style: TextStyle(fontSize: 15.5)),
+                    SizedBox(width: 10.0),
+                    Text(widget.timestamp,
+                        style: TextStyle(color: Colors.grey)),
                   ],
                 ),
               ],

@@ -1,6 +1,7 @@
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostModel {
+  final String id;
   final Map<String, dynamic> owner;
   final String caption;
   final String image;
@@ -15,6 +16,7 @@ class PostModel {
       elapsedTimeString; // New property to store the elapsed time as a string
 
   PostModel({
+    required this.id,
     required this.owner,
     required this.caption,
     required this.image,
@@ -34,6 +36,7 @@ class PostModel {
     String elapsedTimeString = timeago.format(createdAt);
 
     return PostModel(
+      id: json['_id'],
       owner: {
         "_id": json['owner']['_id'],
         "username": json['owner']['username'],
@@ -55,6 +58,7 @@ class PostModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'owner': owner,
       'caption': caption,
       'image': image,
