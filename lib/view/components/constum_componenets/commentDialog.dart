@@ -11,8 +11,12 @@ class CommentDialog extends StatefulWidget {
   final String? postId;
 
   final Function() onCommentAdded;
+  final Function() onCommentDeleted;
 
-  CommentDialog({required this.postId, required this.onCommentAdded});
+  CommentDialog(
+      {required this.postId,
+      required this.onCommentAdded,
+      required this.onCommentDeleted});
 
   @override
   _CommentDialogState createState() => _CommentDialogState();
@@ -34,6 +38,13 @@ class _CommentDialogState extends State<CommentDialog> {
     });
   }
 
+  void _onCommentDeleted(int index) {
+    setState(() {
+      _comments.removeAt(index);
+    });
+    widget.onCommentDeleted();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -46,18 +57,23 @@ class _CommentDialogState extends State<CommentDialog> {
       future: ProfileViewModel.getComments(widget.postId!),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          _comments = snapshot.data!.map((comment) {
-            return CommentItem(
-              username: comment.owner["username"],
-              profilePictureUrl: comment.owner["profile_image"],
-              comment: comment.content,
-              timestamp: comment.elapsedTimeString,
-              likes: comment.numberOfLikes,
-              userId: comment.owner["_id"],
-              commentId: comment.id,
-              likesList: comment.likes,
+          _comments = [];
+          for (int i = 0; i < snapshot.data!.length; i++) {
+            final comment = snapshot.data![i];
+            _comments.add(
+              CommentItem(
+                username: comment.owner["username"],
+                profilePictureUrl: comment.owner["profile_image"],
+                comment: comment.content,
+                timestamp: comment.elapsedTimeString,
+                likes: comment.numberOfLikes,
+                userId: comment.owner["_id"],
+                commentId: comment.id,
+                likesList: comment.likes,
+                onCommentDeleted: () => _onCommentDeleted(i),
+              ),
             );
-          }).toList();
+          }
           return AlertDialog(
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -82,6 +98,7 @@ class _CommentDialogState extends State<CommentDialog> {
                           userId: comment.userId,
                           commentId: comment.commentId,
                           likesList: comment.likesList,
+                          onCommentDeleted: () => _onCommentDeleted(index),
                         );
                       },
                     ),
@@ -128,18 +145,20 @@ class _CommentDialogState extends State<CommentDialog> {
                               _comments.insert(
                                 0,
                                 CommentItem(
-                                  username: newComment.owner["username"],
-                                  profilePictureUrl:
-                                      newComment.owner["profile_image"],
-                                  comment: newComment.content,
-                                  timestamp: newComment.elapsedTimeString,
-                                  likes: newComment.numberOfLikes,
-                                  userId: _prefs.getString('userId')!,
-                                  commentId: newComment.id,
-                                  likesList: newComment.likes,
-                                ),
+                                    username: newComment.owner["username"],
+                                    profilePictureUrl:
+                                        newComment.owner["profile_image"],
+                                    comment: newComment.content,
+                                    timestamp: newComment.elapsedTimeString,
+                                    likes: newComment.numberOfLikes,
+                                    userId: _prefs.getString('userId')!,
+                                    commentId: newComment.id,
+                                    likesList: newComment.likes,
+                                    onCommentDeleted: () =>
+                                        _onCommentDeleted(0)),
                               );
                             });
+
                             _commentController.clear();
                             _scrollController.animateTo(
                               0.0,

@@ -1,5 +1,6 @@
 import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../viewmodel/profileViewModel.dart';
@@ -13,6 +14,7 @@ class CommentItem extends StatefulWidget {
   final String userId;
   final String commentId;
   final List<String> likesList;
+  final VoidCallback onCommentDeleted;
 
   CommentItem({
     required this.username,
@@ -23,6 +25,7 @@ class CommentItem extends StatefulWidget {
     required this.userId,
     required this.commentId,
     required this.likesList,
+    required this.onCommentDeleted,
   });
 
   @override
@@ -33,9 +36,11 @@ class _CommentItemState extends State<CommentItem> {
   bool _isLiked = false;
   late SharedPreferences _prefs;
   String? token = "";
+  String? id = "";
 
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
+
     setState(() {
       token = _prefs.getString('userId') ?? "";
     });
@@ -46,6 +51,49 @@ class _CommentItemState extends State<CommentItem> {
     super.initState();
     _isLiked = widget.likesList.contains(widget.userId);
     _initializePrefs();
+  }
+
+  Future<void> _showDeleteConfirmationDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return FractionallySizedBox(
+          widthFactor: 0.8,
+          heightFactor: 0.5,
+          child: AlertDialog(
+            title: Text('Delete comment'),
+            content: Text('Are you sure you want to delete this comment?'),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  final isDeleted = await ProfileViewModel.deleteComment(
+                    token!,
+                    widget.commentId,
+                    context,
+                  );
+                  if (isDeleted) {
+                    Navigator.pop(context, true);
+                  } else {
+                    Navigator.pop(context, false);
+                  }
+                },
+                child: Text('Yes'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: Text('No'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (result == true) {
+      widget.onCommentDeleted();
+    }
   }
 
   @override
@@ -64,30 +112,40 @@ class _CommentItemState extends State<CommentItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Card(
-                  elevation: 0.0,
-                  color: Colors.grey[200],
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.username,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
+                GestureDetector(
+                  onLongPress: () {
+                    Map<String, dynamic> decodedToken =
+                        JwtDecoder.decode(token!);
+                    id = decodedToken['id'] ?? "";
+                    if (id == widget.userId) {
+                      _showDeleteConfirmationDialog();
+                    }
+                  },
+                  child: Card(
+                    elevation: 0.0,
+                    color: Colors.grey[200],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30.0),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.username,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 5.0),
-                          Text(widget.comment,
-                              style: TextStyle(fontSize: 16, height: 1.5)),
-                        ],
+                            SizedBox(height: 5.0),
+                            Text(widget.comment,
+                                style: TextStyle(fontSize: 16, height: 1.5)),
+                          ],
+                        ),
                       ),
                     ),
                   ),

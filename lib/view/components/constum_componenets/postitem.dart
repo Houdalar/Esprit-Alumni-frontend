@@ -135,6 +135,11 @@ class _PostItemState extends State<PostItem> {
                                   widget.numComments += 1;
                                 });
                               },
+                              onCommentDeleted: () {
+                                setState(() {
+                                  widget.numComments -= 1;
+                                });
+                              },
                             ),
                           );
                         },

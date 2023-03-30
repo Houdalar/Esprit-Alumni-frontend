@@ -209,4 +209,37 @@ class ProfileViewModel extends ChangeNotifier {
       return null;
     }
   }
+
+  static Future<bool> deleteComment(
+      String token, String commentId, BuildContext context) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+    Map<String, dynamic> userData = {
+      "token": token,
+      "commentId": commentId,
+    };
+    return await http
+        .put(Uri.http(baseUrl, "/deleteComment"),
+            headers: headers, body: json.encode(userData))
+        .then((http.Response response) {
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              title: Text(
+                "failed",
+                style: TextStyle(color: AppColors.primary),
+              ),
+              content: Text("Something went wrong, please try again later!"),
+            );
+          },
+        );
+        return false;
+      }
+    });
+  }
 }
