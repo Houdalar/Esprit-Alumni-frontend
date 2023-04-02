@@ -1,4 +1,5 @@
-import 'package:esprit_alumni_frontend/view/screens/home.dart';
+import 'package:esprit_alumni_frontend/view/screens/Profile/home.dart';
+import 'package:esprit_alumni_frontend/view/screens/Profile/nav_bottom.dart';
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
 //import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
 //import 'package:esprit_alumni_frontend/view/screens/rsetpassword2.dart';

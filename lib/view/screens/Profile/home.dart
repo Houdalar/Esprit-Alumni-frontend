@@ -1,13 +1,13 @@
 import 'package:esprit_alumni_frontend/viewmodel/userViewModel.dart';
 import 'package:flutter/material.dart';
-import '../../model/PostModel.dart';
-import '../../model/serchUser.dart';
-import '../../model/usermodel.dart';
-import '../../viewmodel/profileViewModel.dart';
-import '../components/constum_componenets/UserSearchResultItem.dart';
-import '../components/constum_componenets/createPost.dart';
-import '../components/constum_componenets/postitem.dart';
-import '../components/constum_componenets/searchBar.dart';
+import '../../../model/PostModel.dart';
+import '../../../model/serchUser.dart';
+import '../../../model/usermodel.dart';
+import '../../../viewmodel/profileViewModel.dart';
+import '../../components/constum_componenets/UserSearchResultItem.dart';
+import '../../components/constum_componenets/createPost.dart';
+import '../../components/constum_componenets/postitem.dart';
+import '../../components/constum_componenets/searchBar.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
@@ -160,6 +160,13 @@ class _HomePageState extends State<HomePage> {
                                     createdAt: post.createdAt,
                                     isLiked: false,
                                     likes: post.likes,
+                                    isOwner: true,
+                                    onPostDeleted: () {
+                                      setState(() {
+                                        // Remove the deleted post from the list
+                                        posts.remove(post);
+                                      });
+                                    },
                                   );
                                 }
                               },

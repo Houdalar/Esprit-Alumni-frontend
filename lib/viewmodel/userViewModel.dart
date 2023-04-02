@@ -6,9 +6,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../../view/screens/home.dart';
+import '../view/screens/Profile/home.dart';
 import '../../view/components/themes/colors.dart';
 import '../model/serchUser.dart';
+import '../view/screens/Profile/nav_bottom.dart';
 import '../view/screens/rsetpassword2.dart';
 import '../../model/usermodel.dart' as CustomUser;
 
@@ -35,13 +36,12 @@ class UserViewModel extends ChangeNotifier {
         // Shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userId", userData["id"]);
-        //prefs.setString("email", userData["email"]);
         prefs.setString("username", userData["username"]);
         prefs.setString("profile_image", userData["profile_image"]);
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage(userData["username"],
+              builder: (context) => NavigationBottom(userData["username"],
                   userData["profile_image"], userData["id"])),
         );
       } else if (response.statusCode == 400) {

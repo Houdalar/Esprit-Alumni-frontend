@@ -23,10 +23,17 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
   bool _imageSelected = false;
   File? _imageFile;
   String token = "";
+  final TextEditingController _descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,16 +56,18 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
           ],
         ),
         SizedBox(height: 20),
-        TextField(
-          decoration: InputDecoration(
+        Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: TextField(
+            controller: _descriptionController,
+            keyboardType: TextInputType.multiline, // Add this line
+            maxLines: null, // Add this line
+            decoration: InputDecoration(
               hintText: 'what\'s on your mind, ${widget.username}?',
               border: InputBorder.none,
-              hintMaxLines: 4),
-          onChanged: (value) {
-            setState(() {
-              _description = value;
-            });
-          },
+              hintMaxLines: 4,
+            ),
+          ),
         ),
 
         SizedBox(height: 20),
@@ -200,7 +209,8 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
               });
               ProfileViewModel.createPost(
                 token,
-                _description ?? "      ",
+                _descriptionController
+                    .text, // Use the text from the TextEditingController
                 _category!,
                 _imageFile,
                 context,

@@ -189,8 +189,13 @@ class _CommentItemState extends State<CommentItem> {
                     Text(widget.likes.toString(),
                         style: TextStyle(fontSize: 15.5)),
                     SizedBox(width: 10.0),
-                    Text(widget.timestamp,
-                        style: TextStyle(color: Colors.grey)),
+                    Flexible(
+                      child: Text(
+                        widget.timestamp,
+                        style: TextStyle(color: Colors.grey),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ],
                 ),
               ],

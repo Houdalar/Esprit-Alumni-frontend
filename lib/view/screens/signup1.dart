@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
-import './home.dart';
+import 'Profile/home.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';

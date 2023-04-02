@@ -1,4 +1,6 @@
 PODS:
+  - emoji_picker_flutter (0.0.1):
+    - FlutterMacOS
   - Firebase/Auth (10.3.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 10.3.0)
@@ -46,6 +48,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - emoji_picker_flutter (from `Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos`)
   - firebase_auth (from `Flutter/ephemeral/.symlinks/plugins/firebase_auth/macos`)
   - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -62,6 +65,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  emoji_picker_flutter:
+    :path: Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos
   firebase_auth:
     :path: Flutter/ephemeral/.symlinks/plugins/firebase_auth/macos
   firebase_core:
@@ -72,6 +77,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/macos
 
 SPEC CHECKSUMS:
+  emoji_picker_flutter: 533634326b1c5de9a181ba14b9758e6dfe967a20
   Firebase: f92fc551ead69c94168d36c2b26188263860acd9
   firebase_auth: 4e1927a3b9aabf27438ad431a3693e961b55056b
   firebase_core: 2569fb36c8e95ab963e04d8d9fdc9f0f1d297765

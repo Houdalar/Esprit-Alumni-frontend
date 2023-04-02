@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
@@ -11,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../view/components/themes/colors.dart';
 import '../model/commentModel.dart';
+import '../model/profilemodel.dart';
+import '../model/serchUser.dart';
 import '../view/screens/rsetpassword2.dart';
 import '../../model/PostModel.dart';
 
@@ -239,6 +242,116 @@ class ProfileViewModel extends ChangeNotifier {
           },
         );
         return false;
+      }
+    });
+  }
+
+  static Future<ProfileModel> fetchProfile(String token) async {
+    final response = await http.get(Uri.http(baseUrl, "/getPortfolio/$token"));
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      print(jsonMap);
+      if (jsonMap != null) {
+        return ProfileModel.fromJson(jsonMap);
+      } else {
+        throw Exception('Failed to parse profile data');
+      }
+    } else {
+      throw Exception('Failed to load profile: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<PostModel>> getPosts(String? token, BuildContext context) {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.http(baseUrl, "/getPosts/$token"), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((json) => PostModel.fromJson(json)).toList();
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                  title: const Text("Network error",
+                      style: TextStyle(color: AppColors.primary)),
+                  content: Container(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'media/No connection-bro.png',
+                        height: 300,
+                        width: 300,
+                      ),
+                      const Text(
+                          "please check your internet connection and try again!"),
+                    ],
+                  )));
+            });
+        throw Exception('Failed to load data!');
+      }
+    });
+  }
+
+  static Future<List<SearchUser>> getFollowers(String token) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.parse('http://$baseUrl/getFollowers/$token'), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = json.decode(response.body);
+        List<SearchUser> followers = jsonData
+            .map<SearchUser>(
+                (followerJson) => SearchUser.fromJson(followerJson))
+            .toList();
+        return followers;
+      } else {
+        throw Exception('Failed to load followers');
+      }
+    });
+  }
+
+  static Future<List<SearchUser>> getFollowing(String token) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.parse('http://$baseUrl/getFollowing/$token'), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = json.decode(response.body);
+        List<SearchUser> followers = jsonData
+            .map<SearchUser>(
+                (followerJson) => SearchUser.fromJson(followerJson))
+            .toList();
+        return followers;
+      } else {
+        throw Exception('Failed to load followers');
+      }
+    });
+  }
+
+  static Future<bool> deletePost(String id) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .delete(Uri.parse('http://$baseUrl/deletePost/$id'), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Failed to load followers');
       }
     });
   }
