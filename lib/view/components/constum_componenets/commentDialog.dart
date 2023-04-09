@@ -71,6 +71,7 @@ class _CommentDialogState extends State<CommentDialog> {
                 commentId: comment.id,
                 likesList: comment.likes,
                 onCommentDeleted: () => _onCommentDeleted(i),
+                user: comment.owner["_id"],
               ),
             );
           }
@@ -88,7 +89,6 @@ class _CommentDialogState extends State<CommentDialog> {
                       itemCount: _comments.length,
                       itemBuilder: (context, index) {
                         final comment = _comments[index];
-                        print(_profilePic);
                         return CommentItem(
                           username: comment.username,
                           profilePictureUrl: comment.profilePictureUrl,
@@ -98,6 +98,7 @@ class _CommentDialogState extends State<CommentDialog> {
                           userId: comment.userId,
                           commentId: comment.commentId,
                           likesList: comment.likesList,
+                          user: comment.user,
                           onCommentDeleted: () => _onCommentDeleted(index),
                         );
                       },
@@ -154,6 +155,7 @@ class _CommentDialogState extends State<CommentDialog> {
                                     userId: _prefs.getString('userId')!,
                                     commentId: newComment.id,
                                     likesList: newComment.likes,
+                                    user: newComment.owner["_id"],
                                     onCommentDeleted: () =>
                                         _onCommentDeleted(0)),
                               );

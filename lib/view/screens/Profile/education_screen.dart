@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:esprit_alumni_frontend/viewmodel/profileViewModel.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../../model/profilemodel.dart';
@@ -16,28 +17,6 @@ class EducationScreen extends StatefulWidget {
 }
 
 class _EducationScreen extends State<EducationScreen> {
-  // UPDATE THE EDUCATION FUNCTION ------------------------------------------------
-  Future<ProfileModel> _updateEducation(
-      String token, String newEducation) async {
-    final response = await http.put(
-      Uri.http(baseUrl, "/editEducation/$token"),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'education': newEducation}),
-    );
-    if (response.statusCode == 200) {
-      final jsonMap = jsonDecode(response.body);
-      final profile = ProfileModel.fromJson(jsonMap);
-      if (jsonMap != null) {
-        return profile;
-      } else {
-        throw Exception('Failed to parse profile data');
-      }
-    } else {
-      throw Exception('Failed to update education');
-    }
-  }
-
-// LIST OF UNIVERSITIES IN THE IT DOAMIN --------------------------------------------------
   List<String> universities = [
     "Faculté des Sciences de Tunis (FST)",
     "Faculté des Sciences Economiques et de Gestion de Tunis (FSEGT)",
@@ -86,12 +65,13 @@ class _EducationScreen extends State<EducationScreen> {
   String selectedUniversity = '';
   bool showFilteredList = false;
   static String baseUrl = "10.0.2.2:8081";
-  final token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjJmNjM4ZTcyMDhmOGU1NjYwOTI1OCIsImlhdCI6MTY4MDEwMDM5NX0.rSybSVHG-A4X2j3guWv3aXgLFafBaSrFZQdapc7LBpU";
+  late SharedPreferences _prefs;
+  String? token = "";
 
   @override
   void initState() {
     super.initState();
+    _initializePrefs();
   }
 
   void filterUniversities(String query) {
@@ -104,6 +84,13 @@ class _EducationScreen extends State<EducationScreen> {
     setState(() {
       filteredUniversities = filteredList;
       showFilteredList = true;
+    });
+  }
+
+  Future<void> _initializePrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = _prefs.getString('userId') ?? "";
     });
   }
 
@@ -161,10 +148,11 @@ class _EducationScreen extends State<EducationScreen> {
                 ),
               TextButton(
                 onPressed: () async {
-                  await _updateEducation(token, selectedUniversity);
+                  await ProfileViewModel.updateEducation(
+                      token!, selectedUniversity);
                   Navigator.pop(context, selectedUniversity);
                   setState(() async {
-                    await ProfileViewModel.fetchProfile(token);
+                    await ProfileViewModel.fetchProfile(token!);
                   });
                 },
                 child: const Text(

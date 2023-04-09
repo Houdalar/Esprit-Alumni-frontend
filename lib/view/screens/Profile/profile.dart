@@ -21,13 +21,16 @@ import '../../../model/serchUser.dart';
 import '../../components/constum_componenets/UserSearchResultItem.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  final String id;
+  final bool isCurrentUser;
+  final String user;
+  const Profile(
+      {this.isCurrentUser = true, Key? key, this.id = "", this.user = ""})
+      : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
 }
-
-//final token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjJmNjM4ZTcyMDhmOGU1NjYwOTI1OCIsImlhdCI6MTY4MDEwMDM5NX0.rSybSVHG-A4X2j3guWv3aXgLFafBaSrFZQdapc7LBpU";
 
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   // For the posts and career
@@ -60,7 +63,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   final picker = ImagePicker();
 
   void _showFollowersDialog() async {
-    List<SearchUser> followers = await ProfileViewModel.getFollowers(userId!);
+    List<SearchUser> followers = widget.isCurrentUser
+        ? await ProfileViewModel.getFollowers(userId!)
+        : await ProfileViewModel.getFollowers(widget.user);
+    await ProfileViewModel.getFollowers(userId!);
 
     showDialog(
       context: context,
@@ -76,6 +82,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 return UserSearchResultItem(
                   username: followers[index].username,
                   profileImage: followers[index].profileImage,
+                  profileId: followers[index].profileId,
+                  userId: followers[index].userId,
                 );
               },
             ),
@@ -86,7 +94,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   void _showFolloingDialog() async {
-    List<SearchUser> followers = await ProfileViewModel.getFollowing(userId!);
+    List<SearchUser> followers = widget.isCurrentUser
+        ? await ProfileViewModel.getFollowing(userId!)
+        : await ProfileViewModel.getFollowing(widget.user);
 
     showDialog(
       context: context,
@@ -102,6 +112,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 return UserSearchResultItem(
                   username: followers[index].username,
                   profileImage: followers[index].profileImage,
+                  profileId: followers[index].profileId,
+                  userId: followers[index].userId,
                 );
               },
             ),
@@ -143,7 +155,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       systemNavigationBarColor: Colors.white,
     ));
     return FutureBuilder<ProfileModel>(
-      future: ProfileViewModel.fetchProfile(token!),
+      future: widget.isCurrentUser
+          ? ProfileViewModel.fetchProfile(token!)
+          : ProfileViewModel.getProfile(widget.user),
       builder: (context, snapshot) {
         print(snapshot.data);
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -176,19 +190,21 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   Positioned(
                     top: 60.0,
                     right: 5.0,
-                    child: IconButton(
-                      icon: Icon(Icons.settings),
-                      iconSize: 27.0,
-                      color: AppColors.primaryDark,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SettingsPopup();
-                          },
-                        );
-                      },
-                    ),
+                    child: widget.isCurrentUser
+                        ? IconButton(
+                            icon: Icon(Icons.settings),
+                            iconSize: 27.0,
+                            color: AppColors.primaryDark,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SettingsPopup();
+                                },
+                              );
+                            },
+                          )
+                        : SizedBox.shrink(),
                   ),
                   Positioned(
                       top: 110.0,
@@ -206,60 +222,65 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         child: Container(
                           child: GestureDetector(
                             onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          GestureDetector(
-                                            child: Text('Show Image'),
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return AlertDialog(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        content: Container(
-                                                          width:
-                                                              double.maxFinite,
-                                                          child: Image.network(
-                                                            profile
-                                                                .profileImage,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ));
-                                                  });
-                                            },
-                                          ),
-                                          Padding(padding: EdgeInsets.all(8.0)),
-                                          GestureDetector(
-                                            child: Text('Edit Image'),
-                                            onTap: () async {
-                                              final pickedFile =
-                                                  await picker.getImage(
-                                                      source:
-                                                          ImageSource.gallery);
-                                              // Use the pickedFile variable to access the selected image
-                                              await uploadPic(context, token!,
-                                                  File(pickedFile!.path));
-                                              Navigator.of(context).pop();
-                                              // display the image
-                                              setState(() {
-                                                ProfileViewModel.fetchProfile(
-                                                    token!);
-                                              });
-                                            },
-                                          ),
-                                        ],
+                              if (widget.isCurrentUser) {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: SingleChildScrollView(
+                                        child: ListBody(
+                                          children: <Widget>[
+                                            GestureDetector(
+                                              child: Text('Show Image'),
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          content: Container(
+                                                            width: double
+                                                                .maxFinite,
+                                                            child:
+                                                                Image.network(
+                                                              profile
+                                                                  .profileImage,
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ));
+                                                    });
+                                              },
+                                            ),
+                                            Padding(
+                                                padding: EdgeInsets.all(8.0)),
+                                            GestureDetector(
+                                              child: Text('Edit Image'),
+                                              onTap: () async {
+                                                final pickedFile =
+                                                    await picker.getImage(
+                                                        source: ImageSource
+                                                            .gallery);
+                                                // Use the pickedFile variable to access the selected image
+                                                await uploadPic(context, token!,
+                                                    File(pickedFile!.path));
+                                                Navigator.of(context).pop();
+                                                // display the image
+                                                setState(() {
+                                                  ProfileViewModel.fetchProfile(
+                                                      token!);
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
+                                    );
+                                  },
+                                );
+                              }
                             },
                             child: ClipOval(
                               child: Image.network(
@@ -397,6 +418,56 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     ],
                   )),
               SizedBox(height: 25.0),
+              if (!widget.isCurrentUser)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                          ),
+                          onPressed: () {
+                            // Handle send message action
+                          },
+                          icon: Icon(Icons.send, color: AppColors.primaryDark),
+                          label: Text(
+                            'Message',
+                            style: TextStyle(color: AppColors.primaryDark),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 30.0),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                          ),
+                          onPressed: () {
+                            // Handle follow/unfollow action
+                          },
+                          icon: Icon(Icons.person_add_alt_1,
+                              color: AppColors.primaryDark),
+                          label: Text(
+                            'Follow',
+                            style: TextStyle(color: AppColors.primaryDark),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              SizedBox(height: 15.0),
 
               // POSTS AND CAREER TABS ----------------------------------------------
               TabBar(
@@ -427,8 +498,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         profile.status,
                         profile.education,
                         profile.skills,
+                        false,
                       ),
-                      PostsFragment(id: token!),
+                      PostsFragment(
+                        id: token!,
+                        isCurrentUser: widget.isCurrentUser,
+                        userId: widget.user,
+                      ),
                     ],
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../viewmodel/profileViewModel.dart';
+import '../../screens/Profile/profile.dart';
 
 class CommentItem extends StatefulWidget {
   final String username;
@@ -15,6 +16,7 @@ class CommentItem extends StatefulWidget {
   final String commentId;
   final List<String> likesList;
   final VoidCallback onCommentDeleted;
+  final String? user;
 
   CommentItem({
     required this.username,
@@ -26,6 +28,7 @@ class CommentItem extends StatefulWidget {
     required this.commentId,
     required this.likesList,
     required this.onCommentDeleted,
+    required this.user,
   });
 
   @override
@@ -134,11 +137,24 @@ class _CommentItemState extends State<CommentItem> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.username,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Profile(
+                                      user: widget.user!,
+                                      isCurrentUser: false,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                widget.username,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16.0,
+                                ),
                               ),
                             ),
                             SizedBox(height: 5.0),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../../viewmodel/profileViewModel.dart';
+import '../../screens/Profile/profile.dart';
 import 'commentDialog.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:ui' as ui;
@@ -19,6 +20,7 @@ class PostItem extends StatefulWidget {
   final List<String> likes;
   final bool isOwner;
   final VoidCallback onPostDeleted;
+  final String? user;
 
   PostItem({
     required this.username,
@@ -33,6 +35,7 @@ class PostItem extends StatefulWidget {
     required this.likes,
     required this.isOwner,
     required this.onPostDeleted,
+    required this.user,
   });
 
   @override
@@ -124,9 +127,22 @@ class _PostItemState extends State<PostItem> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.username,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Profile(
+                                user: widget.user!,
+                                isCurrentUser: false,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          widget.username,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Text(elapsedTimeString,
                           style: TextStyle(fontSize: 12, color: Colors.grey)),
@@ -191,8 +207,6 @@ class _PostItemState extends State<PostItem> {
             padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: GestureDetector(
               onTap: () async {
-                print("Token: $_userToken");
-                print("Post ID: ${widget.id}");
                 final updatedPost =
                     await ProfileViewModel.likePost(widget.id, _userToken!);
 

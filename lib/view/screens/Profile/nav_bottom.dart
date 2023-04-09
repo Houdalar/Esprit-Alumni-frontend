@@ -38,7 +38,9 @@ class _NavigationBottomState extends State<NavigationBottom>
       HomePage(widget.username, widget.profilePic, widget.id),
       Dashboard(),
       Notifications(),
-      Profile(),
+      Profile(
+        isCurrentUser: true,
+      ),
       //OtherProfile(),
     ];
 

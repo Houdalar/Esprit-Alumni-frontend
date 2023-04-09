@@ -261,6 +261,20 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
+  static Future<ProfileModel> getProfile(String token) async {
+    final response = await http.get(Uri.http(baseUrl, "/getProfile/$token"));
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      if (jsonMap != null) {
+        return ProfileModel.fromJson(jsonMap);
+      } else {
+        throw Exception('Failed to parse profile data');
+      }
+    } else {
+      throw Exception('Failed to load profile: ${response.statusCode}');
+    }
+  }
+
   static Future<List<PostModel>> getPosts(String? token, BuildContext context) {
     Map<String, String> headers = {
       "Content-Type": "application/json; charset=UTF-8"
@@ -352,6 +366,125 @@ class ProfileViewModel extends ChangeNotifier {
         return true;
       } else {
         throw Exception('Failed to load followers');
+      }
+    });
+  }
+
+  static Future<ProfileModel> updateSummary(
+      String token, String newSummary) async {
+    final response = await http.put(
+      Uri.http(baseUrl, "/editSummary/$token"),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'summary': newSummary}),
+    );
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      final profile = ProfileModel.fromJson(jsonMap);
+      if (jsonMap != null) {
+        return profile;
+      } else {
+        throw Exception('Failed to parse profile data');
+      }
+    } else {
+      throw Exception('Failed to update summary');
+    }
+  }
+
+  static Future<ProfileModel> updateStatus(
+      String token, String newStatus) async {
+    final response = await http.put(
+      Uri.http(baseUrl, "/editStatus/$token"),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'status': newStatus}),
+    );
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      final profile = ProfileModel.fromJson(jsonMap);
+      if (jsonMap != null) {
+        return profile;
+      } else {
+        throw Exception('Failed to parse profile data');
+      }
+    } else {
+      throw Exception('Failed to update summary');
+    }
+  }
+
+  static Future<ProfileModel> updateSkills(
+      String token, String newSkills) async {
+    //String token, List<String> newSkills) async {
+    final response = await http.put(
+      Uri.http(baseUrl, "/addSkills/$token"),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'skills': newSkills}),
+    );
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      final profile = ProfileModel.fromJson(jsonMap);
+      if (jsonMap != null) {
+        return profile;
+      } else {
+        throw Exception('Failed to parse profile data');
+      }
+    } else {
+      throw Exception('Failed to update summary');
+    }
+  }
+
+  static Future<ProfileModel> updateEducation(
+      String token, String newEducation) async {
+    final response = await http.put(
+      Uri.http(baseUrl, "/editEducation/$token"),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'education': newEducation}),
+    );
+    if (response.statusCode == 200) {
+      final jsonMap = jsonDecode(response.body);
+      final profile = ProfileModel.fromJson(jsonMap);
+      if (jsonMap != null) {
+        return profile;
+      } else {
+        throw Exception('Failed to parse profile data');
+      }
+    } else {
+      throw Exception('Failed to update education');
+    }
+  }
+
+  static Future<List<PostModel>> getUserPosts(
+      String? id, BuildContext context) {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.http(baseUrl, "/getUserPosts/$id"), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((json) => PostModel.fromJson(json)).toList();
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                  title: const Text("Network error",
+                      style: TextStyle(color: AppColors.primary)),
+                  content: Container(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'media/No connection-bro.png',
+                        height: 300,
+                        width: 300,
+                      ),
+                      const Text(
+                          "please check your internet connection and try again!"),
+                    ],
+                  )));
+            });
+        throw Exception('Failed to load data!');
       }
     });
   }

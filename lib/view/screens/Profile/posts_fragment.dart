@@ -6,7 +6,10 @@ import '../../components/constum_componenets/postitem.dart';
 
 class PostsFragment extends StatefulWidget {
   final String? id;
-  const PostsFragment({Key? key, required this.id}) : super(key: key);
+  final bool? isCurrentUser;
+  final String? userId;
+  const PostsFragment({Key? key, this.id, this.isCurrentUser, this.userId = ""})
+      : super(key: key);
 
   @override
   State<PostsFragment> createState() => _PostsFragmentState();
@@ -20,7 +23,9 @@ class _PostsFragmentState extends State<PostsFragment> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ProfileViewModel.getPosts(widget.id, context),
+      future: widget.isCurrentUser!
+          ? ProfileViewModel.getPosts(widget.id, context)
+          : ProfileViewModel.getUserPosts(widget.userId, context),
       builder: (context, AsyncSnapshot<List<PostModel>> snapshot) {
         if (snapshot.hasData) {
           final posts = snapshot.data!;
@@ -48,6 +53,7 @@ class _PostsFragmentState extends State<PostsFragment> {
                         posts.remove(post);
                       });
                     },
+                    user: post.owner['_id'],
                   );
                 }).toList(),
               ),

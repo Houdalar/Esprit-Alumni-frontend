@@ -125,6 +125,8 @@ class _HomePageState extends State<HomePage> {
                         return UserSearchResultItem(
                           username: user.username,
                           profileImage: user.profileImage,
+                          profileId: user.profileId,
+                          userId: user.userId,
                         );
                       },
                     )
@@ -160,13 +162,14 @@ class _HomePageState extends State<HomePage> {
                                     createdAt: post.createdAt,
                                     isLiked: false,
                                     likes: post.likes,
-                                    isOwner: true,
+                                    isOwner: false,
                                     onPostDeleted: () {
                                       setState(() {
                                         // Remove the deleted post from the list
                                         posts.remove(post);
                                       });
                                     },
+                                    user: post.owner['_id'],
                                   );
                                 }
                               },

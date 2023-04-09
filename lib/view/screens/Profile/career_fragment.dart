@@ -14,8 +14,10 @@ class CareerFragment extends StatefulWidget {
   String? status;
   String? education;
   List<String> skills;
+  bool isCurrentUser;
 
   CareerFragment(this.summary, this.status, this.education, this.skills,
+      this.isCurrentUser,
       {Key? key})
       : super(key: key);
 
@@ -24,77 +26,26 @@ class CareerFragment extends StatefulWidget {
 }
 
 class _CareerFragmentState extends State<CareerFragment> {
-//------------------------------ FUNCTIONS -------------------------------------
-  static String baseUrl = "10.0.2.2:8081";
-  final token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjJmNjM4ZTcyMDhmOGU1NjYwOTI1OCIsImlhdCI6MTY4MDEwMDM5NX0.rSybSVHG-A4X2j3guWv3aXgLFafBaSrFZQdapc7LBpU";
   String _textSummary = '';
   String _textStatus = '';
   String _education = '';
+  String? token = "";
+  late SharedPreferences _prefs;
   List<String> skills_list = [];
 
-  // UPDATE THE SUMMARY ------------------------------------------------------
-  Future<ProfileModel> _updateSummary(String token, String newSummary) async {
-    final response = await http.put(
-      Uri.http(baseUrl, "/editSummary/$token"),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'summary': newSummary}),
-    );
-    if (response.statusCode == 200) {
-      final jsonMap = jsonDecode(response.body);
-      final profile = ProfileModel.fromJson(jsonMap);
-      if (jsonMap != null) {
-        return profile;
-      } else {
-        throw Exception('Failed to parse profile data');
-      }
-    } else {
-      throw Exception('Failed to update summary');
-    }
+  Future<void> _initializePrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = _prefs.getString('userId') ?? "";
+    });
   }
 
-  // UPDATE THE STATUS -------------------------------------------------------
-  Future<ProfileModel> _updateStatus(String token, String newStatus) async {
-    final response = await http.put(
-      Uri.http(baseUrl, "/editStatus/$token"),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'status': newStatus}),
-    );
-    if (response.statusCode == 200) {
-      final jsonMap = jsonDecode(response.body);
-      final profile = ProfileModel.fromJson(jsonMap);
-      if (jsonMap != null) {
-        return profile;
-      } else {
-        throw Exception('Failed to parse profile data');
-      }
-    } else {
-      throw Exception('Failed to update summary');
-    }
+  @override
+  void initState() {
+    super.initState();
+    _initializePrefs();
   }
 
-  // UPDATE THE SKILLS as an array of strings ---------------------------------
-  Future<ProfileModel> _updateSkills(String token, String newSkills) async {
-    //String token, List<String> newSkills) async {
-    final response = await http.put(
-      Uri.http(baseUrl, "/addSkills/$token"),
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'skills': newSkills}),
-    );
-    if (response.statusCode == 200) {
-      final jsonMap = jsonDecode(response.body);
-      final profile = ProfileModel.fromJson(jsonMap);
-      if (jsonMap != null) {
-        return profile;
-      } else {
-        throw Exception('Failed to parse profile data');
-      }
-    } else {
-      throw Exception('Failed to update summary');
-    }
-  }
-
-//----------------------------- DIALOGS ----------------------------------
 // SUMMARY EDIT DIALOG ---------------------------------------------------
   void _showEditDialogSummary() {
     showDialog(
@@ -126,7 +77,7 @@ class _CareerFragmentState extends State<CareerFragment> {
               ),
               onPressed: () async {
                 // Call the _updateSummary function to update the summary on the server
-                await _updateSummary(token, _textSummary);
+                await ProfileViewModel.updateSummary(token!, _textSummary);
                 setState(() {
                   widget.summary = _textSummary;
                 });
@@ -172,7 +123,7 @@ class _CareerFragmentState extends State<CareerFragment> {
               ),
               onPressed: () async {
                 // Call the _updateSummary function to update the summary on the server
-                await _updateStatus(token, _textStatus);
+                await ProfileViewModel.updateStatus(token!, _textStatus);
                 setState(() {
                   widget.status = _textStatus;
                 });
@@ -215,7 +166,7 @@ class _CareerFragmentState extends State<CareerFragment> {
               ),
               onPressed: () {
                 if (newSkill.isNotEmpty) {
-                  _updateSkills(token, newSkill);
+                  ProfileViewModel.updateSkills(token!, newSkill);
                   setState(() {
                     skills_list.add(newSkill);
                     newSkill = '';
@@ -261,14 +212,17 @@ class _CareerFragmentState extends State<CareerFragment> {
                   ),
                 ),
                 SizedBox(width: 90),
-                GestureDetector(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: AppColors.primaryDark,
-                      size: 22,
+                Visibility(
+                  visible: widget.isCurrentUser,
+                  child: GestureDetector(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: AppColors.primaryDark,
+                        size: 22,
+                      ),
+                      onPressed: _showEditDialogSummary,
                     ),
-                    onPressed: _showEditDialogSummary,
                   ),
                 ),
               ],
@@ -302,14 +256,17 @@ class _CareerFragmentState extends State<CareerFragment> {
                   ),
                 ),
                 SizedBox(width: 214),
-                GestureDetector(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: AppColors.primaryDark,
-                      size: 22,
+                Visibility(
+                  visible: widget.isCurrentUser,
+                  child: GestureDetector(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: AppColors.primaryDark,
+                        size: 22,
+                      ),
+                      onPressed: _showEditDialogStatus,
                     ),
-                    onPressed: _showEditDialogStatus,
                   ),
                 ),
               ],
@@ -345,7 +302,8 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
                 SizedBox(width: 182),
                 Visibility(
-                  visible: widget.education.toString().isNotEmpty,
+                  visible: widget.isCurrentUser &&
+                      widget.education.toString().isNotEmpty,
                   child: GestureDetector(
                     child: IconButton(
                       icon: Icon(
@@ -472,16 +430,19 @@ class _CareerFragmentState extends State<CareerFragment> {
                   ),
                 ),
                 SizedBox(width: 223),
-                GestureDetector(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: AppColors.primaryDark,
-                      size: 22,
+                Visibility(
+                  visible: widget.isCurrentUser,
+                  child: GestureDetector(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: AppColors.primaryDark,
+                        size: 22,
+                      ),
+                      onPressed: () {
+                        _showDialogSkills(context);
+                      },
                     ),
-                    onPressed: () {
-                      _showDialogSkills(context);
-                    },
                   ),
                 ),
               ],

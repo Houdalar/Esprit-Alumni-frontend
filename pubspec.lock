@@ -193,14 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.5"
-  device_info:
-    dependency: transitive
-    description:
-      name: device_info
-      sha256: "3486ace1d66d6cc4875fda3a92a68b3cadea40b66636682b90020e6640d3593c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.2+6"
   email_validator:
     dependency: "direct main"
     description:
@@ -209,14 +201,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.17"
-  emoji_picker:
-    dependency: "direct main"
-    description:
-      name: emoji_picker
-      sha256: "4a6a9d5346904e4006882e6d91f25232e89afa26a6241a115739a4f4b35b7b51"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   emoji_picker_flutter:
     dependency: "direct main"
     description:

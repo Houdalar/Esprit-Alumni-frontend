@@ -1,11 +1,14 @@
-# Esprit Alumni App
+# Esprit Alumni App: Connect, Collaborate, and Elevate Your Career
 
 <p align="center">
 
  <img src="logo.png">
 </p>
 
-The Esprit Alumni App is a platform designed to connect alumni from the Esprit School of Engineering and promote collaboration, professional networking, and career development. With the app, alumni can stay up-to-date on news and events, connect with other alumni, and access resources to help them make informed decisions about their careers.
+Welcome to the Esprit Alumni App, a cutting-edge platform , exclusively designed for graduates of the Esprit School of Engineering. Our mission is to foster a strong, vibrant community that facilitates collaboration, professional networking, and career growth. Stay in the loop with the latest news, events, and opportunities while connecting with fellow alumni and accessing valuable career resources - all at your fingertips.
+
+<img src="logo.png">
+
 
 ## Features
 
