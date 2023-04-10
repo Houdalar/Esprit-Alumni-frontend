@@ -39,6 +39,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   String? token = "";
   String? userId;
   int _numberOfFollowers = 0;
+  bool isFollowing = false;
+  List<String> followerIds = [];
 
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
@@ -46,6 +48,17 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       token = _prefs.getString('userId') ?? "";
       userId = JwtDecoder.decode(token!)['id'];
     });
+
+    if (userId!.isNotEmpty) {
+      List<SearchUser> followers = await ProfileViewModel.getFollowers(token!);
+      print("toekn is $token");
+      followerIds = followers.map((follower) => follower.userId).toList();
+      print(followers.map((follower) => follower.userId).toList());
+
+      setState(() {
+        isFollowing = followerIds.contains(widget.user);
+      });
+    }
   }
 
   @override
@@ -68,6 +81,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         ? await ProfileViewModel.getFollowers(userId!)
         : await ProfileViewModel.getFollowers(widget.user);
     await ProfileViewModel.getFollowers(userId!);
+    followerIds = followers.map((follower) => follower.userId).toList();
 
     showDialog(
       context: context,
@@ -462,18 +476,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               setState(() {
                                 _numberOfFollowers =
                                     profile.numberOfFollowers + 1;
+                                isFollowing = true;
                               });
                             } else {
                               setState(() {
                                 _numberOfFollowers =
                                     profile.numberOfFollowers - 1;
+                                isFollowing = false;
                               });
                             }
                           },
-                          icon: Icon(Icons.person_add_alt_1,
-                              color: AppColors.primaryDark),
+                          icon: isFollowing
+                              ? Icon(Icons.person_remove_alt_1,
+                                  color: AppColors.primaryDark)
+                              : Icon(Icons.person_add_alt_1,
+                                  color: AppColors.primaryDark),
                           label: Text(
-                            'Follow',
+                            isFollowing ? 'Unfollow' : 'Follow',
                             style: TextStyle(color: AppColors.primaryDark),
                           ),
                         ),

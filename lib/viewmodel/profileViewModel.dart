@@ -328,6 +328,7 @@ class ProfileViewModel extends ChangeNotifier {
         return followers;
       } else {
         throw Exception('Failed to load followers');
+        return [];
       }
     });
   }
