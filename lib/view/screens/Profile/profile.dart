@@ -38,6 +38,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   late SharedPreferences _prefs;
   String? token = "";
   String? userId;
+  int _numberOfFollowers = 0;
 
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
@@ -159,7 +160,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           ? ProfileViewModel.fetchProfile(token!)
           : ProfileViewModel.getProfile(widget.user),
       builder: (context, snapshot) {
-        print(snapshot.data);
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
               child: CircularProgressIndicator(
@@ -170,6 +170,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
               child: Text('Error loading profile: ${snapshot.error}'));
         } else {
           final profile = snapshot.data!;
+          _numberOfFollowers = profile.numberOfFollowers;
           // Use the profile data to build the UI of the Profile widget
           return Scaffold(
               body: SingleChildScrollView(
@@ -394,7 +395,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           onTap: _showFollowersDialog,
                           child: Column(children: <Widget>[
                             Text(
-                              profile.numberOfFollowers.toString(),
+                              _numberOfFollowers.toString(),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 17.0,
@@ -453,8 +454,21 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             ),
                             padding: EdgeInsets.symmetric(vertical: 8.0),
                           ),
-                          onPressed: () {
-                            // Handle follow/unfollow action
+                          onPressed: () async {
+                            bool isFollowing =
+                                await ProfileViewModel.followUser(
+                                    token!, widget.user);
+                            if (isFollowing) {
+                              setState(() {
+                                _numberOfFollowers =
+                                    profile.numberOfFollowers + 1;
+                              });
+                            } else {
+                              setState(() {
+                                _numberOfFollowers =
+                                    profile.numberOfFollowers - 1;
+                              });
+                            }
                           },
                           icon: Icon(Icons.person_add_alt_1,
                               color: AppColors.primaryDark),

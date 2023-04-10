@@ -12,8 +12,8 @@ class PostModel {
   final int numberOfComments;
   final String category;
   final int numberOfShares;
-  final String
-      elapsedTimeString; // New property to store the elapsed time as a string
+  final String elapsedTimeString;
+  final Map<String, dynamic>? sharedFrom;
 
   PostModel({
     required this.id,
@@ -28,6 +28,7 @@ class PostModel {
     required this.category,
     required this.numberOfShares,
     required this.elapsedTimeString,
+    this.sharedFrom,
   });
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -35,12 +36,27 @@ class PostModel {
     Duration difference = DateTime.now().difference(createdAt);
     String elapsedTimeString = timeago.format(createdAt);
 
+    Map<String, dynamic>? sharedFromJson;
+    if (json['sharedFrom'] != null) {
+      sharedFromJson = {
+        "_id": json['sharedFrom']['_id'],
+        "username": json['sharedFrom']['owner']['username'],
+        "profile_image": json['sharedFrom']['owner']['profile']
+            ['profile_image'],
+        "postDescription": json['sharedFrom']['caption'],
+        "postPhotoUrl": json['sharedFrom']['image'],
+        "numLikes": json['sharedFrom']['numberOfLikes'],
+        "numComments": json['sharedFrom']['numberOfComments'],
+        "createdAt": json['sharedFrom']['createdAt'],
+      };
+    }
+
     return PostModel(
       id: json['_id'],
       owner: {
         "_id": json['owner']['_id'],
         "username": json['owner']['username'],
-        "profile_image": json['owner']['profile']['profile_image']
+        "profile_image": json['owner']['profile']['profile_image'],
       },
       caption: json['caption'],
       image: json['image'],
@@ -51,8 +67,8 @@ class PostModel {
       numberOfComments: json['numberOfComments'],
       category: json['category'],
       numberOfShares: json['numberOfShares'],
-      elapsedTimeString:
-          elapsedTimeString, // Store the elapsed time as a string
+      elapsedTimeString: elapsedTimeString,
+      sharedFrom: sharedFromJson,
     );
   }
 

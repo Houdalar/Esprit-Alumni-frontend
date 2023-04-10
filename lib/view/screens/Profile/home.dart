@@ -1,5 +1,6 @@
 import 'package:esprit_alumni_frontend/viewmodel/userViewModel.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../model/PostModel.dart';
 import '../../../model/serchUser.dart';
 import '../../../model/usermodel.dart';
@@ -30,6 +31,19 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _refreshHomePage() async {
     setState(() {});
+  }
+
+  String _getUserIdFromJWT(String? jwt) {
+    if (jwt == null) {
+      return '';
+    }
+
+    try {
+      Map<String, dynamic> decodedJwt = JwtDecoder.decode(jwt);
+      return decodedJwt['_id'] ?? '';
+    } catch (e) {
+      return '';
+    }
   }
 
   @override
@@ -65,6 +79,33 @@ class _HomePageState extends State<HomePage> {
 
   void _onSearchChanged() {
     _searchSubject.add(_searchController.text);
+  }
+
+  PostItem? _buildChildPost(Map<String, dynamic>? sharedFrom) {
+    if (sharedFrom == null) {
+      return null;
+    }
+
+    return PostItem(
+      id: sharedFrom['_id'] ?? '',
+      username: sharedFrom['username'] ?? '',
+      profilePhotoUrl: sharedFrom['profile_image'] ?? '',
+      postPhotoUrl: sharedFrom['postPhotoUrl'] ?? '',
+      postDescription: sharedFrom['postDescription'] ?? '',
+      numLikes: sharedFrom['numLikes'] ?? 0,
+      numComments: sharedFrom['numComments'] ?? 0,
+      createdAt: DateTime.parse(
+          sharedFrom['createdAt'] ?? DateTime.now().toIso8601String()),
+      isLiked: false,
+      likes: [],
+      isOwner: false,
+      onPostDeleted: () {},
+      user: sharedFrom['_id'] ?? '',
+      sharedFrom: null,
+      isSharedPost: false,
+      currentUserId: _getUserIdFromJWT(widget.id),
+      childPost: null,
+    );
   }
 
   @override
@@ -133,14 +174,14 @@ class _HomePageState extends State<HomePage> {
                   : RefreshIndicator(
                       onRefresh:
                           _refreshHomePage, // Add the _refreshHomePage method here
-                      child: FutureBuilder(
+                      child: FutureBuilder<List<PostModel>>(
                         future:
                             ProfileViewModel.getHomepage(widget.id, context),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             final posts = snapshot.data!;
                             return ListView.builder(
-                              shrinkWrap: true,
+                              shrinkWrap: false,
                               itemCount: posts.length + 1,
                               itemBuilder: (context, index) {
                                 if (index == 0) {
@@ -170,6 +211,10 @@ class _HomePageState extends State<HomePage> {
                                       });
                                     },
                                     user: post.owner['_id'],
+                                    sharedFrom: post.sharedFrom,
+                                    isSharedPost: post.sharedFrom != null,
+                                    currentUserId: _getUserIdFromJWT(widget.id),
+                                    childPost: _buildChildPost(post.sharedFrom),
                                   );
                                 }
                               },

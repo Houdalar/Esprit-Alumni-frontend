@@ -250,7 +250,6 @@ class ProfileViewModel extends ChangeNotifier {
     final response = await http.get(Uri.http(baseUrl, "/getPortfolio/$token"));
     if (response.statusCode == 200) {
       final jsonMap = jsonDecode(response.body);
-      print(jsonMap);
       if (jsonMap != null) {
         return ProfileModel.fromJson(jsonMap);
       } else {
@@ -487,5 +486,87 @@ class ProfileViewModel extends ChangeNotifier {
         throw Exception('Failed to load data!');
       }
     });
+  }
+
+  static Future<void> sharePost(
+      String? postId, String? userId, BuildContext context) async {
+    Map<String, dynamic> userData = {"postId": postId, "userId": userId};
+
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    try {
+      final response = await http.post(
+        Uri.http(baseUrl, "/sharePost"),
+        body: json.encode(userData),
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              title: Text(
+                "done",
+                style: TextStyle(color: AppColors.primary),
+              ),
+              content: Text("Post shared successfully!"),
+            );
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              title: Text(
+                "failed",
+                style: TextStyle(color: AppColors.primary),
+              ),
+              content: Text("Something went wrong, please try again later!"),
+            );
+          },
+        );
+      }
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Error",
+              style: TextStyle(color: AppColors.primary),
+            ),
+            content: Text(
+              "An error occurred while adding the comment. Please check your internet connection and try again.",
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  static Future<bool> followUser(String token, String id) async {
+    final String url = "http://$baseUrl/follow";
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'token': token,
+        'id': id,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to follow user');
+    }
+
+    final responseBody = json.decode(response.body);
+    return responseBody['isFollowed'];
   }
 }

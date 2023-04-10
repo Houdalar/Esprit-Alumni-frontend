@@ -428,7 +428,6 @@ class UserViewModel extends ChangeNotifier {
         }
       });
     } catch (e) {
-      print(e);
       //show a dialog with the error message
       showDialog(
           context: context,
@@ -463,7 +462,7 @@ class UserViewModel extends ChangeNotifier {
         .then((http.Response response) async {
       if (response.statusCode == 200) {
         final jsonBody = json.decode(response.body);
-        print(jsonBody);
+
         return {
           'username': jsonBody['username'],
           'profile_image': jsonBody['profile']['profile_image'],

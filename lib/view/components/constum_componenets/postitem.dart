@@ -21,6 +21,10 @@ class PostItem extends StatefulWidget {
   final bool isOwner;
   final VoidCallback onPostDeleted;
   final String? user;
+  final Map<String, dynamic>? sharedFrom;
+  final bool isSharedPost;
+  final PostItem? childPost;
+  final String? currentUserId;
 
   PostItem({
     required this.username,
@@ -36,6 +40,10 @@ class PostItem extends StatefulWidget {
     required this.isOwner,
     required this.onPostDeleted,
     required this.user,
+    required this.sharedFrom,
+    required this.isSharedPost,
+    required this.childPost,
+    required this.currentUserId,
   });
 
   @override
@@ -64,6 +72,54 @@ class _PostItemState extends State<PostItem> {
     } catch (e) {
       // Handle error, e.g., show a snackbar with an error message
     }
+  }
+
+  Widget _buildSharedPostItem(Map<String, dynamic> sharedFrom) {
+    bool isChildPostLiked = sharedFrom['likes'] != null &&
+        sharedFrom['likes'].contains(widget.currentUserId);
+    return Material(
+      elevation: 4.0, // Add more elevation to the shared post
+      child: PostItem(
+        username: widget.username,
+        profilePhotoUrl: widget.profilePhotoUrl,
+        postDescription: '',
+        postPhotoUrl: '',
+        numLikes: widget.numLikes,
+        numComments: widget.numComments,
+        createdAt: widget.createdAt,
+        id: widget.id,
+        isLiked: widget.isLiked,
+        likes: widget.likes,
+        isOwner: widget.isOwner,
+        onPostDeleted: widget.onPostDeleted,
+        user: widget.user,
+        sharedFrom: null,
+        isSharedPost: true,
+        currentUserId: widget.currentUserId,
+        childPost: PostItem(
+          username: sharedFrom['username'] ?? '',
+          profilePhotoUrl: sharedFrom['profile_image'] ?? '',
+          postDescription: sharedFrom['postDescription'] ?? '',
+          postPhotoUrl: sharedFrom['postPhotoUrl'] ?? '',
+          numLikes: sharedFrom['numLikes'] ?? 0,
+          numComments: sharedFrom['numComments'] ?? 0,
+          createdAt: DateTime.parse(
+              sharedFrom['createdAt'] ?? DateTime.now().toIso8601String()),
+          id: sharedFrom['_id'] ?? '',
+          isLiked: isChildPostLiked,
+          likes: sharedFrom['likes'] != null
+              ? List<String>.from(sharedFrom['likes'])
+              : [],
+          isOwner: false,
+          onPostDeleted: () {}, // Handle the post deletion
+          user: sharedFrom['_id'] ?? '',
+          sharedFrom: null,
+          isSharedPost: false,
+          childPost: null,
+          currentUserId: widget.currentUserId,
+        ),
+      ),
+    );
   }
 
   @override
@@ -115,9 +171,9 @@ class _PostItemState extends State<PostItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: 10),
           Stack(
             children: [
-              SizedBox(height: 10),
               ListTile(
                 leading: CircleAvatar(
                   radius: 25,
@@ -173,36 +229,43 @@ class _PostItemState extends State<PostItem> {
                 ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(5, 15, 5, 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.postDescription,
-                  maxLines: _showMore ? null : 6,
-                  overflow: TextOverflow.fade,
-                  style: TextStyle(height: 1.5),
-                ),
-                if (_totalLines != null && _totalLines! > 6)
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _showMore = !_showMore;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        _showMore ? "Show less" : "Show more",
-                        style: TextStyle(color: Colors.blue),
+          if (!widget.isSharedPost && widget.postDescription.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 15, 5, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.postDescription,
+                    maxLines: _showMore ? null : 6,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(height: 1.5),
+                  ),
+                  if (_totalLines != null && _totalLines! > 6)
+                    InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showMore = !_showMore;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Text(
+                          _showMore ? "Show less" : "Show more",
+                          style: TextStyle(color: Colors.blue),
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
-          ),
-          if (widget.postPhotoUrl != null) Image.network(widget.postPhotoUrl),
+          if (!widget.isSharedPost && widget.postPhotoUrl != null)
+            Image.network(widget.postPhotoUrl),
+          if (widget.isSharedPost && widget.childPost != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: widget.childPost,
+            ),
           Container(
             padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: GestureDetector(
@@ -268,11 +331,18 @@ class _PostItemState extends State<PostItem> {
                     ),
                   ),
                   Spacer(),
-                  Icon(
-                    Icons.share,
-                    color: Colors.grey,
-                    size: 24,
-                  ),
+                  InkWell(
+                    onTap: () async {
+                      String userId =
+                          await JwtDecoder.decode(_userToken!)['id'];
+                      ProfileViewModel.sharePost(widget.id, userId!, context);
+                    },
+                    child: Icon(
+                      Icons.share,
+                      color: Colors.grey,
+                      size: 24,
+                    ),
+                  )
                 ],
               ),
             ),
