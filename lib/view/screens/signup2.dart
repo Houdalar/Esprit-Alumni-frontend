@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../socketService.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 //import 'Profile/home.dart';
@@ -137,15 +138,16 @@ class _Signup2PageState extends State<Signup2Page> {
           if (_keyForm.currentState!.validate()) {
             _keyForm.currentState!.save();
             UserViewModel.signup(
-                widget.email,
-                widget.password,
-                widget.name,
-                selectedGender.toString(),
-                _selectedOption,
-                _selectedDate.toString(),
-                _selectedLevel,
-                _selectedSpecialization,
-                context);
+              widget.email,
+              widget.password,
+              widget.name,
+              selectedGender.toString(),
+              _selectedOption,
+              _selectedDate.toString(),
+              _selectedLevel,
+              _selectedSpecialization,
+              context,
+            );
           }
         },
       ),

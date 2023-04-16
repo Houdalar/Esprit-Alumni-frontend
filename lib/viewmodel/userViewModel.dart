@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../socketService.dart';
 import '../view/screens/Profile/home.dart';
 import '../../view/components/themes/colors.dart';
 import '../model/serchUser.dart';
@@ -18,8 +19,8 @@ class UserViewModel extends ChangeNotifier {
 
   UserViewModel();
 
-  static Future<void> login(
-      String? email, String? password, BuildContext context) async {
+  static Future<void> login(String? email, String? password,
+      BuildContext context, SocketService socketService) async {
     Map<String, dynamic> userData = {"email": email, "password": password};
 
     Map<String, String> headers = {
@@ -32,6 +33,7 @@ class UserViewModel extends ChangeNotifier {
         .then((http.Response response) async {
       if (response.statusCode == 200) {
         Map<String, dynamic> userData = json.decode(response.body);
+        socketService.connect(userData["id"]);
 
         // Shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -107,10 +109,7 @@ class UserViewModel extends ChangeNotifier {
             body: json.encode(userData), headers: headers)
         .then((http.Response response) async {
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
+        Navigator.pushNamed(context, "/login");
         showDialog(
             context: context,
             builder: (context) {
@@ -229,10 +228,8 @@ class UserViewModel extends ChangeNotifier {
             body: json.encode(userData), headers: headers)
         .then((http.Response response) async {
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
+        // navigate to the login page via route
+        Navigator.pushNamed(context, "/login");
         showDialog(
             context: context,
             builder: (context) {
@@ -417,11 +414,7 @@ class UserViewModel extends ChangeNotifier {
                     )));
               });
         } else if (response.statusCode == 400) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Signup2Page(
-                      googleUser.email, googleUser.displayName, "")));
+          Navigator.pushNamed(context, "/login");
         } else {
           // Handle other error codes as needed
           throw Exception('Failed to check user registration');

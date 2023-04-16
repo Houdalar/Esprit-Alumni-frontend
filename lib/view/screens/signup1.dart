@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
+import '../../socketService.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 import 'Profile/home.dart';
@@ -210,11 +211,7 @@ class _SignupPageState extends State<SignupPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Signup2Page(
-                  _email,
-                  _username,
-                  _password,
-                ),
+                builder: (context) => Signup2Page(_email, _username, _password),
               ),
             );
           }
@@ -327,10 +324,7 @@ class _SignupPageState extends State<SignupPage> {
                             TextStyle(color: AppColors.primary, fontSize: 15),
                         textAlign: TextAlign.center),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
+                      Navigator.pushNamed(context, "/login");
                     },
                   )
                 ],

@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
       home: LoginPage(socketService: socketService),
       routes: {
         '/login': (context) => LoginPage(socketService: socketService),
-        '/signup1': (context) => const SignupPage(),
       },
     );
   }
