@@ -1,6 +1,7 @@
 //import 'package:esprit_alumni_frontend/view/screens/OtherUserProfile/other_profile.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 //import 'profile.dart';
 //import 'dashboard.dart';
@@ -26,22 +27,42 @@ class NavigationBottom extends StatefulWidget {
 
 class _NavigationBottomState extends State<NavigationBottom>
     with SingleTickerProviderStateMixin {
+  int _notificationCount = 0;
   int _currentIndex = 0;
   List<Widget> _interfaces = const [];
   late AnimationController _controller;
   late Animation<double>? _animation;
+  String? token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0M2FhZWZkY2E0MzU5Yjc5ZjFhNWY4YyIsImlhdCI6MTY4MTU3NDg0NH0.AaxH0ur-AsMBYT4fEVjslgdYxn8QLpqFKanaGTTPQUI";
+  late SharedPreferences _prefs;
+
+  Future<void> _initializePrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = _prefs.getString('userId') ??
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0M2FhZWZkY2E0MzU5Yjc5ZjFhNWY4YyIsImlhdCI6MTY4MTU3NDg0NH0.AaxH0ur-AsMBYT4fEVjslgdYxn8QLpqFKanaGTTPQUI";
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _initializePrefs();
+    _getNonReadNotificationsCount();
+    /* ProfileViewModel.getNotification(token!, context).then((value) {
+      setState(() {
+        _notificationCount = value.length;
+      });
+    });*/
+    print("toekn is $token");
+
     _interfaces = [
       HomePage(widget.username, widget.profilePic, widget.id),
       Dashboard(),
-      Notifications(),
+      Notifications(token: token!, updateCount: _getNonReadNotificationsCount),
       Profile(
         isCurrentUser: true,
       ),
-      //OtherProfile(),
     ];
 
     _controller = AnimationController(
@@ -59,12 +80,53 @@ class _NavigationBottomState extends State<NavigationBottom>
     super.dispose();
   }
 
+  void _getNonReadNotificationsCount() async {
+    int count = await ProfileViewModel.getNonReadNotificationsCount(token!);
+    setState(() {
+      _notificationCount = count;
+    });
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
       _controller.reset();
       _controller.forward();
     });
+  }
+
+  Widget _buildIconWithBadge(IconData iconData, int count) {
+    if (count > 0) {
+      return Stack(
+        children: [
+          Icon(iconData),
+          Positioned(
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              constraints: BoxConstraints(
+                minWidth: 15,
+                minHeight: 15,
+              ),
+              child: Text(
+                '$count',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Icon(iconData);
+    }
   }
 
   @override
@@ -80,13 +142,13 @@ class _NavigationBottomState extends State<NavigationBottom>
             builder: (context, child) => Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(4, (index) {
+                IconData iconData = _getIconData(index);
                 return Transform.scale(
                   scale: _currentIndex == index ? _animation!.value : 1,
                   child: IconButton(
-                    icon: Icon(
-                      _getIconData(index),
-                      color: _currentIndex == index ? Colors.red : Colors.grey,
-                    ),
+                    icon: _buildIconWithBadge(
+                        iconData, index == 2 ? _notificationCount : 0),
+                    color: _currentIndex == index ? Colors.red : Colors.grey,
                     onPressed: () => _onItemTapped(index),
                   ),
                 );

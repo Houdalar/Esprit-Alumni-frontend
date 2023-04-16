@@ -5,14 +5,16 @@ import 'package:email_validator/email_validator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../socketService.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 import '../../viewmodel/userViewModel.dart';
 
 class LoginPage extends StatefulWidget {
+  final SocketService socketService;
   static String tag = 'login-page';
 
-  const LoginPage({super.key});
+  const LoginPage({super.key, required this.socketService});
 
   @override
   _LoginPageState createState() => new _LoginPageState();
@@ -155,7 +157,8 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           if (_keyForm.currentState!.validate()) {
             _keyForm.currentState!.save();
-            UserViewModel.login(_email, _password, context);
+            UserViewModel.login(
+                _email, _password, context, widget.socketService);
           }
         },
       ),

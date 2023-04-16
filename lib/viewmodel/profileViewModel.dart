@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
 
+import 'package:esprit_alumni_frontend/model/notification.dart';
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -569,5 +570,105 @@ class ProfileViewModel extends ChangeNotifier {
 
     final responseBody = json.decode(response.body);
     return responseBody['isFollowed'];
+  }
+
+  static Future<List<NotificationModel>> getNotification(
+      String? token, BuildContext context) {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(
+            Uri.http(baseUrl,
+                "/getUserNotifications/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0M2FhZWZkY2E0MzU5Yjc5ZjFhNWY4YyIsImlhdCI6MTY4MTU3NDg0NH0.AaxH0ur-AsMBYT4fEVjslgdYxn8QLpqFKanaGTTPQUI"),
+            headers: headers)
+        .then((http.Response response) async {
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        return data.map((json) => NotificationModel.fromJson(json)).toList();
+      } else {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                  title: const Text("Network error",
+                      style: TextStyle(color: AppColors.primary)),
+                  content: Container(
+                      child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'media/No connection-bro.png',
+                        height: 300,
+                        width: 300,
+                      ),
+                      const Text(
+                          "please check your internet connection and try again!"),
+                    ],
+                  )));
+            });
+        throw Exception('Failed to load data!');
+      }
+    });
+  }
+
+  static Future<int> getNonReadNotificationsCount(String token) {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.http(baseUrl, "/getUserUnreadNotificationsCount/$token"),
+            headers: headers)
+        .then((http.Response response) async {
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return data['count'];
+      } else {
+        throw Exception('Failed to load data!');
+      }
+    });
+  }
+
+  static Future<bool> markAllNotificationsAsRead(String token) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    final response = await http.put(
+      Uri.http(baseUrl, "/markAllNotificationsAsRead/$token"),
+      headers: headers,
+    );
+
+    if (response.statusCode != 200) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static Future<bool> markNotificationAsRead(
+      String token, String notificationId) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    final response = await http.put(
+      Uri.http(baseUrl, "/markNotificationAsRead/$token/$notificationId"),
+      headers: headers,
+    );
+    print(response.statusCode);
+    print(token);
+    print(notificationId);
+
+    if (response.statusCode != 200) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
