@@ -47,7 +47,21 @@ class _NotificationItemState extends State<NotificationItem> {
             widget.updateCount();
           }
         }
-        // Navigate to appropriate screen based on notification type
+        switch (_notification!.notificationType) {
+          case 'like':
+            {
+              break;
+            }
+          case 'like comment':
+
+          case 'follow':
+
+          case 'share':
+
+          case 'comment':
+
+          default:
+        }
       },
       child: Container(
         color: widget.notification.isRead ? Colors.white : Colors.grey[200],

@@ -1,10 +1,12 @@
 //import 'package:esprit_alumni_frontend/view/screens/OtherUserProfile/other_profile.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //import 'profile.dart';
 //import 'dashboard.dart';
+import '../../../socketService.dart';
 import 'dashboard.dart';
 import 'home.dart';
 //import 'package:esprit_alumni_frontend/model/profile.dart';
@@ -27,6 +29,11 @@ class NavigationBottom extends StatefulWidget {
 
 class _NavigationBottomState extends State<NavigationBottom>
     with SingleTickerProviderStateMixin {
+  final SocketService socketService = SocketService();
+
+  final GlobalKey<NotificationsState> notificationsKey =
+      GlobalKey<NotificationsState>();
+
   int _notificationCount = 0;
   int _currentIndex = 0;
   List<Widget> _interfaces = const [];
@@ -49,22 +56,22 @@ class _NavigationBottomState extends State<NavigationBottom>
     super.initState();
     _initializePrefs();
     _getNonReadNotificationsCount();
-    /* ProfileViewModel.getNotification(token!, context).then((value) {
-      setState(() {
-        _notificationCount = value.length;
-      });
-    });*/
-    print("toekn is $token");
 
     _interfaces = [
       HomePage(widget.username, widget.profilePic, widget.id),
       Dashboard(),
-      Notifications(token: token!, updateCount: _getNonReadNotificationsCount),
+      Notifications(
+        token: token!,
+        updateCount: _getNonReadNotificationsCount,
+        onNewNotification: (notification) {
+          notificationsKey.currentState?.newNotification(notification);
+        },
+        key: notificationsKey,
+      ),
       Profile(
         isCurrentUser: true,
       ),
     ];
-
     _controller = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -72,11 +79,20 @@ class _NavigationBottomState extends State<NavigationBottom>
     _animation = Tween<double>(begin: 1, end: 1.3).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
+    socketService.initSocket(token!);
+    socketService.connect(widget.id!);
+    socketService.listenForNotifications(
+      onNewNotification: (notification) {
+        notificationsKey.currentState?.newNotification(notification);
+      },
+      updateCount: _getNonReadNotificationsCount,
+    );
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    socketService.disconnect();
     super.dispose();
   }
 

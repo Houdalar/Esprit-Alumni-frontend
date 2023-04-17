@@ -8,15 +8,20 @@ import '../../components/constum_componenets/notificationItem.dart';
 class Notifications extends StatefulWidget {
   final String token;
   final VoidCallback updateCount;
-  const Notifications(
-      {required this.token, required this.updateCount, Key? key})
-      : super(key: key);
+  final Function(NotificationModel) onNewNotification;
+  final GlobalKey<NotificationsState> key;
+  const Notifications({
+    required this.token,
+    required this.updateCount,
+    required this.onNewNotification,
+    required this.key,
+  }) : super(key: key);
 
   @override
-  State<Notifications> createState() => _NotificationsState();
+  NotificationsState createState() => NotificationsState();
 }
 
-class _NotificationsState extends State<Notifications> {
+class NotificationsState extends State<Notifications> {
   List<NotificationModel> notifications = [];
 
   @override
@@ -53,6 +58,14 @@ class _NotificationsState extends State<Notifications> {
     );
   }
 
+  void newNotification(NotificationModel notification) {
+    setState(() {
+      notifications.insert(0, notification);
+    });
+    widget.onNewNotification(notification);
+    widget.updateCount();
+  }
+
   void _onNotificationRead(NotificationModel updatedNotification) {
     setState(() {
       final index = notifications.indexWhere(
@@ -61,5 +74,17 @@ class _NotificationsState extends State<Notifications> {
         notifications[index] = updatedNotification;
       }
     });
+    widget.onNewNotification(updatedNotification);
+    widget.updateCount();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
