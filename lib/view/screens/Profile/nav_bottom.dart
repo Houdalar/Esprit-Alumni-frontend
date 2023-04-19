@@ -54,6 +54,7 @@ class _NavigationBottomState extends State<NavigationBottom>
   @override
   void initState() {
     super.initState();
+    print('Initiating _NavigationBottomState');
     _initializePrefs();
     _getNonReadNotificationsCount();
 
@@ -79,11 +80,16 @@ class _NavigationBottomState extends State<NavigationBottom>
     _animation = Tween<double>(begin: 1, end: 1.3).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-    socketService.initSocket(token!);
-    socketService.connect(widget.id!);
+    socketService.initSocket("643aaefdca4359b79f1a5f8c");
+    socketService.connect("643aaefdca4359b79f1a5f8c");
     socketService.listenForNotifications(
       onNewNotification: (notification) {
         notificationsKey.currentState?.newNotification(notification);
+        if (mounted) {
+          setState(() {
+            _notificationCount += 1;
+          });
+        }
       },
       updateCount: _getNonReadNotificationsCount,
     );
@@ -98,9 +104,13 @@ class _NavigationBottomState extends State<NavigationBottom>
 
   void _getNonReadNotificationsCount() async {
     int count = await ProfileViewModel.getNonReadNotificationsCount(token!);
-    setState(() {
-      _notificationCount = count;
-    });
+    if (mounted) {
+      setState(() {
+        _notificationCount = count;
+        print(
+            'Updated notification count: $_notificationCount'); // Add this line
+      });
+    }
   }
 
   void _onItemTapped(int index) {
@@ -112,6 +122,7 @@ class _NavigationBottomState extends State<NavigationBottom>
   }
 
   Widget _buildIconWithBadge(IconData iconData, int count) {
+    print('Building icon with badge: $count');
     if (count > 0) {
       return Stack(
         children: [

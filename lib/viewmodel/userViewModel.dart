@@ -33,7 +33,7 @@ class UserViewModel extends ChangeNotifier {
         .then((http.Response response) async {
       if (response.statusCode == 200) {
         Map<String, dynamic> userData = json.decode(response.body);
-        socketService.connect(userData["id"]);
+        socketService.connect("643aaefdca4359b79f1a5f8c");
 
         // Shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -74,7 +74,6 @@ class NotificationsState extends State<Notifications> {
         notifications[index] = updatedNotification;
       }
     });
-    widget.onNewNotification(updatedNotification);
     widget.updateCount();
   }
 

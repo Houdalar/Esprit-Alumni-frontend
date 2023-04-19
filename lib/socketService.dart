@@ -27,10 +27,12 @@ class SocketService {
   void connect(String userId) {
     socket.connect();
     socket.emit('join', userId);
+    print('Socket connected for user: $userId');
   }
 
   void disconnect() {
     socket.disconnect();
+    print('Socket disconnected'); // Add this line
   }
 
   void listenForNotifications({
@@ -38,6 +40,7 @@ class SocketService {
     required VoidCallback updateCount,
   }) {
     socket.on('newNotification', (data) {
+      print('Received new notification from the socket'); // Add this line
       final notification = NotificationModel.fromJson(data);
       onNewNotification(notification);
       updateCount(); // Call the updateCount function
