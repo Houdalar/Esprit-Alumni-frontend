@@ -11,6 +11,7 @@ class SocketService {
     socket = IO.io('http://10.0.2.2:8081', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
+      'query': {'token': token},
     });
 
     socket.on('newNotification', (data) {
@@ -40,7 +41,6 @@ class SocketService {
     required VoidCallback updateCount,
   }) {
     socket.on('newNotification', (data) {
-      print('Received new notification from the socket'); // Add this line
       final notification = NotificationModel.fromJson(data);
       onNewNotification(notification);
       updateCount(); // Call the updateCount function
