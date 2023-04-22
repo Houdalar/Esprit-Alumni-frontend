@@ -1,9 +1,8 @@
-import 'package:esprit_alumni_frontend/view/screens/login.dart';
-import 'package:esprit_alumni_frontend/view/screens/signup2.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../socketService.dart';
@@ -12,7 +11,6 @@ import '../../view/components/themes/colors.dart';
 import '../model/serchUser.dart';
 import '../view/screens/Profile/nav_bottom.dart';
 import '../view/screens/rsetpassword2.dart';
-import '../../model/usermodel.dart' as CustomUser;
 
 class UserViewModel extends ChangeNotifier {
   static String baseUrl = "10.0.2.2:8081";
@@ -33,9 +31,8 @@ class UserViewModel extends ChangeNotifier {
         .then((http.Response response) async {
       if (response.statusCode == 200) {
         Map<String, dynamic> userData = json.decode(response.body);
-        socketService.connect("643aaefdca4359b79f1a5f8c");
+        String token = userData["id"];
 
-        // Shared preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userId", userData["id"]);
         prefs.setString("username", userData["username"]);

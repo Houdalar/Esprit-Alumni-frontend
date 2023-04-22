@@ -1,9 +1,9 @@
 import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../model/notification.dart';
 import '../../../viewmodel/profileViewModel.dart';
+import '../../screens/Profile/profile.dart';
+import '../../screens/Profile/singlePostView.dart';
 
 class NotificationItem extends StatefulWidget {
   NotificationModel notification;
@@ -15,7 +15,9 @@ class NotificationItem extends StatefulWidget {
       {required this.notification,
       required this.onRead,
       required this.token,
-      required this.updateCount});
+      required this.updateCount,
+      Key? key})
+      : super(key: key);
 
   @override
   _NotificationItemState createState() => _NotificationItemState();
@@ -50,11 +52,31 @@ class _NotificationItemState extends State<NotificationItem> {
         switch (_notification!.notificationType) {
           case 'like':
             {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePostView(
+                    postId: _notification!.postId!,
+                  ),
+                ),
+              );
               break;
             }
           case 'like comment':
 
           case 'follow':
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Profile(
+                    user: _notification!.senderId['_id'],
+                    isCurrentUser: false,
+                  ),
+                ),
+              );
+              break;
+            }
 
           case 'share':
 
@@ -65,7 +87,7 @@ class _NotificationItemState extends State<NotificationItem> {
       },
       child: Container(
         color: widget.notification.isRead ? Colors.white : Colors.grey[200],
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -86,7 +108,7 @@ class _NotificationItemState extends State<NotificationItem> {
                     child: Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColors.primaryDark,
                       ),
@@ -105,33 +127,35 @@ class _NotificationItemState extends State<NotificationItem> {
                   ),
               ],
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     RichText(
                       text: TextSpan(
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style:
+                            const TextStyle(fontSize: 16, color: Colors.black),
                         children: [
                           TextSpan(
                             text: widget.notification.senderId['username'],
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           TextSpan(
                             text: _getMessageText(widget.notification),
-                            style: TextStyle(fontWeight: FontWeight.normal),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.normal),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       widget.notification.elapsedTimeString,
-                      style: TextStyle(fontSize: 15, color: Colors.grey),
+                      style: const TextStyle(fontSize: 15, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -141,7 +165,7 @@ class _NotificationItemState extends State<NotificationItem> {
               Container(
                 width: 14,
                 height: 14,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.primaryDark,
                 ),

@@ -329,7 +329,6 @@ class ProfileViewModel extends ChangeNotifier {
         return followers;
       } else {
         throw Exception('Failed to load followers');
-        return [];
       }
     });
   }
@@ -579,12 +578,9 @@ class ProfileViewModel extends ChangeNotifier {
     };
 
     return http
-        .get(
-            Uri.http(baseUrl,
-                "/getUserNotifications/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0M2FhZWZkY2E0MzU5Yjc5ZjFhNWY4YyIsImlhdCI6MTY4MTU3NDg0NH0.AaxH0ur-AsMBYT4fEVjslgdYxn8QLpqFKanaGTTPQUI"),
+        .get(Uri.http(baseUrl, "/getUserNotifications/$token"),
             headers: headers)
         .then((http.Response response) async {
-      print(response.statusCode);
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
 
@@ -624,7 +620,6 @@ class ProfileViewModel extends ChangeNotifier {
         .get(Uri.http(baseUrl, "/getUserUnreadNotificationsCount/$token"),
             headers: headers)
         .then((http.Response response) async {
-      print(response.statusCode);
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return data['count'];
@@ -661,14 +656,28 @@ class ProfileViewModel extends ChangeNotifier {
       Uri.http(baseUrl, "/markNotificationAsRead/$token/$notificationId"),
       headers: headers,
     );
-    print(response.statusCode);
-    print(token);
-    print(notificationId);
-
     if (response.statusCode != 200) {
       return false;
     } else {
       return true;
     }
+  }
+
+  static Future<PostModel> getPostById(String postId) async {
+    final String url = "http://$baseUrl/getPostById/$postId";
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to get post');
+    }
+
+    final responseBody = json.decode(response.body);
+    return PostModel.fromJson(responseBody);
   }
 }

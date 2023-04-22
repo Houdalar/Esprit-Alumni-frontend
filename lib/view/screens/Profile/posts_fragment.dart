@@ -20,7 +20,7 @@ class _PostsFragmentState extends State<PostsFragment> {
     setState(() {});
   }
 
-  PostItem? _buildChildPost(Map<String, dynamic>? sharedFrom) {
+  PostItem? buildChildPost(Map<String, dynamic>? sharedFrom) {
     if (sharedFrom == null) {
       return null;
     }
@@ -84,7 +84,7 @@ class _PostsFragmentState extends State<PostsFragment> {
                     sharedFrom: post.sharedFrom,
                     isSharedPost: post.sharedFrom != null,
                     currentUserId: widget.userId,
-                    childPost: _buildChildPost(post.sharedFrom),
+                    childPost: buildChildPost(post.sharedFrom),
                   );
                 }).toList(),
               ),

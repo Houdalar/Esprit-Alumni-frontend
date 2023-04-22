@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import '../../../model/notification.dart';
 import '../../../viewmodel/profileViewModel.dart';
 import '../../components/constum_componenets/notificationItem.dart';
@@ -45,7 +43,7 @@ class NotificationsState extends State<Notifications> {
               },
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text('Failed to fetch notifications!'),
             );
           } else {

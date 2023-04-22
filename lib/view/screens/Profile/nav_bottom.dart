@@ -1,20 +1,12 @@
-//import 'package:esprit_alumni_frontend/view/screens/OtherUserProfile/other_profile.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-//import 'profile.dart';
-//import 'dashboard.dart';
 import '../../../socketService.dart';
 import 'dashboard.dart';
 import 'home.dart';
-//import 'package:esprit_alumni_frontend/model/profile.dart';
 import 'package:esprit_alumni_frontend/viewmodel/profileViewModel.dart';
-
 import 'notifications.dart';
-
-//import 'notifications.dart';
 
 class NavigationBottom extends StatefulWidget {
   final String? username;
@@ -39,60 +31,59 @@ class _NavigationBottomState extends State<NavigationBottom>
   List<Widget> _interfaces = const [];
   late AnimationController _controller;
   late Animation<double>? _animation;
-  String? token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0M2FhZWZkY2E0MzU5Yjc5ZjFhNWY4YyIsImlhdCI6MTY4MTU3NDg0NH0.AaxH0ur-AsMBYT4fEVjslgdYxn8QLpqFKanaGTTPQUI";
+  String? token;
   late SharedPreferences _prefs;
 
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
-      token = _prefs.getString('userId') ??
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0M2FhZWZkY2E0MzU5Yjc5ZjFhNWY4YyIsImlhdCI6MTY4MTU3NDg0NH0.AaxH0ur-AsMBYT4fEVjslgdYxn8QLpqFKanaGTTPQUI";
+      token = _prefs.getString('userId') ?? "";
     });
+    Map<String, dynamic> decodedToken = await JwtDecoder.decode(token!);
+    socketService.initSocket(decodedToken["id"].toString());
+    socketService.connect(decodedToken["id"].toString());
   }
 
   @override
   void initState() {
     super.initState();
-    print('Initiating _NavigationBottomState');
-    _initializePrefs();
-    _getNonReadNotificationsCount();
+    _initializePrefs().then((_) {
+      _getNonReadNotificationsCount();
+      _interfaces = [
+        HomePage(widget.username, widget.profilePic, widget.id),
+        Dashboard(),
+        Notifications(
+          token: token!,
+          updateCount: _getNonReadNotificationsCount,
+          onNewNotification: (notification) {
+            notificationsKey.currentState?.newNotification(notification);
+          },
+          key: notificationsKey,
+        ),
+        const Profile(
+          isCurrentUser: true,
+        ),
+      ];
+      _controller = AnimationController(
+        duration: const Duration(milliseconds: 200),
+        vsync: this,
+      );
+      _animation = Tween<double>(begin: 1, end: 1.3).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      );
 
-    _interfaces = [
-      HomePage(widget.username, widget.profilePic, widget.id),
-      Dashboard(),
-      Notifications(
-        token: token!,
-        updateCount: _getNonReadNotificationsCount,
+      socketService.listenForNotifications(
         onNewNotification: (notification) {
           notificationsKey.currentState?.newNotification(notification);
+          if (mounted) {
+            setState(() {
+              _notificationCount += 1;
+            });
+          }
         },
-        key: notificationsKey,
-      ),
-      Profile(
-        isCurrentUser: true,
-      ),
-    ];
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 1, end: 1.3).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-    socketService.initSocket("643aaefdca4359b79f1a5f8c");
-    socketService.connect("643aaefdca4359b79f1a5f8c");
-    socketService.listenForNotifications(
-      onNewNotification: (notification) {
-        notificationsKey.currentState?.newNotification(notification);
-        if (mounted) {
-          setState(() {
-            _notificationCount += 1;
-          });
-        }
-      },
-      updateCount: _getNonReadNotificationsCount,
-    );
+        updateCount: _getNonReadNotificationsCount,
+      );
+    });
   }
 
   @override
@@ -107,8 +98,6 @@ class _NavigationBottomState extends State<NavigationBottom>
     if (mounted) {
       setState(() {
         _notificationCount = count;
-        print(
-            'Updated notification count: $_notificationCount'); // Add this line
       });
     }
   }
@@ -122,38 +111,41 @@ class _NavigationBottomState extends State<NavigationBottom>
   }
 
   Widget _buildIconWithBadge(IconData iconData, int count) {
-    print('Building icon with badge: $count');
-    if (count > 0) {
-      return Stack(
-        children: [
-          Icon(iconData),
-          Positioned(
-            right: 0,
-            child: Container(
-              padding: EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              constraints: BoxConstraints(
-                minWidth: 15,
-                minHeight: 15,
-              ),
-              child: Text(
-                '$count',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        if (count > 0) {
+          return Stack(
+            children: [
+              Icon(iconData),
+              Positioned(
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 15,
+                    minHeight: 15,
+                  ),
+                  child: Text(
+                    '$count',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Icon(iconData);
-    }
+            ],
+          );
+        } else {
+          return Icon(iconData);
+        }
+      },
+    );
   }
 
   @override
@@ -161,9 +153,9 @@ class _NavigationBottomState extends State<NavigationBottom>
     return Scaffold(
       body: _interfaces[_currentIndex],
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: AnimatedBuilder(
             animation: _animation!,
             builder: (context, child) => Row(

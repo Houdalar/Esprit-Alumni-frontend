@@ -29,7 +29,7 @@ class _CreatePostState extends State<CreatePost> {
 
   @override
   Widget build(BuildContext context) {
-    final _focusNode = FocusNode();
+    final focusNode = FocusNode();
     _pickImage(ImageSource gallery) async {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return null;
@@ -39,7 +39,7 @@ class _CreatePostState extends State<CreatePost> {
 
     return GestureDetector(
       onTap: () {
-        _focusNode.unfocus();
+        focusNode.unfocus();
       },
       child: Card(
         elevation: 0.0,
@@ -63,7 +63,7 @@ class _CreatePostState extends State<CreatePost> {
                           builder: (context) {
                             return AlertDialog(
                               contentPadding:
-                                  EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                  const EdgeInsets.fromLTRB(20, 20, 20, 20),
                               content: SingleChildScrollView(
                                 child: PostCreateComponent(
                                     widget.username, widget.profileimage),
@@ -105,7 +105,7 @@ class _CreatePostState extends State<CreatePost> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            _focusNode.unfocus();
+                            focusNode.unfocus();
                             setState(() {
                               _isExpanded = !_isExpanded;
                             });
@@ -126,7 +126,7 @@ class _CreatePostState extends State<CreatePost> {
                         const Spacer(),
                         IconButton(
                           onPressed: () {
-                            _focusNode.unfocus();
+                            focusNode.unfocus();
                             setState(() {
                               _isExpanded = false;
                             });
@@ -135,7 +135,7 @@ class _CreatePostState extends State<CreatePost> {
                               builder: (context) {
                                 return AlertDialog(
                                   contentPadding:
-                                      EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                      const EdgeInsets.fromLTRB(20, 20, 20, 20),
                                   content: SingleChildScrollView(
                                     child: PostCreateComponent(
                                         widget.username, widget.profileimage),
@@ -154,10 +154,10 @@ class _CreatePostState extends State<CreatePost> {
                             fontSize: 16.0,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                           onPressed: () {
-                            _focusNode.unfocus();
+                            focusNode.unfocus();
                             setState(() {
                               _isExpanded = false;
                             });

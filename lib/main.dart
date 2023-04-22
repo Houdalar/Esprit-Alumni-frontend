@@ -11,9 +11,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // Initialize the SocketService
+
   final socketService = SocketService();
-  socketService.initSocket('your_user_token');
+  //socketService.initSocket('your_user_token');
 
   runApp(MyApp(socketService: socketService));
 }

@@ -14,26 +14,18 @@ class SocketService {
       'query': {'token': token},
     });
 
-    socket.on('newNotification', (data) {
-      print('New notification received: ${jsonEncode(data)}');
-    });
+    socket.on('newNotification', (data) {});
 
-    socket.onError((error) {
-      print('Error: $error');
-    });
-
-    socket.onDisconnect((_) => print('Disconnected from the server'));
+    socket.onError((error) {});
   }
 
   void connect(String userId) {
     socket.connect();
     socket.emit('join', userId);
-    print('Socket connected for user: $userId');
   }
 
   void disconnect() {
     socket.disconnect();
-    print('Socket disconnected'); // Add this line
   }
 
   void listenForNotifications({
@@ -43,7 +35,7 @@ class SocketService {
     socket.on('newNotification', (data) {
       final notification = NotificationModel.fromJson(data);
       onNewNotification(notification);
-      updateCount(); // Call the updateCount function
+      updateCount();
     });
   }
 }
