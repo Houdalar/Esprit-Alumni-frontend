@@ -1,11 +1,9 @@
-// ignore_for_file: use_key_in_widget_constructors
-
 import 'package:flutter/material.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 
 class GetStartedPage extends StatelessWidget {
-  final logo = Container(
+  final logo = SizedBox(
     height: 200.0,
     width: double.infinity,
     child: Image.asset("media/logo.png"),

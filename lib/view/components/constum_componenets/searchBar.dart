@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FacebookSearchBar extends StatefulWidget {
   @override
-  _FacebookSearchBarState createState() => _FacebookSearchBarState();
+  FacebookSearchBarState createState() => FacebookSearchBarState();
 }
 
-class _FacebookSearchBarState extends State<FacebookSearchBar>
+class FacebookSearchBarState extends State<FacebookSearchBar>
     with SingleTickerProviderStateMixin {
   bool _isExpanded = false;
   late AnimationController _animationController;
   late Animation<double> _animation;
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -19,7 +18,7 @@ class _FacebookSearchBarState extends State<FacebookSearchBar>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
 
     _animation = CurvedAnimation(
@@ -52,7 +51,7 @@ class _FacebookSearchBarState extends State<FacebookSearchBar>
     return AnimatedBuilder(
       animation: _animation,
       builder: (BuildContext context, Widget? child) {
-        return Container(
+        return SizedBox(
           height: _animation.value * 100,
           child: Stack(
             children: [
@@ -67,7 +66,7 @@ class _FacebookSearchBarState extends State<FacebookSearchBar>
                   ),
                 ),
               AnimatedPositioned(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 left: 0,
                 right: 0,
                 top: _isExpanded ? 0 : 8,
@@ -82,41 +81,39 @@ class _FacebookSearchBarState extends State<FacebookSearchBar>
                     ),
                     child: Row(
                       children: [
-                        SizedBox(width: 8),
-                        Icon(Icons.search),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.search),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: TextFormField(
                             controller: _textEditingController,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'Search',
                               border: InputBorder.none,
                             ),
-                            onChanged: (String query) {
-                              // Perform search operation here
-                            },
+                            onChanged: (String query) {},
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                           onPressed: () {
                             _textEditingController.clear();
                           },
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                       ],
                     ),
                   ),
                 ),
               ),
               AnimatedPositioned(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 left: 0,
                 right: 0,
                 top: _isExpanded ? 56 : 0,
                 height: _animation.value * 44,
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),

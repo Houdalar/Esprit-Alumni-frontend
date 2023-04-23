@@ -51,10 +51,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
     if (userId!.isNotEmpty) {
       List<SearchUser> followers = await ProfileViewModel.getFollowers(token!);
-      print("toekn is $token");
       followerIds = followers.map((follower) => follower.userId).toList();
-      print(followers.map((follower) => follower.userId).toList());
-
       setState(() {
         isFollowing = followerIds.contains(widget.user);
       });
@@ -87,8 +84,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Followers"),
-          content: Container(
+          title: const Text("Followers"),
+          content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
               shrinkWrap: true,
@@ -117,8 +114,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Followers"),
-          content: Container(
+          title: const Text("Followers"),
+          content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
               shrinkWrap: true,
@@ -150,13 +147,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
     if (response.statusCode == 200) {
       var profile = ProfileModel.fromJson(json.decode(response.body));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Profile picture uploaded'),
         backgroundColor: Colors.grey,
       ));
       ProfileViewModel.fetchProfile(token);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Error uploading profile picture'),
         backgroundColor: Colors.grey,
       ));
@@ -196,7 +193,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 children: <Widget>[
                   ClipPath(
                     clipper: ProfileClipper(),
-                    child: Image(
+                    child: const Image(
                       width: double.infinity,
                       image: AssetImage('media/background_image.png'),
                       fit: BoxFit.cover,
@@ -207,24 +204,24 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     right: 5.0,
                     child: widget.isCurrentUser
                         ? IconButton(
-                            icon: Icon(Icons.settings),
+                            icon: const Icon(Icons.settings),
                             iconSize: 27.0,
                             color: AppColors.primaryDark,
                             onPressed: () {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return SettingsPopup();
+                                  return const SettingsPopup();
                                 },
                               );
                             },
                           )
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                   ),
                   Positioned(
                       top: 110.0,
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
@@ -234,109 +231,98 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             )
                           ],
                         ),
-                        child: Container(
-                          child: GestureDetector(
-                            onTap: () {
-                              if (widget.isCurrentUser) {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: SingleChildScrollView(
-                                        child: ListBody(
-                                          children: <Widget>[
-                                            GestureDetector(
-                                              child: Text('Show Image'),
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          content: Container(
-                                                            width: double
-                                                                .maxFinite,
-                                                            child:
-                                                                Image.network(
-                                                              profile
-                                                                  .profileImage,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ));
-                                                    });
-                                              },
-                                            ),
-                                            Padding(
-                                                padding: EdgeInsets.all(8.0)),
-                                            GestureDetector(
-                                              child: Text('Edit Image'),
-                                              onTap: () async {
-                                                final pickedFile =
-                                                    await picker.getImage(
-                                                        source: ImageSource
-                                                            .gallery);
-                                                // Use the pickedFile variable to access the selected image
-                                                await uploadPic(context, token!,
-                                                    File(pickedFile!.path));
-                                                Navigator.of(context).pop();
-                                                // display the image
-                                                setState(() {
-                                                  ProfileViewModel.fetchProfile(
-                                                      token!);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            if (widget.isCurrentUser) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          GestureDetector(
+                                            child: const Text('Show Image'),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                        backgroundColor:
+                                                            Colors.transparent,
+                                                        content: SizedBox(
+                                                          width:
+                                                              double.maxFinite,
+                                                          child: Image.network(
+                                                            profile
+                                                                .profileImage,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ));
+                                                  });
+                                            },
+                                          ),
+                                          const Padding(
+                                              padding: EdgeInsets.all(8.0)),
+                                          GestureDetector(
+                                            child: const Text('Edit Image'),
+                                            onTap: () async {
+                                              final pickedFile =
+                                                  await picker.getImage(
+                                                      source:
+                                                          ImageSource.gallery);
+                                              // Use the pickedFile variable to access the selected image
+                                              await uploadPic(context, token!,
+                                                  File(pickedFile!.path));
+                                              Navigator.of(context).pop();
+                                              // display the image
+                                              setState(() {
+                                                ProfileViewModel.fetchProfile(
+                                                    token!);
+                                              });
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                            child: ClipOval(
-                              child: Image.network(
-                                //"http://172.16.11.227:8081/img/pdp.PNG1678107749613.png",
-                                profile.profileImage,
-                                fit: BoxFit.cover,
-                                width: 105.0,
-                                height: 105.0,
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                  // Return a placeholder or error image if the image fails to load
-                                  return //Icon(Icons.error);
-                                      Image(
-                                    image:
-                                        AssetImage('media/profile_image.png'),
-                                    fit: BoxFit.cover,
-                                    width: 105.0,
-                                    height: 105.0,
-                                  );
-                                },
-                                loadingBuilder: (BuildContext context,
-                                    Widget child,
-                                    ImageChunkEvent? loadingProgress) {
-                                  if (loadingProgress == null) {
-                                    return child;
-                                  }
-                                  // Show a progress indicator while the image is loading
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      value:
-                                          loadingProgress.expectedTotalBytes !=
-                                                  null
-                                              ? loadingProgress
-                                                      .cumulativeBytesLoaded /
-                                                  loadingProgress
-                                                      .expectedTotalBytes!
-                                              : null,
                                     ),
                                   );
                                 },
-                              ),
+                              );
+                            }
+                          },
+                          child: ClipOval(
+                            child: Image.network(
+                              profile.profileImage,
+                              fit: BoxFit.cover,
+                              width: 105.0,
+                              height: 105.0,
+                              errorBuilder: (BuildContext context,
+                                  Object exception, StackTrace? stackTrace) {
+                                return const Image(
+                                  image: AssetImage('media/profile_image.png'),
+                                  fit: BoxFit.cover,
+                                  width: 105.0,
+                                  height: 105.0,
+                                );
+                              },
+                              loadingBuilder: (BuildContext context,
+                                  Widget child,
+                                  ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) {
+                                  return child;
+                                }
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
+                                            loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),
@@ -344,7 +330,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 ],
               ),
               Padding(
-                  padding: EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -354,15 +340,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           child: Column(children: <Widget>[
                             Text(
                               profile.numberOfFollowing.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 17.0,
                                 fontFamily: 'Mukta Malar',
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(height: 2.0),
-                            Text(
+                            const SizedBox(height: 2.0),
+                            const Text(
                               "Followings",
                               style: TextStyle(
                                 color: Colors.black54,
@@ -376,25 +362,25 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       ]),
                       Column(children: <Widget>[
                         Text(profile.owner["username"],
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 23.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Mukta Malar',
                               letterSpacing: 1.5,
                               color: AppColors.primaryDark,
                             )),
-                        SizedBox(height: 10.0),
+                        const SizedBox(height: 10.0),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on,
                               color: Colors.black,
                               size: 17.0,
                             ),
-                            SizedBox(width: 5.0),
+                            const SizedBox(width: 5.0),
                             Text(
                               profile.location,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Color.fromARGB(136, 0, 0, 0),
                                 fontSize: 16.0,
                                 fontFamily: 'Mukta Malar',
@@ -410,15 +396,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           child: Column(children: <Widget>[
                             Text(
                               _numberOfFollowers.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 17.0,
                                 fontFamily: 'Mukta Malar',
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(height: 2.0),
-                            Text(
+                            const SizedBox(height: 2.0),
+                            const Text(
                               "Followers",
                               style: TextStyle(
                                 color: Colors.black54,
@@ -432,41 +418,42 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       ])
                     ],
                   )),
-              SizedBox(height: 25.0),
+              const SizedBox(height: 25.0),
               if (!widget.isCurrentUser)
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
                           ),
                           onPressed: () {
                             // Handle send message action
                           },
-                          icon: Icon(Icons.send, color: AppColors.primaryDark),
-                          label: Text(
+                          icon: const Icon(Icons.send,
+                              color: AppColors.primaryDark),
+                          label: const Text(
                             'Message',
                             style: TextStyle(color: AppColors.primaryDark),
                           ),
                         ),
                       ),
-                      SizedBox(width: 30.0),
+                      const SizedBox(width: 30.0),
                       Expanded(
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
                           ),
                           onPressed: () async {
                             bool isFollowing =
@@ -487,20 +474,21 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             }
                           },
                           icon: isFollowing
-                              ? Icon(Icons.person_remove_alt_1,
+                              ? const Icon(Icons.person_remove_alt_1,
                                   color: AppColors.primaryDark)
-                              : Icon(Icons.person_add_alt_1,
+                              : const Icon(Icons.person_add_alt_1,
                                   color: AppColors.primaryDark),
                           label: Text(
                             isFollowing ? 'Unfollow' : 'Follow',
-                            style: TextStyle(color: AppColors.primaryDark),
+                            style:
+                                const TextStyle(color: AppColors.primaryDark),
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              SizedBox(height: 15.0),
+              const SizedBox(height: 15.0),
 
               // POSTS AND CAREER TABS ----------------------------------------------
               TabBar(
@@ -508,7 +496,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                 labelColor: AppColors.primary,
                 indicatorColor: AppColors.primary,
                 indicatorWeight: 2.0,
-                labelStyle: TextStyle(
+                labelStyle: const TextStyle(
                   fontSize: 18.0,
                   fontFamily: 'Mukta Malar',
                   fontWeight: FontWeight.w600,
@@ -518,8 +506,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   Tab(text: 'Posts'),
                 ],
               ),
-              SizedBox(height: 10.0),
-              Container(
+              const SizedBox(height: 10.0),
+              SizedBox(
                 height: MediaQuery.of(context).size.height * 3,
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 0.7,

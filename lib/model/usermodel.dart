@@ -46,21 +46,4 @@ class User {
       profileImage: json['profile']?['profile_image'] ?? '',
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-      'username': username,
-      'googleUserId': googleUserId,
-      'token': token,
-      'gender': gender,
-      'dateOfBirth': dateOfBirth,
-      'level': level,
-      'speciality': speciality,
-      'option': option,
-      'status': status,
-      'profile': profile,
-    };
-  }
 }

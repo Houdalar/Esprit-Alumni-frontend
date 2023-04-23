@@ -23,7 +23,7 @@ class CommentModel {
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
     DateTime createdAt = DateTime.parse(json['createdAt']);
-    Duration difference = DateTime.now().difference(createdAt);
+    //Duration difference = DateTime.now().difference(createdAt);
     String elapsedTimeString = timeago.format(createdAt);
 
     return CommentModel(
@@ -40,17 +40,5 @@ class CommentModel {
       elapsedTimeString: elapsedTimeString,
       id: json['_id'],
     );
-  }
-
-  Map toJson() {
-    return {
-      'owner': owner,
-      'post': post,
-      'content': content,
-      'likes': likes,
-      'createdAt': createdAt,
-      'numberOfLikes': numberOfLikes,
-      'elapsedTimeString': elapsedTimeString,
-    };
   }
 }

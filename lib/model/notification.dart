@@ -37,7 +37,7 @@ class NotificationModel {
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     DateTime date = DateTime.parse(json['date']);
-    Duration difference = DateTime.now().difference(date);
+    // Duration difference = DateTime.now().difference(date);
     String elapsedTimeString = timeago.format(date);
     return NotificationModel(
       id: json['_id'] ?? '',

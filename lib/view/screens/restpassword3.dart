@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
@@ -9,18 +8,17 @@ class reset3Page extends StatefulWidget {
   const reset3Page({Key? key}) : super(key: key);
 
   @override
-  _reset3PageState createState() => _reset3PageState();
+  reset3PageState createState() => reset3PageState();
 }
 
-class _reset3PageState extends State<reset3Page> {
+class reset3PageState extends State<reset3Page> {
   String? _email;
   String? _password;
-  String? _confirmPassword;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   Future<String?> _getEmail() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString("email") as String?;
+    return prefs.getString("email");
   }
 
   @override
@@ -30,7 +28,7 @@ class _reset3PageState extends State<reset3Page> {
 
   @override
   Widget build(BuildContext context) {
-    final mailphoto = Container(
+    final mailphoto = SizedBox(
       height: double.infinity,
       width: double.infinity,
       child: Image.asset("media/Reset password-cuate (1).png"),
@@ -70,9 +68,7 @@ class _reset3PageState extends State<reset3Page> {
       },
     );
     final confirmPassword = TextFormField(
-      onSaved: (String? value) {
-        _confirmPassword = value;
-      },
+      onSaved: (String? value) {},
       minLines: 1,
       maxLines: 1,
       keyboardType: TextInputType.visiblePassword,
@@ -107,8 +103,7 @@ class _reset3PageState extends State<reset3Page> {
       },
     );
 
-    final sendButton = Container(
-      //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
+    final sendButton = SizedBox(
       width: double.infinity,
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),

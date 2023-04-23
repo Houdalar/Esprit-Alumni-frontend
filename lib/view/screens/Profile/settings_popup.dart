@@ -6,37 +6,29 @@ class SettingsPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Settings'),
+      title: const Text('Settings'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
             ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Edit Credentials'),
-              onTap: () {
-                // TODO: Add functionality for editing profile
-              },
+              leading: const Icon(Icons.person),
+              title: const Text('Edit Credentials'),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                // TODO: Add functionality for logging out
-              },
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.privacy_tip),
-              title: Text('Privacy Policy'),
-              onTap: () {
-                // TODO: Add functionality for displaying privacy policy
-              },
+              leading: const Icon(Icons.privacy_tip),
+              title: const Text('Privacy Policy'),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.info),
-              title: Text('About Us'),
-              onTap: () {
-                // TODO: Add functionality for displaying information about the app or company
-              },
+              leading: const Icon(Icons.info),
+              title: const Text('About Us'),
+              onTap: () {},
             ),
           ],
         ),

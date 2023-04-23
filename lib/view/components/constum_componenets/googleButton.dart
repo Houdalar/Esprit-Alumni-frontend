@@ -1,15 +1,13 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 
 class GoogleSignInButton extends StatefulWidget {
   const GoogleSignInButton({super.key});
 
   @override
-  _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
+  GoogleSignInButtonState createState() => GoogleSignInButtonState();
 }
 
-class _GoogleSignInButtonState extends State<GoogleSignInButton> {
+class GoogleSignInButtonState extends State<GoogleSignInButton> {
   bool _isButtonPressed = false;
 
   @override

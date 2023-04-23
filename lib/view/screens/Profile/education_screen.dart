@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:esprit_alumni_frontend/viewmodel/profileViewModel.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-
-import '../../../model/profilemodel.dart';
 
 class EducationScreen extends StatefulWidget {
   const EducationScreen({super.key});
@@ -64,7 +57,6 @@ class _EducationScreen extends State<EducationScreen> {
   TextEditingController searchController = TextEditingController();
   String selectedUniversity = '';
   bool showFilteredList = false;
-  static String baseUrl = "10.0.2.2:8081";
   late SharedPreferences _prefs;
   String? token = "";
 
@@ -76,11 +68,11 @@ class _EducationScreen extends State<EducationScreen> {
 
   void filterUniversities(String query) {
     List<String> filteredList = [];
-    universities.forEach((university) {
+    for (var university in universities) {
       if (university.toLowerCase().startsWith(query.toLowerCase())) {
         filteredList.add(university);
       }
-    });
+    }
     setState(() {
       filteredUniversities = filteredList;
       showFilteredList = true;
@@ -111,7 +103,7 @@ class _EducationScreen extends State<EducationScreen> {
                     height: 80,
                     width: 110,
                   ),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   Flexible(
                     child: Text(
                       'Ecole supérieur privée d\'ingénierie et de technologie',
@@ -133,10 +125,10 @@ class _EducationScreen extends State<EducationScreen> {
                         height: 80,
                         width: 110,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Flexible(
                         child: Text(
-                          "$selectedUniversity",
+                          selectedUniversity,
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.grey[600],
@@ -164,7 +156,7 @@ class _EducationScreen extends State<EducationScreen> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               Padding(
@@ -185,16 +177,15 @@ class _EducationScreen extends State<EducationScreen> {
                     },
                     decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                             color: Color.fromARGB(255, 148, 34, 26),
                             width: 0.8),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       hintText: "Add other university",
-                      suffixIcon: Icon(
+                      suffixIcon: const Icon(
                         Icons.search,
-                        color: Color.fromARGB(
-                            255, 209, 41, 29), // set the desired color
+                        color: Color.fromARGB(255, 209, 41, 29),
                       ),
                     ),
                   ),

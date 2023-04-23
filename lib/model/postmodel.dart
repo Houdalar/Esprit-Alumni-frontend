@@ -33,7 +33,7 @@ class PostModel {
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
     DateTime createdAt = DateTime.parse(json['createdAt']);
-    Duration difference = DateTime.now().difference(createdAt);
+    //Duration difference = DateTime.now().difference(createdAt);
     String elapsedTimeString = timeago.format(createdAt);
 
     Map<String, dynamic>? sharedFromJson;
@@ -70,21 +70,5 @@ class PostModel {
       elapsedTimeString: elapsedTimeString,
       sharedFrom: sharedFromJson,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'owner': owner,
-      'caption': caption,
-      'image': image,
-      'likes': likes,
-      'comments': comments,
-      'createdAt': createdAt.toIso8601String(),
-      'numberOfLikes': numberOfLikes,
-      'numberOfComments': numberOfComments,
-      'category': category,
-      'numberOfShares': numberOfShares,
-    };
   }
 }

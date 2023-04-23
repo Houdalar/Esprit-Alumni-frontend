@@ -27,6 +27,7 @@ class PostItem extends StatefulWidget {
   final String? currentUserId;
 
   PostItem({
+    super.key,
     required this.username,
     required this.profilePhotoUrl,
     required this.postDescription,
@@ -55,15 +56,7 @@ class _PostItemState extends State<PostItem> {
   int? _numLikes;
   String? _userToken;
   bool _showMore = false;
-  GlobalKey _textKey = GlobalKey();
   int? _totalLines;
-
-  int _getNumberOfLines() {
-    final RenderBox textBox =
-        _textKey.currentContext!.findRenderObject() as RenderBox;
-    final double lineHeight = textBox.size.height / textBox.size.width;
-    return (textBox.size.height / lineHeight).ceil();
-  }
 
   Future<void> _deletePost() async {
     try {
@@ -74,68 +67,19 @@ class _PostItemState extends State<PostItem> {
     }
   }
 
-  Widget _buildSharedPostItem(Map<String, dynamic> sharedFrom) {
-    bool isChildPostLiked = sharedFrom['likes'] != null &&
-        sharedFrom['likes'].contains(widget.currentUserId);
-    return Material(
-      elevation: 4.0, // Add more elevation to the shared post
-      child: PostItem(
-        username: widget.username,
-        profilePhotoUrl: widget.profilePhotoUrl,
-        postDescription: '',
-        postPhotoUrl: '',
-        numLikes: widget.numLikes,
-        numComments: widget.numComments,
-        createdAt: widget.createdAt,
-        id: widget.id,
-        isLiked: widget.isLiked,
-        likes: widget.likes,
-        isOwner: widget.isOwner,
-        onPostDeleted: widget.onPostDeleted,
-        user: widget.user,
-        sharedFrom: null,
-        isSharedPost: true,
-        currentUserId: widget.currentUserId,
-        childPost: PostItem(
-          username: sharedFrom['username'] ?? '',
-          profilePhotoUrl: sharedFrom['profile_image'] ?? '',
-          postDescription: sharedFrom['postDescription'] ?? '',
-          postPhotoUrl: sharedFrom['postPhotoUrl'] ?? '',
-          numLikes: sharedFrom['numLikes'] ?? 0,
-          numComments: sharedFrom['numComments'] ?? 0,
-          createdAt: DateTime.parse(
-              sharedFrom['createdAt'] ?? DateTime.now().toIso8601String()),
-          id: sharedFrom['_id'] ?? '',
-          isLiked: isChildPostLiked,
-          likes: sharedFrom['likes'] != null
-              ? List<String>.from(sharedFrom['likes'])
-              : [],
-          isOwner: false,
-          onPostDeleted: () {}, // Handle the post deletion
-          user: sharedFrom['_id'] ?? '',
-          sharedFrom: null,
-          isSharedPost: false,
-          childPost: null,
-          currentUserId: widget.currentUserId,
-        ),
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
     _isLiked = widget.isLiked;
     _numLikes = widget.numLikes;
     _getUserToken().then((token) {
-      print(JwtDecoder.decode(token)['id']);
       setState(() {
         _userToken = token;
         String userId = JwtDecoder.decode(token)['id'];
         _isLiked = widget.likes.contains(userId); // Use userId instead of token
       });
     });
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _calculateTotalLines();
     });
   }
@@ -143,7 +87,7 @@ class _PostItemState extends State<PostItem> {
   void _calculateTotalLines() {
     final textSpan = TextSpan(
       text: widget.postDescription,
-      style: TextStyle(height: 1.5),
+      style: const TextStyle(height: 1.5),
     );
 
     final textPainter = TextPainter(
@@ -171,7 +115,7 @@ class _PostItemState extends State<PostItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Stack(
             children: [
               ListTile(
@@ -179,31 +123,30 @@ class _PostItemState extends State<PostItem> {
                   radius: 25,
                   backgroundImage: NetworkImage(widget.profilePhotoUrl),
                 ),
-                title: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Profile(
-                                user: widget.user!,
-                                isCurrentUser: false,
-                              ),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Profile(
+                              user: widget.user!,
+                              isCurrentUser: false,
                             ),
-                          );
-                        },
-                        child: Text(
-                          widget.username,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        widget.username,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(elapsedTimeString,
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
-                    ],
-                  ),
+                    ),
+                    Text(elapsedTimeString,
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey)),
+                  ],
                 ),
               ),
               if (widget.isOwner) // Conditionally show the three-dot menu
@@ -211,7 +154,7 @@ class _PostItemState extends State<PostItem> {
                   top: 5,
                   right: 5,
                   child: PopupMenuButton<int>(
-                    icon: Icon(Icons.more_vert,
+                    icon: const Icon(Icons.more_vert,
                         color: Colors.grey), // Set the icon and its color here
                     onSelected: (value) async {
                       if (value == 1) {
@@ -220,7 +163,7 @@ class _PostItemState extends State<PostItem> {
                       }
                     },
                     itemBuilder: (BuildContext context) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 1,
                         child: Text('Delete post'),
                       ),
@@ -239,7 +182,7 @@ class _PostItemState extends State<PostItem> {
                     widget.postDescription,
                     maxLines: _showMore ? null : 6,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(height: 1.5),
+                    style: const TextStyle(height: 1.5),
                   ),
                   if (_totalLines != null && _totalLines! > 6)
                     InkWell(
@@ -252,22 +195,21 @@ class _PostItemState extends State<PostItem> {
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
                           _showMore ? "Show less" : "Show more",
-                          style: TextStyle(color: Colors.blue),
+                          style: const TextStyle(color: Colors.blue),
                         ),
                       ),
                     ),
                 ],
               ),
             ),
-          if (!widget.isSharedPost && widget.postPhotoUrl != null)
-            Image.network(widget.postPhotoUrl),
+          if (!widget.isSharedPost) Image.network(widget.postPhotoUrl),
           if (widget.isSharedPost && widget.childPost != null)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: widget.childPost,
             ),
           Container(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: GestureDetector(
               onTap: () async {
                 final updatedPost =
@@ -286,11 +228,11 @@ class _PostItemState extends State<PostItem> {
                     color: _isLiked ?? false ? Colors.red : Colors.grey,
                     size: 24,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 8,
                   ),
                   Text(_numLikes.toString()),
-                  SizedBox(width: 30),
+                  const SizedBox(width: 30),
                   GestureDetector(
                     onTap: () {
                       showDialog(
@@ -320,24 +262,24 @@ class _PostItemState extends State<PostItem> {
                     },
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.comment,
                           color: Colors.grey,
                           size: 24,
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(widget.numComments.toString()),
                       ],
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   InkWell(
                     onTap: () async {
                       String userId =
                           await JwtDecoder.decode(_userToken!)['id'];
-                      ProfileViewModel.sharePost(widget.id, userId!, context);
+                      ProfileViewModel.sharePost(widget.id, userId, context);
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.share,
                       color: Colors.grey,
                       size: 24,

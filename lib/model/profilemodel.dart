@@ -52,23 +52,4 @@ class ProfileModel {
       posts: List<String>.from(json['posts'].map((x) => x)),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'owner': owner,
-      'location': location,
-      'summary': summary,
-      'education': education,
-      'status': status,
-      'experience': experience,
-      'skills': skills,
-      'profile_image': profileImage,
-      'following': following,
-      'followers': followers,
-      'number_of_followers': numberOfFollowers,
-      'number_of_following': numberOfFollowing,
-      'posts': posts,
-    };
-  }
 }

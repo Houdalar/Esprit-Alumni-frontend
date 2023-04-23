@@ -3,8 +3,6 @@ import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

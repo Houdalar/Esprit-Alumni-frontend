@@ -1,25 +1,16 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:io';
-
 import 'package:esprit_alumni_frontend/model/notification.dart';
-import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../view/components/themes/colors.dart';
 import '../model/commentModel.dart';
 import '../model/profilemodel.dart';
 import '../model/serchUser.dart';
-import '../view/screens/rsetpassword2.dart';
 import '../../model/PostModel.dart';
 
 class ProfileViewModel extends ChangeNotifier {
-  //final BuildContext context;
   static String baseUrl = "10.0.2.2:8081";
   ProfileViewModel();
 
@@ -42,8 +33,7 @@ class ProfileViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("Network error",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -54,7 +44,7 @@ class ProfileViewModel extends ChangeNotifier {
                       const Text(
                           "please check your internet connection and try again!"),
                     ],
-                  )));
+                  ));
             });
         throw Exception('Failed to load data!');
       }
@@ -81,8 +71,7 @@ class ProfileViewModel extends ChangeNotifier {
             return AlertDialog(
                 title: const Text("Done",
                     style: TextStyle(color: AppColors.primary)),
-                content: Container(
-                    child: Column(
+                content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
@@ -92,7 +81,7 @@ class ProfileViewModel extends ChangeNotifier {
                     ),
                     const Text("Your post has been created successfully!"),
                   ],
-                )));
+                ));
           });
     } else {
       showDialog(
@@ -165,7 +154,7 @@ class ProfileViewModel extends ChangeNotifier {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return const AlertDialog(
             title: Text(
               "Error",
               style: TextStyle(color: AppColors.primary),
@@ -210,7 +199,6 @@ class ProfileViewModel extends ChangeNotifier {
       return CommentModel.fromJson(jsonResponse);
     } else {
       throw Exception('Failed to like the comment');
-      return null;
     }
   }
 
@@ -293,8 +281,7 @@ class ProfileViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("Network error",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -305,7 +292,7 @@ class ProfileViewModel extends ChangeNotifier {
                       const Text(
                           "please check your internet connection and try again!"),
                     ],
-                  )));
+                  ));
             });
         throw Exception('Failed to load data!');
       }
@@ -412,7 +399,6 @@ class ProfileViewModel extends ChangeNotifier {
 
   static Future<ProfileModel> updateSkills(
       String token, String newSkills) async {
-    //String token, List<String> newSkills) async {
     final response = await http.put(
       Uri.http(baseUrl, "/addSkills/$token"),
       headers: {'Content-Type': 'application/json'},
@@ -470,8 +456,7 @@ class ProfileViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("Network error",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -482,7 +467,7 @@ class ProfileViewModel extends ChangeNotifier {
                       const Text(
                           "please check your internet connection and try again!"),
                     ],
-                  )));
+                  ));
             });
         throw Exception('Failed to load data!');
       }
@@ -535,7 +520,7 @@ class ProfileViewModel extends ChangeNotifier {
       showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
+          return const AlertDialog(
             title: Text(
               "Error",
               style: TextStyle(color: AppColors.primary),
@@ -592,8 +577,7 @@ class ProfileViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("Network error",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -604,7 +588,7 @@ class ProfileViewModel extends ChangeNotifier {
                       const Text(
                           "please check your internet connection and try again!"),
                     ],
-                  )));
+                  ));
             });
         throw Exception('Failed to load data!');
       }

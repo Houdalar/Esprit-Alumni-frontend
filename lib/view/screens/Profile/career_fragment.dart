@@ -1,11 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:esprit_alumni_frontend/viewmodel/profileViewModel.dart';
-import '../../../model/profilemodel.dart';
 import 'education_screen.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:esprit_alumni_frontend/view/components/constum_componenets/gradientButton.dart';
 import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,7 +23,6 @@ class CareerFragment extends StatefulWidget {
 class _CareerFragmentState extends State<CareerFragment> {
   String _textSummary = '';
   String _textStatus = '';
-  String _education = '';
   String? token = "";
   late SharedPreferences _prefs;
   List<String> skills_list = [];
@@ -55,10 +49,10 @@ class _CareerFragmentState extends State<CareerFragment> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          title: Text('Edit your summary'),
+          title: const Text('Edit your summary'),
           content: TextField(
             controller: TextEditingController(text: widget.summary),
-            decoration: InputDecoration(),
+            decoration: const InputDecoration(),
             onChanged: (value) {
               setState(() {
                 _textSummary = value;
@@ -76,13 +70,10 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ),
               onPressed: () async {
-                // Call the _updateSummary function to update the summary on the server
                 await ProfileViewModel.updateSummary(token!, _textSummary);
                 setState(() {
                   widget.summary = _textSummary;
                 });
-
-                // Close the dialog
                 Navigator.of(context).pop();
               },
             ),
@@ -101,10 +92,10 @@ class _CareerFragmentState extends State<CareerFragment> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          title: Text('Edit your status'),
+          title: const Text('Edit your status'),
           content: TextField(
             controller: TextEditingController(text: widget.status),
-            decoration: InputDecoration(),
+            decoration: const InputDecoration(),
             onChanged: (value) {
               setState(() {
                 _textStatus = value;
@@ -122,12 +113,10 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ),
               onPressed: () async {
-                // Call the _updateSummary function to update the summary on the server
                 await ProfileViewModel.updateStatus(token!, _textStatus);
                 setState(() {
                   widget.status = _textStatus;
                 });
-                // Close the dialog
                 Navigator.of(context).pop();
               },
             ),
@@ -140,19 +129,19 @@ class _CareerFragmentState extends State<CareerFragment> {
   // SKILLS EDIT DIALOG ---------------------------------------------------------------
   void _showDialogSkills(BuildContext context) {
     String newSkill = '';
-    final TextEditingController _controller = TextEditingController();
+    final TextEditingController controller = TextEditingController();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add a new skill'),
+          title: const Text('Add a new skill'),
           content: TextField(
-            controller: _controller,
+            controller: controller,
             onChanged: (value) {
               newSkill = value;
             },
-            decoration: InputDecoration(hintText: '#skill'),
+            decoration: const InputDecoration(hintText: '#skill'),
           ),
           actions: <Widget>[
             TextButton(
@@ -171,7 +160,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                     skills_list.add(newSkill);
                     newSkill = '';
                   });
-                  _controller.clear(); //To clear the text field
+                  controller.clear();
                 }
               },
             )
@@ -185,8 +174,8 @@ class _CareerFragmentState extends State<CareerFragment> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.all(16),
-        padding: EdgeInsets.all(16),
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
@@ -203,7 +192,7 @@ class _CareerFragmentState extends State<CareerFragment> {
           children: [
             Row(
               children: [
-                Text(
+                const Text(
                   'Summary statement',
                   style: TextStyle(
                     fontSize: 20,
@@ -211,12 +200,12 @@ class _CareerFragmentState extends State<CareerFragment> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(width: 90),
+                const SizedBox(width: 90),
                 Visibility(
                   visible: widget.isCurrentUser,
                   child: GestureDetector(
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit,
                         color: AppColors.primaryDark,
                         size: 22,
@@ -227,7 +216,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(left: 12.0),
               child: Text(
@@ -238,7 +227,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Divider(
               color: Colors.grey[300],
               thickness: 1,
@@ -247,7 +236,7 @@ class _CareerFragmentState extends State<CareerFragment> {
             ),
             Row(
               children: [
-                Text(
+                const Text(
                   'Status',
                   style: TextStyle(
                     fontSize: 20,
@@ -255,12 +244,12 @@ class _CareerFragmentState extends State<CareerFragment> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(width: 214),
+                const SizedBox(width: 214),
                 Visibility(
                   visible: widget.isCurrentUser,
                   child: GestureDetector(
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit,
                         color: AppColors.primaryDark,
                         size: 22,
@@ -271,7 +260,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(left: 12.0),
               child: Text(
@@ -282,17 +271,17 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Divider(
               color: Colors.grey[300],
               thickness: 1,
               indent: 0,
               endIndent: 0,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               children: [
-                Text(
+                const Text(
                   'Education',
                   style: TextStyle(
                     fontSize: 20,
@@ -300,13 +289,13 @@ class _CareerFragmentState extends State<CareerFragment> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(width: 182),
+                const SizedBox(width: 182),
                 Visibility(
                   visible: widget.isCurrentUser &&
                       widget.education.toString().isNotEmpty,
                   child: GestureDetector(
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit,
                         color: AppColors.primaryDark,
                         size: 22,
@@ -315,11 +304,9 @@ class _CareerFragmentState extends State<CareerFragment> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => EducationScreen()),
+                              builder: (context) => const EducationScreen()),
                         ).then((value) {
-                          setState(() {
-                            _education = value;
-                          });
+                          setState(() {});
                         });
                       },
                     ),
@@ -327,7 +314,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ],
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Wrap(
               children: [
                 Image.asset(
@@ -335,7 +322,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                   height: 80,
                   width: 110,
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 FractionallySizedBox(
                   widthFactor: 0.7,
                   child: Text(
@@ -348,7 +335,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ],
             ),
-            SizedBox(height: 2),
+            const SizedBox(height: 2),
             Wrap(
               children: [
                 Image.asset(
@@ -356,7 +343,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                   height: 80,
                   width: 110,
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 // show the button
                 FractionallySizedBox(
                   widthFactor: 0.7,
@@ -365,8 +352,8 @@ class _CareerFragmentState extends State<CareerFragment> {
                       visible: widget.education.toString().isEmpty,
                       child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Colors.grey[800],
+                            foregroundColor: Colors.grey[800],
+                            backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -388,15 +375,14 @@ class _CareerFragmentState extends State<CareerFragment> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EducationScreen()),
+                                  builder: (context) =>
+                                      const EducationScreen()),
                             ).then((value) {
-                              setState(() {
-                                _education = value;
-                              });
+                              setState(() {});
                             });
                           }),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Visibility(
                       visible: widget.education.toString().isNotEmpty,
                       child: Text(
@@ -412,7 +398,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Divider(
               color: Colors.grey[300],
               thickness: 1,
@@ -421,7 +407,7 @@ class _CareerFragmentState extends State<CareerFragment> {
             ),
             Row(
               children: [
-                Text(
+                const Text(
                   'Skills',
                   style: TextStyle(
                     fontSize: 20,
@@ -429,12 +415,12 @@ class _CareerFragmentState extends State<CareerFragment> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(width: 223),
+                const SizedBox(width: 223),
                 Visibility(
                   visible: widget.isCurrentUser,
                   child: GestureDetector(
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit,
                         color: AppColors.primaryDark,
                         size: 22,
@@ -447,7 +433,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                 ),
               ],
             ),
-            SizedBox(height: 0),
+            const SizedBox(height: 0),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.5,
               child: Padding(
@@ -460,7 +446,7 @@ class _CareerFragmentState extends State<CareerFragment> {
                           child: Text(
                             //'# ${skills_list[index]}',
                             '# ${widget.skills[index].toString()}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Color.fromARGB(255, 163, 18, 8),
                               fontSize: 17.0,
                               fontFamily: 'Mukta Malar',

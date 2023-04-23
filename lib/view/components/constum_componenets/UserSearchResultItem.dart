@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../screens/Profile/profile.dart';
 
 class UserSearchResultItem extends StatelessWidget {
@@ -8,8 +7,9 @@ class UserSearchResultItem extends StatelessWidget {
   final String profileId;
   final String userId;
 
-  UserSearchResultItem(
-      {required this.username,
+  const UserSearchResultItem(
+      {super.key,
+      required this.username,
       required this.profileImage,
       required this.profileId,
       required this.userId});

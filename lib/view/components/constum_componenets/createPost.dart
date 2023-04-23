@@ -13,24 +13,16 @@ class CreatePost extends StatefulWidget {
   const CreatePost(this.profileimage, this.username, {Key? key})
       : super(key: key);
   @override
-  _CreatePostState createState() => _CreatePostState();
+  CreatePostState createState() => CreatePostState();
 }
 
-class _CreatePostState extends State<CreatePost> {
-  final TextEditingController _textEditingController = TextEditingController();
-
-  String _selectedCategory = 'ITC';
-  List<String> _categories = ['ITC', 'Internship', 'Ask', 'Job'];
-
+class CreatePostState extends State<CreatePost> {
   bool _isExpanded = false;
-  bool _isExpanded1 = false;
-
-  File _image = File('');
 
   @override
   Widget build(BuildContext context) {
     final focusNode = FocusNode();
-    _pickImage(ImageSource gallery) async {
+    pickImage(ImageSource gallery) async {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return null;
       final imageTemporary = File(image.path);
@@ -161,7 +153,7 @@ class _CreatePostState extends State<CreatePost> {
                             setState(() {
                               _isExpanded = false;
                             });
-                            _pickImage(ImageSource.camera);
+                            pickImage(ImageSource.camera);
                           },
                           icon: const Icon(Icons.camera_alt,
                               color: AppColors.primary),

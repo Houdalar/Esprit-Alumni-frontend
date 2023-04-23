@@ -7,12 +7,12 @@ class Notifications extends StatefulWidget {
   final String token;
   final VoidCallback updateCount;
   final Function(NotificationModel) onNewNotification;
-  final GlobalKey<NotificationsState> key;
+
   const Notifications({
     required this.token,
     required this.updateCount,
     required this.onNewNotification,
-    required this.key,
+    Key? key,
   }) : super(key: key);
 
   @override

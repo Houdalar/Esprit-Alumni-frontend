@@ -1,34 +1,20 @@
-import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/rendering.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:provider/provider.dart';
-//import 'package:google_sign_in/google_sign_in.dart';
-import '../../socketService.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
-import 'Profile/home.dart';
-
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-//import 'package:path/path.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
-//import '../components/constum_componenets/googleButton.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../../viewmodel/userViewModel.dart';
 import 'package:esprit_alumni_frontend/view/screens/signup2.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
   @override
-  _SignupPageState createState() => new _SignupPageState();
+  SignupPageState createState() => SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class SignupPageState extends State<SignupPage> {
   String? _email;
   String? _password;
   String? _username;
-  String? _confirmPassword;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
 
@@ -152,9 +138,7 @@ class _SignupPageState extends State<SignupPage> {
       },
     );
     final confirmPassword = TextFormField(
-      onSaved: (String? value) {
-        _confirmPassword = value;
-      },
+      onSaved: (String? value) {},
       minLines: 1,
       maxLines: 1,
       keyboardType: TextInputType.visiblePassword,
@@ -188,7 +172,7 @@ class _SignupPageState extends State<SignupPage> {
         return null;
       },
     );
-    final nextButton = Container(
+    final nextButton = SizedBox(
       width: double.infinity,
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),
@@ -220,9 +204,9 @@ class _SignupPageState extends State<SignupPage> {
     );
     final googleButton = ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
+        foregroundColor: AppColors.primaryDark,
+        backgroundColor: Colors.white,
         fixedSize: const Size.fromHeight(60),
-        primary: Colors.white,
-        onPrimary: AppColors.primaryDark,
         elevation: 3,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
@@ -281,19 +265,19 @@ class _SignupPageState extends State<SignupPage> {
               margin: const EdgeInsets.fromLTRB(35, 10, 35, 25),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
+                children: const [
+                  SizedBox(
                     width: 50.0,
-                    child: const Divider(
+                    child: Divider(
                       color: Colors.black,
                       height: 30.0,
                     ),
                   ),
-                  const Text(
+                  Text(
                     '  Or sign up with  ',
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 50.0,
                     child: Divider(
                       color: Colors.black,

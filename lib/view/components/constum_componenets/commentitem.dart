@@ -1,4 +1,3 @@
-import 'package:esprit_alumni_frontend/view/components/themes/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +18,7 @@ class CommentItem extends StatefulWidget {
   final String? user;
 
   CommentItem({
+    super.key,
     required this.username,
     required this.profilePictureUrl,
     required this.comment,
@@ -64,8 +64,9 @@ class _CommentItemState extends State<CommentItem> {
           widthFactor: 0.8,
           heightFactor: 0.5,
           child: AlertDialog(
-            title: Text('Delete comment'),
-            content: Text('Are you sure you want to delete this comment?'),
+            title: const Text('Delete comment'),
+            content:
+                const Text('Are you sure you want to delete this comment?'),
             actions: [
               TextButton(
                 onPressed: () async {
@@ -80,13 +81,13 @@ class _CommentItemState extends State<CommentItem> {
                     Navigator.pop(context, false);
                   }
                 },
-                child: Text('Yes'),
+                child: const Text('Yes'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context, false);
                 },
-                child: Text('No'),
+                child: const Text('No'),
               ),
             ],
           ),
@@ -102,7 +103,7 @@ class _CommentItemState extends State<CommentItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -110,7 +111,7 @@ class _CommentItemState extends State<CommentItem> {
             backgroundImage: NetworkImage(widget.profilePictureUrl),
             radius: 24.0,
           ),
-          SizedBox(width: 5.0),
+          const SizedBox(width: 5.0),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,7 +134,7 @@ class _CommentItemState extends State<CommentItem> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(30.0),
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -151,15 +152,16 @@ class _CommentItemState extends State<CommentItem> {
                               },
                               child: Text(
                                 widget.username,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16.0,
                                 ),
                               ),
                             ),
-                            SizedBox(height: 5.0),
+                            const SizedBox(height: 5.0),
                             Text(widget.comment,
-                                style: TextStyle(fontSize: 16, height: 1.5)),
+                                style:
+                                    const TextStyle(fontSize: 16, height: 1.5)),
                           ],
                         ),
                       ),
@@ -169,22 +171,21 @@ class _CommentItemState extends State<CommentItem> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(width: 2.0),
+                    const SizedBox(width: 2.0),
                     IconButton(
-                      icon: _isLiked ?? false
-                          ? Icon(
+                      icon: _isLiked
+                          ? const Icon(
                               Icons.favorite,
                               color: Colors.red,
                               size: 20,
                             )
-                          : Icon(
+                          : const Icon(
                               Icons.favorite_border,
                               color: Colors.black,
                               size: 20,
                             ),
                       onPressed: () async {
                         if (token != null) {
-                          print("token is ${token}");
                           final updatedComment =
                               await ProfileViewModel.likeComment(
                             token!,
@@ -198,17 +199,21 @@ class _CommentItemState extends State<CommentItem> {
                             });
                           }
                         } else {
-                          print("Token is not initialized yet");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please login to like a comment'),
+                            ),
+                          );
                         }
                       },
                     ),
                     Text(widget.likes.toString(),
-                        style: TextStyle(fontSize: 15.5)),
-                    SizedBox(width: 10.0),
+                        style: const TextStyle(fontSize: 15.5)),
+                    const SizedBox(width: 10.0),
                     Flexible(
                       child: Text(
                         widget.timestamp,
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

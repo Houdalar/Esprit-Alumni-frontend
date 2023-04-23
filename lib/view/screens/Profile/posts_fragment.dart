@@ -36,7 +36,7 @@ class _PostsFragmentState extends State<PostsFragment> {
       createdAt: DateTime.parse(
           sharedFrom['createdAt'] ?? DateTime.now().toIso8601String()),
       isLiked: false,
-      likes: [],
+      likes: const [],
       isOwner: false,
       onPostDeleted: () {},
       user: sharedFrom['_id'] ?? '',
@@ -61,7 +61,6 @@ class _PostsFragmentState extends State<PostsFragment> {
             child: SingleChildScrollView(
               child: Column(
                 children: posts.map((post) {
-                  // Replace with the actual properties of your PostModel class
                   return PostItem(
                     id: post.id,
                     username: post.owner['username'],
@@ -76,7 +75,6 @@ class _PostsFragmentState extends State<PostsFragment> {
                     isOwner: true,
                     onPostDeleted: () {
                       setState(() {
-                        // Remove the deleted post from the list
                         posts.remove(post);
                       });
                     },

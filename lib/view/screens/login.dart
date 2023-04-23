@@ -2,9 +2,6 @@ import 'package:esprit_alumni_frontend/view/screens/rsetpassword1.dart';
 import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../socketService.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
@@ -17,10 +14,10 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.socketService});
 
   @override
-  _LoginPageState createState() => new _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   late String? _email;
   late String? _password;
 
@@ -111,34 +108,7 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    final rememberMe = Container(
-      child: Row(
-        children: [
-          Checkbox(
-            value: _rememberMe,
-            onChanged: (value) {
-              setState(() async {
-                _rememberMe = value!;
-                // saved in shared preferences to be used later
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setString("rememberme", _rememberMe.toString());
-              });
-            },
-            activeColor: AppColors.primaryDark,
-          ),
-          const Text(
-            'Remember me',
-            style: TextStyle(
-              color: AppColors.darkgray,
-              fontSize: 17.0,
-              fontFamily: 'Mukata Malar',
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final loginButton = Container(
+    final loginButton = SizedBox(
       //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
       width: double.infinity,
       child: gradientButton(
@@ -166,9 +136,9 @@ class _LoginPageState extends State<LoginPage> {
 
     final googleButton = ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
+        foregroundColor: AppColors.primaryDark,
+        backgroundColor: Colors.white,
         fixedSize: const Size.fromHeight(60),
-        primary: Colors.white,
-        onPrimary: AppColors.primaryDark,
         elevation: 3,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
@@ -187,8 +157,6 @@ class _LoginPageState extends State<LoginPage> {
             fontFamily: 'Mukata Malar',
           )),
     );
-
-    //final googleButton = GoogleSignInButton();
 
     return Scaffold(
       body: Form(
@@ -225,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
                           _rememberMe = newValue ?? false;
                         });
                       }),
-                  Text('Remember me'),
+                  const Text('Remember me'),
                   const Spacer(),
                   GestureDetector(
                     child: const Text("Forgot your password ?",
@@ -255,19 +223,19 @@ class _LoginPageState extends State<LoginPage> {
               margin: const EdgeInsets.fromLTRB(35, 20, 35, 25),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
+                children: const [
+                  SizedBox(
                     width: 50.0,
-                    child: const Divider(
+                    child: Divider(
                       color: Colors.black,
                       height: 30.0,
                     ),
                   ),
-                  const Text(
+                  Text(
                     '  Or sign in with  ',
                     style: TextStyle(fontSize: 20.0),
                   ),
-                  const SizedBox(
+                  SizedBox(
                     width: 50.0,
                     child: Divider(
                       color: Colors.black,

@@ -8,13 +8,13 @@ import '../../components/constum_componenets/postitem.dart';
 class SinglePostView extends StatefulWidget {
   final String postId;
 
-  SinglePostView({required this.postId});
+  const SinglePostView({super.key, required this.postId});
 
   @override
-  _SinglePostViewState createState() => _SinglePostViewState();
+  SinglePostViewState createState() => SinglePostViewState();
 }
 
-class _SinglePostViewState extends State<SinglePostView> {
+class SinglePostViewState extends State<SinglePostView> {
   PostModel? _post;
 
   @override
@@ -30,7 +30,7 @@ class _SinglePostViewState extends State<SinglePostView> {
         _post = post;
       });
     } catch (e) {
-      print(e);
+      rethrow;
     }
   }
 
@@ -50,7 +50,7 @@ class _SinglePostViewState extends State<SinglePostView> {
       createdAt: DateTime.parse(
           sharedFrom['createdAt'] ?? DateTime.now().toIso8601String()),
       isLiked: false,
-      likes: [],
+      likes: const [],
       isOwner: false,
       onPostDeleted: () {},
       user: sharedFrom['_id'] ?? '',
@@ -66,22 +66,22 @@ class _SinglePostViewState extends State<SinglePostView> {
     if (_post == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(''),
+          title: const Text(''),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: Colors.black,
           ),
         ),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     } else {
       return Scaffold(
         appBar: AppBar(
-          title: Text(''),
+          title: const Text(''),
           backgroundColor: Colors.transparent,
           elevation: 0,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: AppColors.primary,
           ),
         ),

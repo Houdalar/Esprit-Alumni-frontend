@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../model/PostModel.dart';
 import '../../../model/serchUser.dart';
-import '../../../model/usermodel.dart';
 import '../../../viewmodel/profileViewModel.dart';
 import '../../components/constum_componenets/UserSearchResultItem.dart';
 import '../../components/constum_componenets/createPost.dart';
 import '../../components/constum_componenets/postitem.dart';
-import '../../components/constum_componenets/searchBar.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,10 +18,10 @@ class HomePage extends StatefulWidget {
       : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   final TextEditingController _searchController = TextEditingController();
   bool _isSearchActive = false;
   List<SearchUser> _searchResults = [];
@@ -52,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     _searchController.addListener(_onSearchChanged);
 
     _searchSubject.stream
-        .debounceTime(Duration(milliseconds: 500))
+        .debounceTime(const Duration(milliseconds: 500))
         .listen((query) async {
       if (query.isNotEmpty) {
         final users = await UserViewModel.searchUsers(query);
@@ -97,7 +95,7 @@ class _HomePageState extends State<HomePage> {
       createdAt: DateTime.parse(
           sharedFrom['createdAt'] ?? DateTime.now().toIso8601String()),
       isLiked: false,
-      likes: [],
+      likes: const [],
       isOwner: false,
       onPostDeleted: () {},
       user: sharedFrom['_id'] ?? '',
@@ -116,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
+              child: SizedBox(
                 height: 40,
                 child: TextField(
                   controller: _searchController,
@@ -125,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                     fillColor:
                         Colors.grey[200], // Set the grey background color
                     filled: true,
-                    contentPadding: EdgeInsets.all(8.0),
+                    contentPadding: const EdgeInsets.all(8.0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       borderSide: BorderSide.none,

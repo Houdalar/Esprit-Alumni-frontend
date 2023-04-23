@@ -39,7 +39,7 @@ class _NavigationBottomState extends State<NavigationBottom>
     setState(() {
       token = _prefs.getString('userId') ?? "";
     });
-    Map<String, dynamic> decodedToken = await JwtDecoder.decode(token!);
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     socketService.initSocket(decodedToken["id"].toString());
     socketService.connect(decodedToken["id"].toString());
   }
@@ -51,7 +51,7 @@ class _NavigationBottomState extends State<NavigationBottom>
       _getNonReadNotificationsCount();
       _interfaces = [
         HomePage(widget.username, widget.profilePic, widget.id),
-        Dashboard(),
+        const Dashboard(),
         Notifications(
           token: token!,
           updateCount: _getNonReadNotificationsCount,

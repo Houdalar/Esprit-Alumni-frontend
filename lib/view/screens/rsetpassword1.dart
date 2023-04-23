@@ -1,6 +1,5 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 import '../../viewmodel/userViewModel.dart';
@@ -9,10 +8,10 @@ class reset1Page extends StatefulWidget {
   const reset1Page({Key? key}) : super(key: key);
 
   @override
-  _reset1PageState createState() => _reset1PageState();
+  reset1PageState createState() => reset1PageState();
 }
 
-class _reset1PageState extends State<reset1Page> {
+class reset1PageState extends State<reset1Page> {
   String? _email;
 
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
@@ -24,7 +23,7 @@ class _reset1PageState extends State<reset1Page> {
 
   @override
   Widget build(BuildContext context) {
-    final mailphoto = Container(
+    final mailphoto = SizedBox(
       height: double.infinity,
       width: double.infinity,
       child: Image.asset("media/Mailbox-pana.png"),
@@ -66,8 +65,7 @@ class _reset1PageState extends State<reset1Page> {
       },
     );
 
-    final sendButton = Container(
-      //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
+    final sendButton = SizedBox(
       width: double.infinity,
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),

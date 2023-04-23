@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../socketService.dart';
@@ -31,7 +30,6 @@ class UserViewModel extends ChangeNotifier {
         .then((http.Response response) async {
       if (response.statusCode == 200) {
         Map<String, dynamic> userData = json.decode(response.body);
-        String token = userData["id"];
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userId", userData["id"]);
@@ -155,13 +153,12 @@ class UserViewModel extends ChangeNotifier {
             body: json.encode(userData), headers: headers)
         .then((http.Response response) async {
       if (response.statusCode == 200) {
-        // take the ateibutes sents in response body
         final jsonResponse = jsonDecode(response.body);
         String token = jsonResponse["token"];
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => new reset2Page(token)),
+          MaterialPageRoute(builder: (context) => reset2Page(token)),
         );
       } else if (response.statusCode == 400) {
         showDialog(
@@ -170,8 +167,7 @@ class UserViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("NOT FOUND",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -182,7 +178,7 @@ class UserViewModel extends ChangeNotifier {
                       const Text(
                           "The email address is not associated with any account. please check and try again!"),
                     ],
-                  )));
+                  ));
             });
       } else {
         showDialog(
@@ -191,8 +187,7 @@ class UserViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("Network error",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -203,7 +198,7 @@ class UserViewModel extends ChangeNotifier {
                       const Text(
                           "please check your internet connection and try again!"),
                     ],
-                  )));
+                  ));
             });
       }
     });
@@ -233,8 +228,7 @@ class UserViewModel extends ChangeNotifier {
               return AlertDialog(
                   title: const Text("Password reset successful",
                       style: TextStyle(color: AppColors.primary)),
-                  content: Container(
-                      child: Column(
+                  content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
@@ -245,7 +239,7 @@ class UserViewModel extends ChangeNotifier {
                       const Text(
                           "Your password has been successfully reset . you can now login with your new password"),
                     ],
-                  )));
+                  ));
             });
       } else {
         showDialog(
@@ -296,8 +290,7 @@ class UserViewModel extends ChangeNotifier {
                 return AlertDialog(
                     title: const Text("Login failed",
                         style: TextStyle(color: AppColors.primary)),
-                    content: Container(
-                        child: Column(
+                    content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
@@ -308,18 +301,16 @@ class UserViewModel extends ChangeNotifier {
                         const Text(
                             "Please verify your email address before logging in"),
                       ],
-                    )));
+                    ));
               });
         } else if (response.statusCode == 400) {
-          // show a dialog to ask the user to register
           showDialog(
               context: context,
               builder: (context) {
                 return AlertDialog(
                     title: const Text("Sign up",
                         style: TextStyle(color: AppColors.primary)),
-                    content: Container(
-                        child: Column(
+                    content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
@@ -330,7 +321,7 @@ class UserViewModel extends ChangeNotifier {
                         const Text(
                             "You are not registered in the app please sign up first"),
                       ],
-                    )));
+                    ));
               });
         } else {
           // Handle other error codes as needed
@@ -338,15 +329,13 @@ class UserViewModel extends ChangeNotifier {
         }
       });
     } catch (e) {
-      //show a dialog with the error message
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
                 title: const Text("Some thing went wrong",
                     style: TextStyle(color: AppColors.primary)),
-                content: Container(
-                    child: Column(
+                content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
@@ -356,9 +345,10 @@ class UserViewModel extends ChangeNotifier {
                     ),
                     const Text("something went wrong pleas try again!"),
                   ],
-                )));
+                ));
           });
     }
+    return null;
   }
 
   static Future<UserCredential?> signupWithGoogle(BuildContext context) async {
@@ -396,8 +386,7 @@ class UserViewModel extends ChangeNotifier {
                 return AlertDialog(
                     title: const Text("You're already registered",
                         style: TextStyle(color: AppColors.primary)),
-                    content: Container(
-                        child: Column(
+                    content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
@@ -408,7 +397,7 @@ class UserViewModel extends ChangeNotifier {
                         const Text(
                             "you are already registered in the app please verify your account and login"),
                       ],
-                    )));
+                    ));
               });
         } else if (response.statusCode == 400) {
           Navigator.pushNamed(context, "/login");
@@ -425,8 +414,7 @@ class UserViewModel extends ChangeNotifier {
             return AlertDialog(
                 title: const Text("Some thing went wrong",
                     style: TextStyle(color: AppColors.primary)),
-                content: Container(
-                    child: Column(
+                content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
@@ -436,9 +424,10 @@ class UserViewModel extends ChangeNotifier {
                     ),
                     const Text("something went wrong pleas try again!"),
                   ],
-                )));
+                ));
           });
     }
+    return null;
   }
 
   static Future<Map<String, dynamic>> getUser(

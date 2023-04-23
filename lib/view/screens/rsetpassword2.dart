@@ -1,5 +1,3 @@
-// ignore_for_file: camel_case_types, library_private_types_in_public_api, sized_box_for_whitespace
-
 import 'package:esprit_alumni_frontend/view/screens/restpassword3.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,10 +11,10 @@ class reset2Page extends StatefulWidget {
   const reset2Page(this.token, {Key? key}) : super(key: key);
 
   @override
-  _reset2PageState createState() => _reset2PageState();
+  reset2PageState createState() => reset2PageState();
 }
 
-class _reset2PageState extends State<reset2Page> {
+class reset2PageState extends State<reset2Page> {
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
 
   @override
@@ -26,7 +24,7 @@ class _reset2PageState extends State<reset2Page> {
 
   @override
   Widget build(BuildContext context) {
-    Future<String?> _getEmail() async {
+    Future<String?> getEmail() async {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getString("email");
     }
@@ -35,9 +33,9 @@ class _reset2PageState extends State<reset2Page> {
     final TextEditingController controller2 = TextEditingController();
     final TextEditingController controller3 = TextEditingController();
     final TextEditingController controller4 = TextEditingController();
-    String? _email;
+    String? email;
 
-    final mailphoto = Container(
+    final mailphoto = SizedBox(
       height: double.infinity,
       width: double.infinity,
       child: Image.asset("media/My password-pana.png"),
@@ -84,8 +82,7 @@ class _reset2PageState extends State<reset2Page> {
       }
     }
 
-    final verifyButton = Container(
-      //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
+    final verifyButton = SizedBox(
       width: double.infinity,
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),
@@ -185,9 +182,9 @@ class _reset2PageState extends State<reset2Page> {
                       ),
                       textAlign: TextAlign.center),
                   onTap: () {
-                    _getEmail().then((value) {
-                      _email = value;
-                      UserViewModel.forgotPassword(_email, context);
+                    getEmail().then((value) {
+                      email = value;
+                      UserViewModel.forgotPassword(email, context);
                     });
                   },
                 ),
@@ -201,7 +198,7 @@ class _reset2PageState extends State<reset2Page> {
 
   Widget _textFieldOTP(
       {required bool first, last, TextEditingController? controller}) {
-    return Container(
+    return SizedBox(
       height: 85,
       width: 70,
       child: AspectRatio(
@@ -212,7 +209,6 @@ class _reset2PageState extends State<reset2Page> {
           onChanged: (value) {
             if (value.length == 1 && last == false) {
               FocusScope.of(context).nextFocus();
-              // save the value to the code and let the field not empty
             }
             if (value.isEmpty && first == false) {
               FocusScope.of(context).previousFocus();
@@ -227,7 +223,8 @@ class _reset2PageState extends State<reset2Page> {
           decoration: InputDecoration(
             counter: const Offstage(),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 2, color: AppColors.lightgray),
+                borderSide:
+                    const BorderSide(width: 2, color: AppColors.lightgray),
                 borderRadius: BorderRadius.circular(12)),
             focusedBorder: OutlineInputBorder(
                 borderSide:

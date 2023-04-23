@@ -20,7 +20,7 @@ class _DashboardState extends State<Dashboard> {
       statusBarColor: Colors.red,
       systemNavigationBarColor: Colors.white,
     ));
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Dashboarddddddddd',
     );
   }

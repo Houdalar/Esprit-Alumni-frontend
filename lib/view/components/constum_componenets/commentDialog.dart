@@ -1,7 +1,5 @@
-import 'package:esprit_alumni_frontend/model/profilemodel.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import '../../../model/commentModel.dart';
 import '../../../viewmodel/profileViewModel.dart';
 import '../themes/colors.dart';
@@ -13,16 +11,17 @@ class CommentDialog extends StatefulWidget {
   final Function() onCommentAdded;
   final Function() onCommentDeleted;
 
-  CommentDialog(
-      {required this.postId,
+  const CommentDialog(
+      {super.key,
+      required this.postId,
       required this.onCommentAdded,
       required this.onCommentDeleted});
 
   @override
-  _CommentDialogState createState() => _CommentDialogState();
+  CommentDialogState createState() => CommentDialogState();
 }
 
-class _CommentDialogState extends State<CommentDialog> {
+class CommentDialogState extends State<CommentDialog> {
   List<CommentItem> _comments = []; // Initialize an empty list of comments
   late SharedPreferences _prefs;
   String _profilePic = "http://10.0.2.2:8081/posts/profile.png";
@@ -104,9 +103,9 @@ class _CommentDialogState extends State<CommentDialog> {
                       },
                     ),
                   ),
-                  SizedBox(height: 5),
-                  Divider(),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
+                  const Divider(),
+                  const SizedBox(height: 5),
                   Row(
                     children: [
                       CircleAvatar(
@@ -124,7 +123,7 @@ class _CommentDialogState extends State<CommentDialog> {
                             ),
                             child: TextFormField(
                               controller: _commentController,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Add a comment...',
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
@@ -170,7 +169,7 @@ class _CommentDialogState extends State<CommentDialog> {
                             widget.onCommentAdded();
                           }
                         },
-                        icon: Icon(Icons.send),
+                        icon: const Icon(Icons.send),
                       ),
                     ],
                   ),

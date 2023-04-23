@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../socketService.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
-//import 'Profile/home.dart';
-
 import '../../viewmodel/userViewModel.dart';
 
 class Signup2Page extends StatefulWidget {
@@ -16,7 +12,7 @@ class Signup2Page extends StatefulWidget {
       : super(key: key);
 
   @override
-  _Signup2PageState createState() => _Signup2PageState();
+  Signup2PageState createState() => Signup2PageState();
 }
 
 List<String> _level = [
@@ -34,20 +30,7 @@ List<String> _speciality = [
   'GE',
 ];
 
-List<String> _tic = [
-  "ds",
-  "arctic",
-  "twin",
-  "infini",
-  "sae",
-  "erp-bi",
-  "sleam",
-  "sim",
-  "nids",
-  "se"
-];
-
-class _Signup2PageState extends State<Signup2Page> {
+class Signup2PageState extends State<Signup2Page> {
   final Map<String, List<String>> _options = {
     'ITC': [
       "ds",
@@ -66,7 +49,6 @@ class _Signup2PageState extends State<Signup2Page> {
     'GE': ['Arabian', 'Thoroughbred', 'Quarter Horse'],
   };
   String? selectedGender;
-  int? _selectedValue;
 
   DateTime? _selectedDate;
   String? _selectedLevel;
@@ -85,12 +67,12 @@ class _Signup2PageState extends State<Signup2Page> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: AppColors.primary, // header background color
-            accentColor: AppColors.primaryDark, // selection color
-            colorScheme: ColorScheme.light(primary: AppColors.primaryDark),
-            buttonTheme: ButtonThemeData(
+            primaryColor: AppColors.primary,
+            buttonTheme: const ButtonThemeData(
               textTheme: ButtonTextTheme.primary,
             ),
+            colorScheme: const ColorScheme.light(primary: AppColors.primaryDark)
+                .copyWith(secondary: AppColors.primaryDark),
           ),
           child: child!,
         );
@@ -111,16 +93,7 @@ class _Signup2PageState extends State<Signup2Page> {
 
   @override
   Widget build(BuildContext context) {
-    final logo = Container(
-      height: 150.0,
-      width: double.infinity,
-      margin: const EdgeInsets.fromLTRB(50, 0, 50, 10),
-      child: Image.asset("media/logo.png"),
-    );
-
-    final signupButton = Container(
-      //padding: const EdgeInsets.fromLTRB(50.0, 10.0, 50.0, 10.0),
-      width: double.infinity,
+    final signupButton = SizedBox(
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),
         width: double.infinity,
@@ -155,9 +128,9 @@ class _Signup2PageState extends State<Signup2Page> {
 
     final dateButton = ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
+        foregroundColor: AppColors.primaryDark,
+        backgroundColor: Colors.white,
         fixedSize: const Size.fromHeight(40),
-        primary: Colors.white,
-        onPrimary: AppColors.primaryDark,
         minimumSize: const Size(double.infinity, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(32),
@@ -182,7 +155,8 @@ class _Signup2PageState extends State<Signup2Page> {
     final level = DropdownButtonFormField<String>(
       value: _selectedLevel,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         hintText: 'Choose your level',
         hintStyle: const TextStyle(
           fontSize: 16,
@@ -216,7 +190,7 @@ class _Signup2PageState extends State<Signup2Page> {
         fontSize: 16,
         color: Colors.black,
       ),
-      icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+      icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
       iconSize: 24,
       isExpanded: true,
       items: _level
@@ -235,7 +209,8 @@ class _Signup2PageState extends State<Signup2Page> {
     final speciality = DropdownButtonFormField<String>(
       value: _selectedSpecialization,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         hintText: 'Choose your speciality',
         hintStyle: const TextStyle(
           fontSize: 16,
@@ -269,7 +244,7 @@ class _Signup2PageState extends State<Signup2Page> {
         fontSize: 16,
         color: Colors.black,
       ),
-      icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+      icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
       iconSize: 24,
       isExpanded: true,
       items: _speciality
@@ -289,7 +264,8 @@ class _Signup2PageState extends State<Signup2Page> {
     final option = DropdownButtonFormField<String>(
       value: _selectedOption,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         hintText: 'Choose your option',
         hintStyle: const TextStyle(
           fontSize: 16,
@@ -323,7 +299,7 @@ class _Signup2PageState extends State<Signup2Page> {
         fontSize: 16,
         color: Colors.black,
       ),
-      icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+      icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
       iconSize: 24,
       isExpanded: true,
       items: _optionsList

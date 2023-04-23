@@ -12,10 +12,10 @@ class PostCreateComponent extends StatefulWidget {
   const PostCreateComponent(this.username, this.profilePic, {Key? key})
       : super(key: key);
   @override
-  _PostCreateComponentState createState() => _PostCreateComponentState();
+  PostCreateComponentState createState() => PostCreateComponentState();
 }
 
-class _PostCreateComponentState extends State<PostCreateComponent> {
+class PostCreateComponentState extends State<PostCreateComponent> {
   // State variables for the component
   String? _category;
   String? _description;
@@ -48,15 +48,15 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
               radius: 20,
               backgroundImage: NetworkImage(widget.profilePic!),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Text(
               widget.username!,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
-        SizedBox(height: 20),
-        Container(
+        const SizedBox(height: 20),
+        SizedBox(
           width: MediaQuery.of(context).size.width * 0.8,
           child: TextField(
             controller: _descriptionController,
@@ -70,14 +70,12 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
           ),
         ),
 
-        SizedBox(height: 20),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
+        const SizedBox(height: 20),
 
         // Image picker box
         GestureDetector(
-          onTap: () {
-            // TODO: open image picker dialog
-          },
+          onTap: () {},
           child: Container(
             width: double.infinity,
             height: 200,
@@ -94,7 +92,7 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
                           //width: double.infinity,
                         ),
                       )
-                    : Container(
+                    : const SizedBox(
                         width: double.infinity,
                         height: double.infinity,
                         child: Icon(
@@ -114,7 +112,7 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 1,
                           blurRadius: 7,
-                          offset: Offset(0, 3),
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -122,14 +120,14 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
                       onPressed: () async {
                         final pickedFile = await ImagePicker()
                             .pickImage(source: ImageSource.gallery);
-                        if (pickedFile == null) return null;
+                        if (pickedFile == null) return;
                         final imageTemporary = File(pickedFile.path);
                         setState(() {
                           _imageFile = imageTemporary;
                           _imageSelected = true;
                         });
                       },
-                      icon: Icon(Icons.add_a_photo),
+                      icon: const Icon(Icons.add_a_photo),
                     ),
                   ),
                 ),
@@ -138,13 +136,14 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
           ),
         ),
 
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
 
         // Category dropdown
         DropdownButtonFormField<String>(
           value: _category,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             hintText: 'Select a category',
             hintStyle: const TextStyle(
               fontSize: 15,
@@ -178,16 +177,16 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
             fontSize: 15,
             color: Colors.black,
           ),
-          icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
+          icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryDark),
           iconSize: 24,
           isExpanded: true,
-          items: [
-            DropdownMenuItem(child: Text('General'), value: 'General'),
-            DropdownMenuItem(child: Text('job'), value: 'job'),
-            DropdownMenuItem(child: Text('internship'), value: 'internship'),
-            DropdownMenuItem(child: Text('event'), value: 'event'),
-            DropdownMenuItem(child: Text('Esprit'), value: 'Esprit'),
-            DropdownMenuItem(child: Text('other'), value: 'other'),
+          items: const [
+            DropdownMenuItem(value: 'General', child: Text('General')),
+            DropdownMenuItem(value: 'job', child: Text('job')),
+            DropdownMenuItem(value: 'internship', child: Text('internship')),
+            DropdownMenuItem(value: 'event', child: Text('event')),
+            DropdownMenuItem(value: 'Esprit', child: Text('Esprit')),
+            DropdownMenuItem(value: 'other', child: Text('other')),
           ],
           onChanged: (value) {
             setState(() {
@@ -196,7 +195,7 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
           },
         ),
 
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         // Post button
         SizedBox(
           width: double.infinity,
@@ -223,12 +222,12 @@ class _PostCreateComponentState extends State<PostCreateComponent> {
               });
             },
             style: ElevatedButton.styleFrom(
-              primary: AppColors.primaryDark,
+              backgroundColor: AppColors.primaryDark,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-            child: Text('Post'),
+            child: const Text('Post'),
           ),
         ),
       ],
