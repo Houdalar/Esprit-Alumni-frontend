@@ -57,11 +57,16 @@ class NotificationsState extends State<Notifications> {
   }
 
   void newNotification(NotificationModel notification) {
-    setState(() {
-      notifications.insert(0, notification);
-    });
-    widget.onNewNotification(notification);
-    widget.updateCount();
+    bool isNotificationInList =
+        notifications.any((n) => n.id == notification.id);
+
+    if (!isNotificationInList) {
+      setState(() {
+        notifications.insert(0, notification);
+      });
+      widget.onNewNotification(notification);
+      widget.updateCount();
+    }
   }
 
   void _onNotificationRead(NotificationModel updatedNotification) {

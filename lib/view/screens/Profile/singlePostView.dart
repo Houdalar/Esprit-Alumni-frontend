@@ -7,8 +7,9 @@ import '../../components/constum_componenets/postitem.dart';
 
 class SinglePostView extends StatefulWidget {
   final String postId;
+  final String? commentId;
 
-  const SinglePostView({super.key, required this.postId});
+  const SinglePostView({super.key, this.commentId, required this.postId});
 
   @override
   SinglePostViewState createState() => SinglePostViewState();
@@ -16,11 +17,24 @@ class SinglePostView extends StatefulWidget {
 
 class SinglePostViewState extends State<SinglePostView> {
   PostModel? _post;
+  late FocusNode _commentFocusNode;
 
   @override
   void initState() {
     super.initState();
+    _commentFocusNode = FocusNode();
     _fetchPostData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.commentId != null) {
+        _commentFocusNode.requestFocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _commentFocusNode.dispose();
+    super.dispose();
   }
 
   void _fetchPostData() async {
@@ -105,7 +119,10 @@ class SinglePostViewState extends State<SinglePostView> {
             sharedFrom: _post!.sharedFrom,
             isSharedPost: _post!.sharedFrom != null,
             childPost: buildChildPost(_post!.sharedFrom),
-            currentUserId: _post!.owner['_id'], // Pass the current user id
+            currentUserId: _post!.owner['_id'],
+            focusNode: _commentFocusNode,
+            openCommentDialog: widget.commentId != null,
+            commentId: widget.commentId, // Add this line
           ),
         ),
       );

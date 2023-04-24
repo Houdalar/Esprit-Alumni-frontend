@@ -63,6 +63,18 @@ class NotificationItemState extends State<NotificationItem> {
               break;
             }
           case 'like comment':
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePostView(
+                    postId: _notification!.postId!,
+                    commentId: _notification!.commentId!,
+                  ),
+                ),
+              );
+              break;
+            }
 
           case 'follow':
             {
@@ -79,8 +91,31 @@ class NotificationItemState extends State<NotificationItem> {
             }
 
           case 'share':
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePostView(
+                    postId: _notification!.postId!,
+                  ),
+                ),
+              );
+              break;
+            }
 
           case 'comment':
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SinglePostView(
+                    postId: _notification!.postId!,
+                    commentId: _notification!.commentId!,
+                  ),
+                ),
+              );
+              break;
+            }
 
           default:
         }

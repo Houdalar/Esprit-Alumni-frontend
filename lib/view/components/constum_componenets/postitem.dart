@@ -25,6 +25,9 @@ class PostItem extends StatefulWidget {
   final bool isSharedPost;
   final PostItem? childPost;
   final String? currentUserId;
+  final FocusNode? focusNode;
+  final bool openCommentDialog;
+  final String? commentId;
 
   PostItem({
     super.key,
@@ -45,6 +48,9 @@ class PostItem extends StatefulWidget {
     required this.isSharedPost,
     required this.childPost,
     required this.currentUserId,
+    this.focusNode,
+    this.openCommentDialog = false,
+    this.commentId,
   });
 
   @override
@@ -76,11 +82,14 @@ class _PostItemState extends State<PostItem> {
       setState(() {
         _userToken = token;
         String userId = JwtDecoder.decode(token)['id'];
-        _isLiked = widget.likes.contains(userId); // Use userId instead of token
+        _isLiked = widget.likes.contains(userId);
       });
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _calculateTotalLines();
+      if (widget.openCommentDialog) {
+        showCommentDialog(context);
+      }
     });
   }
 
@@ -106,6 +115,37 @@ class _PostItemState extends State<PostItem> {
   Future<String> _getUserToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('userId') ?? '';
+  }
+
+  void showCommentDialog(BuildContext context) {
+    GlobalKey<CommentDialogState> commentDialogKey =
+        GlobalKey<CommentDialogState>();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: CommentDialog(
+            key: commentDialogKey,
+            postId: widget.id,
+            commentId: widget.commentId,
+            onCommentAdded: () {
+              setState(() {
+                widget.numComments += 1;
+              });
+            },
+            onCommentDeleted: () {
+              setState(() {
+                widget.numComments -= 1;
+              });
+            },
+            focusNode: widget.focusNode,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -235,30 +275,7 @@ class _PostItemState extends State<PostItem> {
                   const SizedBox(width: 30),
                   GestureDetector(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            height: // set the height automatically
-                                MediaQuery.of(context).size.height,
-                            child: CommentDialog(
-                              postId: widget.id,
-                              onCommentAdded: () {
-                                setState(() {
-                                  // Update the number of comments, e.g., increment by 1
-                                  widget.numComments += 1;
-                                });
-                              },
-                              onCommentDeleted: () {
-                                setState(() {
-                                  widget.numComments -= 1;
-                                });
-                              },
-                            ),
-                          );
-                        },
-                      );
+                      showCommentDialog(context);
                     },
                     child: Row(
                       children: [

@@ -10,18 +10,25 @@ class CommentDialog extends StatefulWidget {
 
   final Function() onCommentAdded;
   final Function() onCommentDeleted;
+  final FocusNode? focusNode;
+  final GlobalKey<CommentDialogState> key;
+  final String? commentId;
 
   const CommentDialog(
-      {super.key,
+      {required this.key,
       required this.postId,
       required this.onCommentAdded,
-      required this.onCommentDeleted});
+      required this.onCommentDeleted,
+      this.commentId,
+      this.focusNode})
+      : super(key: key);
 
   @override
   CommentDialogState createState() => CommentDialogState();
 }
 
 class CommentDialogState extends State<CommentDialog> {
+  List<GlobalKey> _commentKeys = [];
   List<CommentItem> _comments = []; // Initialize an empty list of comments
   late SharedPreferences _prefs;
   String _profilePic = "http://10.0.2.2:8081/posts/profile.png";
@@ -44,10 +51,73 @@ class CommentDialogState extends State<CommentDialog> {
     widget.onCommentDeleted();
   }
 
+  void requestFocusForComment() {
+    widget.focusNode?.requestFocus();
+  }
+
+  void scrollToComment() {
+    if (widget.focusNode != null) {
+      int focusedCommentIndex = _comments.indexWhere(
+          (comment) => comment.userId == _prefs.getString('userId'));
+      if (focusedCommentIndex != -1) {
+        final scrollPosition = focusedCommentIndex * 100.0;
+        _scrollController.animateTo(
+          scrollPosition,
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 300),
+        );
+      }
+    }
+  }
+
+  void _scrollToComment(int index) {
+    final key = _commentKeys[index];
+    final renderBox = key.currentContext!.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    _scrollController.animateTo(
+      position.dy,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  Future<void> _fetchComments() async {
+    final fetchedComments = await ProfileViewModel.getComments(widget.postId!);
+    setState(() {
+      _comments = fetchedComments
+          .map((comment) => CommentItem(
+                username: comment.owner["username"],
+                profilePictureUrl: comment.owner["profile_image"],
+                comment: comment.content,
+                timestamp: comment.elapsedTimeString,
+                likes: comment.numberOfLikes,
+                userId: comment.owner["_id"],
+                commentId: comment.id,
+                likesList: comment.likes,
+                onCommentDeleted: () => _onCommentDeleted(
+                    _comments.indexOf(comment as CommentItem)),
+                user: comment.owner["_id"],
+              ))
+          .toList();
+      _commentKeys = List.generate(_comments.length, (index) => GlobalKey());
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _initializePrefs();
+    _fetchComments().then((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        if (widget.commentId != null) {
+          int? index = _comments
+              .indexWhere((comment) => comment.commentId == widget.commentId);
+          if (index != null && index != -1) {
+            _scrollToComment(index);
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -123,6 +193,7 @@ class CommentDialogState extends State<CommentDialog> {
                             ),
                             child: TextFormField(
                               controller: _commentController,
+                              focusNode: widget.focusNode,
                               decoration: const InputDecoration(
                                 hintText: 'Add a comment...',
                                 border: InputBorder.none,

@@ -33,6 +33,7 @@ class _NavigationBottomState extends State<NavigationBottom>
   late Animation<double>? _animation;
   String? token;
   late SharedPreferences _prefs;
+  bool _isInitialized = false;
 
   Future<void> _initializePrefs() async {
     _prefs = await SharedPreferences.getInstance();
@@ -42,6 +43,26 @@ class _NavigationBottomState extends State<NavigationBottom>
     Map<String, dynamic> decodedToken = JwtDecoder.decode(token!);
     socketService.initSocket(decodedToken["id"].toString());
     socketService.connect(decodedToken["id"].toString());
+
+    // Set the _interfaces list
+    _interfaces = [
+      HomePage(widget.username, widget.profilePic, widget.id),
+      const Dashboard(),
+      Notifications(
+        token: token!,
+        updateCount: _getNonReadNotificationsCount,
+        onNewNotification: (notification) {
+          notificationsKey.currentState?.newNotification(notification);
+        },
+        key: notificationsKey,
+      ),
+      const Profile(
+        isCurrentUser: true,
+      ),
+    ];
+    setState(() {
+      _isInitialized = true;
+    });
   }
 
   @override
@@ -49,21 +70,7 @@ class _NavigationBottomState extends State<NavigationBottom>
     super.initState();
     _initializePrefs().then((_) {
       _getNonReadNotificationsCount();
-      _interfaces = [
-        HomePage(widget.username, widget.profilePic, widget.id),
-        const Dashboard(),
-        Notifications(
-          token: token!,
-          updateCount: _getNonReadNotificationsCount,
-          onNewNotification: (notification) {
-            notificationsKey.currentState?.newNotification(notification);
-          },
-          key: notificationsKey,
-        ),
-        const Profile(
-          isCurrentUser: true,
-        ),
-      ];
+
       _controller = AnimationController(
         duration: const Duration(milliseconds: 200),
         vsync: this,
@@ -151,31 +158,36 @@ class _NavigationBottomState extends State<NavigationBottom>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _interfaces[_currentIndex],
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: AnimatedBuilder(
-            animation: _animation!,
-            builder: (context, child) => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(4, (index) {
-                IconData iconData = _getIconData(index);
-                return Transform.scale(
-                  scale: _currentIndex == index ? _animation!.value : 1,
-                  child: IconButton(
-                    icon: _buildIconWithBadge(
-                        iconData, index == 2 ? _notificationCount : 0),
-                    color: _currentIndex == index ? Colors.red : Colors.grey,
-                    onPressed: () => _onItemTapped(index),
+      body: _isInitialized
+          ? _interfaces[_currentIndex]
+          : const Center(child: CircularProgressIndicator()),
+      bottomNavigationBar: _isInitialized
+          ? BottomAppBar(
+              shape: const CircularNotchedRectangle(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: AnimatedBuilder(
+                  animation: _animation!,
+                  builder: (context, child) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: List.generate(4, (index) {
+                      IconData iconData = _getIconData(index);
+                      return Transform.scale(
+                        scale: _currentIndex == index ? _animation!.value : 1,
+                        child: IconButton(
+                          icon: _buildIconWithBadge(
+                              iconData, index == 2 ? _notificationCount : 0),
+                          color:
+                              _currentIndex == index ? Colors.red : Colors.grey,
+                          onPressed: () => _onItemTapped(index),
+                        ),
+                      );
+                    }),
                   ),
-                );
-              }),
-            ),
-          ),
-        ),
-      ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 
