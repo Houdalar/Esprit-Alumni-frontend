@@ -10,8 +10,8 @@ Welcome to **Esprit Alumni**! Embrace the power of networking within the Esprit 
 
 - 🛡️ **Secure Authentication**: Safeguard your data with our robust login and sign-up system.
 <p align="center">
- <img src="./media/UI/login.png">
-  <img src="./media/UI/signup1.png">
+ <img src="./media/UI/login.png" alt="login" width="300" />
+  <img src="./media/UI/signup1.png" alt="login" width="300" />
 </p>
 - 💬 **Chat**: Establish meaningful connections with Esprit students and alumni in real-time.
 - 📝 **Posts**: Share your valuable thoughts, experiences, ideas, job openings, and internships with our thriving community.
