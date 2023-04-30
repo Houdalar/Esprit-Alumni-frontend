@@ -1,3 +1,4 @@
+import 'package:esprit_alumni_frontend/view/screens/chat/messages.dart';
 import 'package:esprit_alumni_frontend/viewmodel/userViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -114,45 +115,69 @@ class HomePageState extends State<HomePage> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 40,
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search users...',
-                    fillColor:
-                        Colors.grey[200], // Set the grey background color
-                    filled: true,
-                    contentPadding: const EdgeInsets.all(8.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                      borderSide:
-                          BorderSide.none, // Remove the border when focused
-                    ),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey[600],
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Search users...',
+                        fillColor:
+                            Colors.grey[200], // Set the grey background color
+                        filled: true,
+                        contentPadding: const EdgeInsets.all(8.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide:
+                              BorderSide.none, // Remove the border when focused
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      onChanged: (value) async {
+                        if (value.isNotEmpty) {
+                          final users = await UserViewModel.searchUsers(value);
+                          setState(() {
+                            _searchResults = users;
+                            _isSearchActive = true;
+                          });
+                        } else {
+                          setState(() {
+                            _searchResults = [];
+                            _isSearchActive = false;
+                          });
+                        }
+                      },
                     ),
                   ),
-                  onChanged: (value) async {
-                    if (value.isNotEmpty) {
-                      final users = await UserViewModel.searchUsers(value);
-                      setState(() {
-                        _searchResults = users;
-                        _isSearchActive = true;
-                      });
-                    } else {
-                      setState(() {
-                        _searchResults = [];
-                        _isSearchActive = false;
-                      });
-                    }
-                  },
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10.0),
+                    child: Container(
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey[200],
+                        ),
+                        child: Center(
+                            child: IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Messages()),
+                                  );
+                                },
+                                icon: const Icon(Icons.mail,
+                                    color: Colors.black)))),
+                  )
+                ],
               ),
             ),
             Expanded(

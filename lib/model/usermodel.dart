@@ -11,23 +11,22 @@ class User {
   final String option;
   final String status;
   final String profile;
-  final String profileImage;
+  final String? id;
 
-  User({
-    required this.email,
-    required this.password,
-    required this.username,
-    required this.googleUserId,
-    required this.token,
-    required this.gender,
-    required this.dateOfBirth,
-    required this.level,
-    required this.speciality,
-    required this.option,
-    required this.status,
-    required this.profile,
-    required this.profileImage,
-  });
+  User(
+      {required this.email,
+      required this.password,
+      required this.username,
+      required this.googleUserId,
+      required this.token,
+      required this.gender,
+      required this.dateOfBirth,
+      required this.level,
+      required this.speciality,
+      required this.option,
+      required this.status,
+      required this.profile,
+      required this.id});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -43,7 +42,25 @@ class User {
       option: json['option'],
       status: json['status'],
       profile: json['profile'],
-      profileImage: json['profile']?['profile_image'] ?? '',
+      id: json['_id'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'password': password,
+      'username': username,
+      'googleUserId': googleUserId,
+      'token': token,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth,
+      'level': level,
+      'speciality': speciality,
+      'option': option,
+      'status': status,
+      'profile': profile,
+      'id': id,
+    };
   }
 }

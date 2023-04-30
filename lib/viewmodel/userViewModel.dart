@@ -10,6 +10,7 @@ import '../../view/components/themes/colors.dart';
 import '../model/serchUser.dart';
 import '../view/screens/Profile/nav_bottom.dart';
 import '../view/screens/rsetpassword2.dart';
+import 'package:esprit_alumni_frontend/model/usermodel.dart' as user_model;
 
 class UserViewModel extends ChangeNotifier {
   static String baseUrl = "10.0.2.2:8081";
@@ -33,6 +34,7 @@ class UserViewModel extends ChangeNotifier {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString("userId", userData["id"]);
+        prefs.setString("id", userData["userId"]);
         prefs.setString("username", userData["username"]);
         prefs.setString("profile_image", userData["profile_image"]);
         Navigator.push(
@@ -465,6 +467,27 @@ class UserViewModel extends ChangeNotifier {
         List<dynamic> jsonData = json.decode(response.body);
         List<SearchUser> users = jsonData
             .map<SearchUser>((userJson) => SearchUser.fromJson(userJson))
+            .toList();
+        return users;
+      } else {
+        throw Exception('Failed to load users');
+      }
+    });
+  }
+
+  static Future<List<user_model.User>> getUsers() async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+
+    return http
+        .get(Uri.http(baseUrl, "/getUsers"), headers: headers)
+        .then((http.Response response) async {
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = json.decode(response.body);
+        List<user_model.User> users = jsonData
+            .map<user_model.User>(
+                (userJson) => user_model.User.fromJson(userJson))
             .toList();
         return users;
       } else {
