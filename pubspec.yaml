@@ -60,6 +60,9 @@ dependencies:
   flutter_local_notifications: ^13.0.0
   google_fonts: ^4.0.3
   intl: ^0.17.0
+  charts_flutter: ^0.12.0
+  fl_chart: ^0.62.0
+
 
 dev_dependencies:
   flutter_test:

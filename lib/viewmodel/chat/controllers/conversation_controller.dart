@@ -25,8 +25,6 @@ class ConversationController extends GetxController {
 
   @override
   void onInit() {
-    // connect();
-
     focusNode.addListener(() {
       if (focusNode.hasFocus) {
         emojiShowed = false;
@@ -37,15 +35,13 @@ class ConversationController extends GetxController {
     searchController.addListener(() {
       onSearchTextChanged(searchController.text);
     });
-    // messagesList.bindStream(ConversationService.getConversationMessages(
-    //     Get.arguments["sourceId"], Get.arguments["targetId"]));
     super.onInit();
   }
 
   /// connect the app to the socket.io server
   /// so every app will be treated as a socket.io client
   void connect(String sourchatId, String targetId) {
-    socket = io.io("http://172.17.2.217:3000", <String, dynamic>{
+    socket = io.io("http://10.0.2.2:3000", <String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
     });
@@ -66,7 +62,6 @@ class ConversationController extends GetxController {
             duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
       });
     });
-    // getConversationMessages(sourchatId, targetId);
     print(socket.connected);
   }
 
@@ -82,6 +77,9 @@ class ConversationController extends GetxController {
       "targetId": targetId,
     });
 
+    textEditingcontroller.clear();
+    scrollController.animateTo(scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 100), curve: Curves.easeOut);
     update();
   }
 
@@ -146,6 +144,15 @@ class ConversationController extends GetxController {
     update();
   }
 
+  deleteConversation(String sourceId, String targetId) async {
+    ConversationService.deleteConversation(sourceId, targetId).then((value) {
+      messagesList.refresh();
+      update();
+    });
+    messagesList.refresh();
+    update();
+  }
+
   void clearSearchResults() {
     searchResults.clear();
     isSearchActive.value = false;
@@ -170,5 +177,14 @@ class ConversationController extends GetxController {
     focusNode.dispose();
     searchController.dispose();
     super.dispose();
+  }
+
+  void toggleSendButton(String value) {
+    if (value.isNotEmpty) {
+      sendButton.value = true;
+    } else {
+      sendButton.value = false;
+    }
+    update();
   }
 }

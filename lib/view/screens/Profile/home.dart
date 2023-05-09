@@ -1,4 +1,4 @@
-import 'package:esprit_alumni_frontend/view/screens/chat/messages.dart';
+import 'package:esprit_alumni_frontend/view/screens/chat/messages_screen.dart';
 import 'package:esprit_alumni_frontend/viewmodel/userViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -171,7 +171,8 @@ class HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Messages()),
+                                        builder: (context) =>
+                                            const MessagesScreen()),
                                   );
                                 },
                                 icon: const Icon(Icons.mail,

@@ -47,7 +47,7 @@ class _NavigationBottomState extends State<NavigationBottom>
     // Set the _interfaces list
     _interfaces = [
       HomePage(widget.username, widget.profilePic, widget.id),
-      const Dashboard(),
+      Dashboard(),
       Notifications(
         token: token!,
         updateCount: _getNonReadNotificationsCount,

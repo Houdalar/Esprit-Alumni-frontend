@@ -42,6 +42,22 @@ class ConversationService {
     }
   }
 
+  static Future<void> deleteConversation(
+      String sourceId, String targetd) async {
+    final response = await http.delete(
+        Uri.parse('$url/chats/deleteConversation'),
+        body: json.encode({'sourceId': sourceId, 'targetId': targetd}),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        });
+
+    if (response.statusCode == 200) {
+      log(response.body);
+    } else {
+      throw Exception('Failed to delete conversation');
+    }
+  }
+
   static Future<List<SearchUser>> searchUsers(String query) async {
     Map<String, String> headers = {
       "Content-Type": "application/json; charset=UTF-8"
@@ -62,20 +78,4 @@ class ConversationService {
       }
     });
   }
-
-  // static Future<ConversationModel> getConversation(String targetId) async {
-  //   Map<String, String> headers = {
-  //     "Content-Type": "application/json; charset=UTF-8"
-  //   };
-  //   return http
-  //       .post(Uri.parse("http://172.16.5.42:3000/chats/getConversation"),
-  //           body: json.encode({'targetId': targetId}), headers: headers)
-  //       .then((http.Response response) async {
-  //     if (response.statusCode == 200) {
-  //       return ConversationModel.fromJson(json.decode(response.body));
-  //     } else {
-  //       throw Exception('Failed to load conversation');
-  //     }
-  //   });
-  // }
 }

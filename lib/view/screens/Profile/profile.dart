@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:esprit_alumni_frontend/view/screens/settings/settings.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -211,7 +212,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const SettingsPopup();
+                                  return const Settings();
                                 },
                               );
                             },
@@ -519,7 +520,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         profile.status,
                         profile.education,
                         profile.skills,
-                        false,
+                        widget.isCurrentUser,
                       ),
                       PostsFragment(
                         id: token!,

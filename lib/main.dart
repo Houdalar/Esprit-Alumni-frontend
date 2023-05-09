@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:esprit_alumni_frontend/bindings/app_bindings.dart';
 import 'package:esprit_alumni_frontend/socketService.dart';
+import 'package:esprit_alumni_frontend/view/screens/Profile/splash_screen.dart';
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(socketService: socketService),
+      //home: LoginPage(socketService: socketService),
+      home: const SplashScreen(),
       initialBinding: AppBindings(),
       getPages: [
         GetPage(

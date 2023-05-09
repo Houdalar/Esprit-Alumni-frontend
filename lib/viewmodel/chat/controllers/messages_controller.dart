@@ -53,7 +53,7 @@ class MessageController extends GetxController {
           final otherUserId = conversation.targetId;
           final lastMessageId = conversation.messagesList?.last;
           String? lastMessage;
-          //String? createdAt;
+
           await getMessage(lastMessageId ?? "").then((value) {
             lastMessage = value;
           });
@@ -75,7 +75,7 @@ class MessageController extends GetxController {
     });
     conversationsList.refresh();
 
-    update();
+    //update();
   }
 
   Future<UserInfoModel?> getUserInfo(String targetId) async {
@@ -91,6 +91,7 @@ class MessageController extends GetxController {
   Future<RxList<User>> getUsers() async {
     final usersList = await UserViewModel.getUsers();
     users.addAll(usersList);
+    log("users list: $usersList");
     return users;
   }
 
@@ -103,4 +104,9 @@ class MessageController extends GetxController {
       targetId: user.id,
     );
   }
+
+  // void markMessageAsRead(ChatModel chatModel) {
+  //   chatModel.isNew = false;
+  //   update();
+  // }
 }
