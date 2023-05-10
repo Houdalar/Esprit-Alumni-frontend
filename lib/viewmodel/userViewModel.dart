@@ -38,11 +38,12 @@ class UserViewModel extends ChangeNotifier {
         prefs.setString("username", userData["username"]);
         prefs.setString("profile_image", userData["profile_image"]);
         Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => NavigationBottom(userData["username"],
-                  userData["profile_image"], userData["id"])),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => NavigationBottom(userData["username"],
+                    userData["profile_image"], userData["id"])));
+        //Get.offAll(NavigationBottom(
+        //userData["username"], userData["profile_image"], userData["id"]));
       } else if (response.statusCode == 400) {
         showDialog(
             context: context,

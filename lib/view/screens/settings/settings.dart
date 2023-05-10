@@ -235,7 +235,8 @@ class Settings extends GetView<SettingsController> {
   Future<void> _signOut(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
-    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+    Get.offAllNamed('/login');
+    // Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
   }
 
   Widget _buildChangeUsernameDialog(

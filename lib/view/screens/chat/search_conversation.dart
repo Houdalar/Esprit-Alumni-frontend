@@ -15,7 +15,6 @@ class SearchConversation extends StatefulWidget {
 }
 
 class _SearchConversationState extends State<SearchConversation> {
-  final TextEditingController _searchController = TextEditingController();
   final conversationController = Get.put(ConversationController());
   final messsageController = Get.put(MessageController());
 

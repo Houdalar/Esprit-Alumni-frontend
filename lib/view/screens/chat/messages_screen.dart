@@ -59,7 +59,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                         topLeft: Radius.circular(40),
                                         topRight: Radius.circular(40))),
                               ),
-                              controller.chatModels.isNotEmpty
+                              controller.conversationsList.isNotEmpty
                                   ? ListView.builder(
                                       itemCount:
                                           controller.conversationsList.length,

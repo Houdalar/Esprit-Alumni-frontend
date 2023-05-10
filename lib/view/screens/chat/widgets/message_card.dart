@@ -8,11 +8,13 @@ class MessageCard extends StatelessWidget {
       {Key? key,
       required this.chatModel,
       required this.sourchat,
+      // required this.otherUser,
       this.targetId})
       : super(key: key);
   final ChatModel chatModel;
   final String? sourchat;
   final String? targetId;
+  //final UserInfoModel otherUser;
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +32,12 @@ class MessageCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: 8.0),
             child: ListTile(
               leading: chatModel.image != null
+                  //leading: otherUser.profileImage != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(50),
                       child: Image.network(
                         chatModel.image ?? "",
+                        //otherUser.profileImage ?? "",
                         height: 60,
                         width: 60,
                         fit: BoxFit.cover,
@@ -42,6 +46,7 @@ class MessageCard extends StatelessWidget {
                   : SvgPicture.asset("assets/images/person_icon.svg"),
               title: Text(
                 chatModel.name ?? "",
+                // otherUser.username ?? "",
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

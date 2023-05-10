@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:esprit_alumni_frontend/model/serchUser.dart';
 import 'package:esprit_alumni_frontend/viewmodel/chat/services/conversation_service.dart';
+import 'package:esprit_alumni_frontend/viewmodel/chat/services/messages_service.dart';
 import 'package:esprit_alumni_frontend/viewmodel/chat/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -96,6 +97,11 @@ class ConversationController extends GetxController {
     messagesList.refresh();
 
     update();
+  }
+
+  Future<String> getMessage(String messageId) async {
+    final message = await MessagesService.getMessage(messageId);
+    return message;
   }
 
   void toggleEmojiPicker(BuildContext context) {

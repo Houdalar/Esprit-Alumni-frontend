@@ -1,14 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:esprit_alumni_frontend/model/chat_model.dart';
+import 'package:esprit_alumni_frontend/view/screens/chat/conversation_screen.dart';
 import 'package:esprit_alumni_frontend/view/screens/settings/settings.dart';
+import 'package:esprit_alumni_frontend/viewmodel/chat/controllers/messages_controller.dart';
+import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:esprit_alumni_frontend/view/components/themes/profile_clipper.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/career_fragment.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/posts_fragment.dart';
-import 'package:esprit_alumni_frontend/view/screens/Profile/settings_popup.dart';
 import 'package:esprit_alumni_frontend/viewmodel/profileViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -163,6 +166,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final messsageController = Get.put(MessageController());
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.red,
       systemNavigationBarColor: Colors.white,
@@ -437,6 +442,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           ),
                           onPressed: () {
                             // Handle send message action
+                            ChatModel? chatModel = messsageController.chatModels
+                                .firstWhere(
+                                    (chat) =>
+                                        chat?.targetId == profile.owner["_id"],
+                                    orElse: () => null);
+
+                            chatModel ??= ChatModel(
+                              name: profile.owner["username"],
+                              image: profile.profileImage,
+                              currentMessage: '',
+                              time: '',
+                              targetId: profile.owner["_id"],
+                            );
+                            Get.to(() => ConversationScreen(
+                                  sourchat: userId,
+                                  chatModel: chatModel,
+                                ));
                           },
                           icon: const Icon(Icons.send,
                               color: AppColors.primaryDark),
