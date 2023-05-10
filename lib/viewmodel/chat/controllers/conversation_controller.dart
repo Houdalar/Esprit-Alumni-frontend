@@ -48,6 +48,9 @@ class ConversationController extends GetxController {
     });
     //connecter le socket server manuellement
     socket.connect();
+    socket.onDisconnect((_) => print('disconnect'));
+    socket.onError((data) => print('error: $data'));
+
     socket.emit("signin", sourchatId);
     socket.onConnect((data) {
       print("Connected");
