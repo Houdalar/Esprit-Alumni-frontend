@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../components/constum_componenets/gradientButton.dart';
 import '../components/themes/colors.dart';
 import '../../viewmodel/userViewModel.dart';
@@ -21,6 +22,7 @@ List<String> _level = [
   'Third Year',
   'Fourth Year',
   'Fifth Year',
+  'Alumni',
 ];
 
 List<String> _speciality = [
@@ -44,9 +46,9 @@ class Signup2PageState extends State<Signup2Page> {
       "nids",
       "se"
     ],
-    'TC': ['Siamese', 'Persian', 'Bengal'],
-    'GC': ['Arabian', 'Thoroughbred', 'Quarter Horse'],
-    'GE': ['Arabian', 'Thoroughbred', 'Quarter Horse'],
+    'TC': ['win', 'iosys'],
+    'GC': ['oge', 'ue', 'eco', 'ues'],
+    'GE': ['ogi', 'mec'],
   };
   String? selectedGender;
 
@@ -93,6 +95,17 @@ class Signup2PageState extends State<Signup2Page> {
 
   @override
   Widget build(BuildContext context) {
+    final dateDisplay = Container(
+      width: double.infinity,
+      margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
+      child: Text(
+        "Selected Date: ${_selectedDate?.toIso8601String() ?? "No date selected"}",
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
+    );
     final signupButton = SizedBox(
       child: gradientButton(
         borderRadius: BorderRadius.circular(30.0),
@@ -144,12 +157,16 @@ class Signup2PageState extends State<Signup2Page> {
         Icons.calendar_today,
         color: AppColors.primaryDark,
       ),
-      label: const Text('choose date',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 17.0,
-            fontFamily: 'Mukata Malar',
-          )),
+      label: Text(
+        _selectedDate == null
+            ? 'Choose date'
+            : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 17.0,
+          fontFamily: 'Mukata Malar',
+        ),
+      ),
     );
 
     final level = DropdownButtonFormField<String>(
@@ -417,22 +434,26 @@ class Signup2PageState extends State<Signup2Page> {
               margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
               child: speciality,
             ),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.fromLTRB(35, 10, 35, 20),
-              child: const Text(
-                "Option :",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+            if (['Fourth Year', 'Fifth Year', 'Alumni']
+                .contains(_selectedLevel))
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.fromLTRB(35, 10, 35, 20),
+                child: const Text(
+                  "Option :",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
-              child: option,
-            ),
+            if (['Fourth Year', 'Fifth Year', 'Alumni']
+                .contains(_selectedLevel))
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.fromLTRB(80, 0, 80, 20),
+                child: option,
+              ),
             Container(
               width: double.infinity,
               margin: const EdgeInsets.fromLTRB(35, 35, 35, 20),
