@@ -664,4 +664,19 @@ class ProfileViewModel extends ChangeNotifier {
     final responseBody = json.decode(response.body);
     return PostModel.fromJson(responseBody);
   }
+
+  static Future<bool> deleteNotification(String id) async {
+    Map<String, String> headers = {
+      "Content-Type": "application/json; charset=UTF-8"
+    };
+    return await http
+        .put(Uri.http(baseUrl, "/deleteNotification/$id"), headers: headers)
+        .then((http.Response response) {
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
 }

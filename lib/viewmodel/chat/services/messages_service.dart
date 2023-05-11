@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:esprit_alumni_frontend/app_constants.dart';
 import 'package:esprit_alumni_frontend/model/conversation.dart';
+import 'package:esprit_alumni_frontend/model/user_info_model.dart';
 import 'package:http/http.dart' as http;
 
 class MessagesService {
@@ -63,5 +64,31 @@ class MessagesService {
       //log(response.body);
       throw Exception('Failed to get the message');
     }
+  }
+
+  static Future<ConversationModel> getConversation(
+      String targetId, String sourceId) async {
+    const url = "$baseUrl/chats/getConversation";
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+    };
+    final response = await http.post(Uri.parse(url),
+        body: json.encode({"targetId": targetId, "sourceId": sourceId}),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      log(response.body);
+      return ConversationModel.fromJson(json.decode(response.body));
+    } else {
+      log(response.body);
+      throw Exception('Failed to get the conversation');
+    }
+  }
+
+  static Future<UserInfoModel> getOtherUser(
+      String currentUserId, String sourceId, String targetId) async {
+    String otherUserId = currentUserId == sourceId ? targetId : sourceId;
+    final userInfo = await getUserInfo(otherUserId);
+    return UserInfoModel.fromJson(userInfo ?? {});
   }
 }

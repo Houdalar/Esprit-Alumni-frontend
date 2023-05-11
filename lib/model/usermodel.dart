@@ -2,7 +2,6 @@ class User {
   final String email;
   final String password;
   final String username;
-  final String googleUserId;
   final String token;
   final String gender;
   final String dateOfBirth;
@@ -17,7 +16,6 @@ class User {
       {required this.email,
       required this.password,
       required this.username,
-      required this.googleUserId,
       required this.token,
       required this.gender,
       required this.dateOfBirth,
@@ -33,16 +31,15 @@ class User {
       email: json['email'],
       password: json['password'],
       username: json['username'],
-      googleUserId: json['googleUserId'],
       token: json['token'],
       gender: json['gender'],
-      dateOfBirth: json['dateOfBirth'],
+      dateOfBirth: json['dateofbirth'],
       level: json['level'],
       speciality: json['speciality'],
       option: json['option'],
       status: json['status'],
       profile: json['profile'],
-      id: json['_id'] ?? '',
+      id: json['_id'],
     );
   }
 
@@ -51,7 +48,6 @@ class User {
       'email': email,
       'password': password,
       'username': username,
-      'googleUserId': googleUserId,
       'token': token,
       'gender': gender,
       'dateOfBirth': dateOfBirth,

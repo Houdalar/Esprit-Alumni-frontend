@@ -35,177 +35,212 @@ class NotificationItemState extends State<NotificationItem> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        if (!_notification!.isRead) {
-          bool success = await ProfileViewModel.markNotificationAsRead(
-              widget.token, _notification!.id);
-          if (success) {
-            setState(() {
-              _notification =
-                  NotificationModel.copyWith(_notification!, isRead: true);
-            });
-            widget.onRead(_notification!);
+    return Dismissible(
+      key: UniqueKey(),
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20.0),
+        color: Colors.red,
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
+      ),
+      onDismissed: (direction) async {
+        bool success =
+            await ProfileViewModel.deleteNotification(_notification!.id);
+        if (success) {
+          if (!_notification!.isRead) {
             widget.updateCount();
           }
-        }
-        switch (_notification!.notificationType) {
-          case 'like':
-            {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SinglePostView(
-                    postId: _notification!.postId!,
-                  ),
-                ),
-              );
-              break;
-            }
-          case 'like comment':
-            {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SinglePostView(
-                    postId: _notification!.postId!,
-                    commentId: _notification!.commentId!,
-                  ),
-                ),
-              );
-              break;
-            }
-
-          case 'follow':
-            {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Profile(
-                    user: _notification!.senderId['_id'],
-                    isCurrentUser: false,
-                  ),
-                ),
-              );
-              break;
-            }
-
-          case 'share':
-            {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SinglePostView(
-                    postId: _notification!.postId!,
-                  ),
-                ),
-              );
-              break;
-            }
-
-          case 'comment':
-            {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SinglePostView(
-                    postId: _notification!.postId!,
-                    commentId: _notification!.commentId!,
-                  ),
-                ),
-              );
-              break;
-            }
-
-          default:
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Notification deleted'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to delete notification'),
+            ),
+          );
         }
       },
-      child: Container(
-        color: widget.notification.isRead ? Colors.white : Colors.grey[200],
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(
-                      widget.notification.senderId['profile_image']),
-                ),
-                if (widget.notification.notificationType == 'like' ||
-                    widget.notification.notificationType == 'like comment' ||
-                    widget.notification.notificationType == 'share' ||
-                    widget.notification.notificationType == 'comment')
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.primaryDark,
-                      ),
-                      child: Icon(
-                        widget.notification.notificationType == 'like' ||
-                                widget.notification.notificationType ==
-                                    'like comment'
-                            ? Icons.favorite
-                            : widget.notification.notificationType == 'comment'
-                                ? Icons.mode_comment
-                                : Icons.share,
-                        color: Colors.white,
-                        size: 12,
-                      ),
+      child: GestureDetector(
+        onTap: () async {
+          if (!_notification!.isRead) {
+            bool success = await ProfileViewModel.markNotificationAsRead(
+                widget.token, _notification!.id);
+            if (success) {
+              setState(() {
+                _notification =
+                    NotificationModel.copyWith(_notification!, isRead: true);
+              });
+              widget.onRead(_notification!);
+              widget.updateCount();
+            }
+          }
+          switch (_notification!.notificationType) {
+            case 'like':
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SinglePostView(
+                      postId: _notification!.postId!,
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    RichText(
-                      text: TextSpan(
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.black),
-                        children: [
-                          TextSpan(
-                            text: widget.notification.senderId['username'],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          TextSpan(
-                            text: _getMessageText(widget.notification),
-                            style:
-                                const TextStyle(fontWeight: FontWeight.normal),
-                          ),
-                        ],
+                );
+                break;
+              }
+            case 'like comment':
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SinglePostView(
+                      postId: _notification!.postId!,
+                      commentId: _notification!.commentId!,
+                    ),
+                  ),
+                );
+                break;
+              }
+
+            case 'follow':
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Profile(
+                      user: _notification!.senderId['_id'],
+                      isCurrentUser: false,
+                    ),
+                  ),
+                );
+                break;
+              }
+
+            case 'share':
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SinglePostView(
+                      postId: _notification!.postId!,
+                    ),
+                  ),
+                );
+                break;
+              }
+
+            case 'comment':
+              {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SinglePostView(
+                      postId: _notification!.postId!,
+                      commentId: _notification!.commentId!,
+                    ),
+                  ),
+                );
+                break;
+              }
+
+            default:
+          }
+        },
+        child: Container(
+          color: widget.notification.isRead ? Colors.white : Colors.grey[200],
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(
+                        widget.notification.senderId['profile_image']),
+                  ),
+                  if (widget.notification.notificationType == 'like' ||
+                      widget.notification.notificationType == 'like comment' ||
+                      widget.notification.notificationType == 'share' ||
+                      widget.notification.notificationType == 'comment')
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primaryDark,
+                        ),
+                        child: Icon(
+                          widget.notification.notificationType == 'like' ||
+                                  widget.notification.notificationType ==
+                                      'like comment'
+                              ? Icons.favorite
+                              : widget.notification.notificationType ==
+                                      'comment'
+                                  ? Icons.mode_comment
+                                  : Icons.share,
+                          color: Colors.white,
+                          size: 12,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.notification.elapsedTimeString,
-                      style: const TextStyle(fontSize: 15, color: Colors.grey),
-                    ),
-                  ],
+                ],
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
+                          children: [
+                            TextSpan(
+                              text: widget.notification.senderId['username'],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: _getMessageText(widget.notification),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.normal),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.notification.elapsedTimeString,
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (!widget.notification.isRead)
-              Container(
-                width: 14,
-                height: 14,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryDark,
+              if (!widget.notification.isRead)
+                Container(
+                  width: 14,
+                  height: 14,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.primaryDark,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:esprit_alumni_frontend/model/chat_model.dart';
+import 'package:esprit_alumni_frontend/view/screens/chat/conversation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../conversation.dart';
 
 class MessageCard extends StatelessWidget {
   const MessageCard(
@@ -21,8 +21,8 @@ class MessageCard extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    Conversation(chatModel: chatModel, sourchat: sourchat)));
+                builder: (context) => ConversationScreen(
+                    chatModel: chatModel, sourchat: sourchat)));
       },
       child: Column(
         children: [
@@ -34,7 +34,6 @@ class MessageCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                       child: Image.network(
                         chatModel.image ?? "",
-                        //color: AppColors.primaryColorDark,
                         height: 60,
                         width: 60,
                         fit: BoxFit.cover,
@@ -48,24 +47,27 @@ class MessageCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              subtitle: Row(
-                children: [
-                  const Icon(
-                    Icons.done_all,
-                    size: 16,
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  Text(
-                    chatModel.currentMessage ?? "",
-                    style: const TextStyle(fontSize: 15),
-                  )
-                ],
-              ),
-              trailing: Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: Text(chatModel.time ?? "20:47"),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.done_all,
+                      size: 16,
+                    ),
+                    const SizedBox(
+                      width: 6,
+                    ),
+                    Text(
+                      chatModel.currentMessage!.length > 21
+                          ? "${chatModel.currentMessage!.substring(0, 21)}..."
+                          : chatModel.currentMessage ?? "",
+                      style: const TextStyle(
+                        fontSize: 15,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),

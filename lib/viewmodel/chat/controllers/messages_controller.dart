@@ -9,23 +9,39 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MessageController extends GetxController {
-  var conversationsList = <ConversationModel>[].obs;
+  late var conversationsList;
   late String userId;
-  var chatModels = <ChatModel?>[].obs;
-  var users = <User>[].obs;
+  late var chatModels;
+  late var users;
+  //RxString? lastMessage;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    getUserId().then((value) {
+    conversationsList = <ConversationModel>[].obs;
+    chatModels = <ChatModel?>[].obs;
+    users = <User>[].obs;
+    getUserId().then((value) async {
       userId = value ?? "";
-      getUserConversations();
+      await getUserConversations();
     });
+    await getUsers();
 
-    getUsers().then((allUsers) {
-      users.addAll(allUsers);
-      update();
-    });
+    //.then((allUsers) {
+    //   for (var element in allUsers) {
+    //     users.add(element);
+    //   }
+    //   update();
+    // });
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    conversationsList = <ConversationModel>[].obs;
+    chatModels = <ChatModel?>[].obs;
+    users = <User>[].obs;
+    log("dispoooooooooooooose");
   }
 
   getUserId() async {
@@ -39,8 +55,8 @@ class MessageController extends GetxController {
       conversationsList = <ConversationModel>[].obs;
       conversationsList.addAll(value);
       log(conversationsList.toString());
-      conversationsList.refresh();
-      update();
+      //  conversationsList.refresh();
+      // update();
     }).then((value) async {
       if (conversationsList.isEmpty) {
         // Initialize chatModels with all users if there are no conversations
@@ -50,12 +66,14 @@ class MessageController extends GetxController {
         }
       } else {
         for (var conversation in conversationsList) {
-          final otherUserId = conversation.targetId;
+          final otherUserId = userId == conversation.targetId
+              ? conversation.sourceId
+              : conversation.targetId;
           final lastMessageId = conversation.messagesList?.last;
           String? lastMessage;
-          //String? createdAt;
           await getMessage(lastMessageId ?? "").then((value) {
             lastMessage = value;
+            update();
           });
           await getUserInfo(otherUserId ?? "").then((userInfo) {
             log(userInfo.toString());
@@ -71,11 +89,10 @@ class MessageController extends GetxController {
           });
         }
       }
-      update();
     });
     conversationsList.refresh();
-
-    update();
+    log("chatlistModel ${chatModels.length.toString()}");
+    log("conversationsList ${conversationsList.length.toString()}");
   }
 
   Future<UserInfoModel?> getUserInfo(String targetId) async {
@@ -88,10 +105,13 @@ class MessageController extends GetxController {
     return message;
   }
 
-  Future<RxList<User>> getUsers() async {
+//  Future<RxList<User>>
+  getUsers() async {
     final usersList = await UserViewModel.getUsers();
     users.addAll(usersList);
-    return users;
+    log("users list: $usersList");
+    update();
+    // return users;
   }
 
   ChatModel userToChatModel(User user) {
@@ -102,5 +122,16 @@ class MessageController extends GetxController {
       time: "",
       targetId: user.id,
     );
+  }
+
+  Future<ConversationModel> getConversation(
+      String targetId, String sourceId) async {
+    return await MessagesService.getConversation(targetId, sourceId);
+  }
+
+  Future<UserInfoModel> getOtherUser(
+      String currentUserId, String sourceId, String targetId) async {
+    return await MessagesService.getOtherUser(
+        currentUserId, sourceId, targetId);
   }
 }

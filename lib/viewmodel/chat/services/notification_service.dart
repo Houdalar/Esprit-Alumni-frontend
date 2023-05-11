@@ -6,7 +6,7 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Future<void> sendNotification(int targetId) async {
+  Future<void> sendNotification(String targetId) async {
     // Initialiser la configuration des notifications
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
