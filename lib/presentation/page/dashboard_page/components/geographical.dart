@@ -38,7 +38,7 @@ class _GeographicalDistributionState extends State<GeographicalDistribution> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 515,
+      height: 520,
       width: 500,
       //constraints: const BoxConstraints(maxWidth: 500, minHeight: 270),
       padding: const EdgeInsets.only(top: 31, left: 30, right: 25, bottom: 0),
