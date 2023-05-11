@@ -1,3 +1,4 @@
+import 'package:esprit_alumni_frontend/view/components/design/app_colors.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/specialties.dart';
 import 'package:flutter/material.dart';
 
@@ -21,9 +22,23 @@ class _DashboardState extends State<Dashboard> {
           children: [
             const SizedBox(height: 100.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 18.0),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      size: 22,
+                      color: AppColors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 62),
+                const Text(
                   'Dashboard',
                   style: TextStyle(
                       fontSize: 28.0,

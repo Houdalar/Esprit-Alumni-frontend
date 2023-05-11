@@ -36,14 +36,34 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           top: MediaQuery.of(context).size.height * 0.08),
                       child: Column(
                         children: [
-                          Center(
-                            child: Text(
-                              "Conversations",
-                              style: GoogleFonts.poppins(
-                                  textStyle: const TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w400)),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 50.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios_new,
+                                    size: 22,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  "Conversations",
+                                  style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(
+                                          fontSize: 30,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w400)),
+                                ),
+                                const Spacer()
+                              ],
                             ),
                           ),
                           const SizedBox(

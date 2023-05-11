@@ -39,8 +39,19 @@ class _SearchConversationState extends State<SearchConversation> {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new,
+                        size: 22,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    const Spacer(),
                     Text(
                       "Start Conversation",
                       style: GoogleFonts.poppins(
@@ -56,6 +67,7 @@ class _SearchConversationState extends State<SearchConversation> {
                       Icons.edit,
                       color: AppColors.white,
                     ),
+                    const Spacer()
                   ],
                 ),
                 SearchBar(

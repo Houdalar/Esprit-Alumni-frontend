@@ -65,9 +65,6 @@ class MyApp extends StatelessWidget {
             page: () {
               return const SignupPage();
             }),
-        // GetPage(name: 'navigationBottom', page: (){
-        //   return const NavigationBottom();
-        // })
       ],
     );
   }
