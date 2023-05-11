@@ -5,6 +5,7 @@ import 'package:esprit_alumni_frontend/socketService.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/splash_screen.dart';
 import 'package:esprit_alumni_frontend/view/screens/login.dart';
 import 'package:esprit_alumni_frontend/view/screens/signup1.dart';
+import 'package:esprit_alumni_frontend/web_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -49,23 +50,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      //home: LoginPage(socketService: socketService),
-      home: const SplashScreen(),
-      initialBinding: AppBindings(),
-      getPages: [
-        GetPage(
-            name: '/login',
-            page: () {
-              return LoginPage(socketService: socketService);
-            }),
-        GetPage(
-            name: '/signup1',
-            page: () {
-              return const SignupPage();
-            }),
-      ],
-    );
+    // return GetMaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   //home: LoginPage(socketService: socketService),
+    //   home: const SplashScreen(),
+    //   initialBinding: AppBindings(),
+    //   getPages: [
+    //     GetPage(
+    //         name: '/login',
+    //         page: () {
+    //           return LoginPage(socketService: socketService);
+    //         }),
+    //     GetPage(
+    //         name: '/signup1',
+    //         page: () {
+    //           return const SignupPage();
+    //         }),
+    //   ],
+    // );
+    return WebController();
   }
 }

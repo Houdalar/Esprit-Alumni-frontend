@@ -1,4 +1,3 @@
-import 'package:esprit_alumni_frontend/view/components/design/app_colors.dart';
 import 'package:esprit_alumni_frontend/view/screens/Profile/specialties.dart';
 import 'package:flutter/material.dart';
 
@@ -18,103 +17,77 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 100.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 18.0),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 22,
-                      color: AppColors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 62),
-                const Text(
-                  'Dashboard',
-                  style: TextStyle(
-                      fontSize: 28.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Mukta Malar'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 90.0),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildContainerXL(
-                    'media/fields.png',
-                    'In-Demand Fields',
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              in_demand(title: "In-Demand Fields")),
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildContainer(
-                        'media/specialties.png',
-                        'Specialties Taught',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Specialties()),
-                        ),
-                      ),
-                      _buildContainer(
-                        'media/employer.png',
-                        'Employer Information',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Specialties()),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildContainer(
-                        'media/geographic.png',
-                        'Geographical Distribution',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const GeographicalDistribution()),
-                        ),
-                      ),
-                      _buildContainer(
-                        'media/career.png',
-                        'popular Career Paths',
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => JobChart()),
-                        ),
-                      ),
-                    ],
+                  const Text(
+                    'Dashboard',
+                    style: TextStyle(
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Mukta Malar'),
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 10.0),
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildContainerXL(
+                      'media/fields.png',
+                      'In-Demand Fields',
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                in_demand(title: "In-Demand Fields")),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildContainer(
+                          'media/geographic.png',
+                          'Geographical Distribution',
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const GeographicalDistribution()),
+                          ),
+                        ),
+                        _buildContainer(
+                          'media/career.png',
+                          'Popular fields within alumni',
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => JobChart()),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20.0),
+                    _buildContainerXL(
+                      'media/specialties.png',
+                      'Specialties taught at Esprit',
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Specialties()),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

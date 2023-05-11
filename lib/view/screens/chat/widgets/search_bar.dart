@@ -2,8 +2,8 @@ import 'package:esprit_alumni_frontend/view/components/design/app_colors.dart';
 import 'package:esprit_alumni_frontend/view/components/design/app_images.dart';
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key, this.searchText = '', required this.onSearch})
+class SearchBar1 extends StatelessWidget {
+  const SearchBar1({Key? key, this.searchText = '', required this.onSearch})
       : super(key: key);
 
   final String searchText;

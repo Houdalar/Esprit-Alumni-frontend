@@ -1,6 +1,6 @@
 import 'package:esprit_alumni_frontend/view/components/design/app_colors.dart';
 import 'package:esprit_alumni_frontend/view/screens/chat/widgets/conversation_search_item.dart';
-import 'package:esprit_alumni_frontend/view/screens/chat/widgets/search_bar.dart';
+import 'package:esprit_alumni_frontend/view/screens/chat/widgets/search_bar.dart' ;
 import 'package:esprit_alumni_frontend/viewmodel/chat/controllers/conversation_controller.dart';
 import 'package:esprit_alumni_frontend/viewmodel/chat/controllers/messages_controller.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +70,7 @@ class _SearchConversationState extends State<SearchConversation> {
                     const Spacer()
                   ],
                 ),
-                SearchBar(
+                SearchBar1(
                   searchText: '',
                   onSearch: conversationController.onSearchTextChanged,
                 ),

@@ -190,371 +190,390 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
           _numberOfFollowers = profile.numberOfFollowers;
           // Use the profile data to build the UI of the Profile widget
           return Scaffold(
+              appBar: widget.isCurrentUser
+                  ? null
+                  : AppBar(
+                      backgroundColor: Color.fromARGB(255, 233, 232, 232),
+                      elevation: 0,
+                      iconTheme: IconThemeData(color: AppColors.primaryDark),
+                    ),
               body: SingleChildScrollView(
                   child: Column(
-            children: <Widget>[
-              // background image
-              Stack(
-                alignment: Alignment.center,
                 children: <Widget>[
-                  ClipPath(
-                    clipper: ProfileClipper(),
-                    child: const Image(
-                      width: double.infinity,
-                      image: AssetImage('media/background_image.png'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    top: 60.0,
-                    right: 5.0,
-                    child: widget.isCurrentUser
-                        ? IconButton(
-                            icon: const Icon(Icons.settings),
-                            iconSize: 27.0,
-                            color: AppColors.primaryDark,
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return const Settings();
-                                },
-                              );
-                            },
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                  Positioned(
-                      top: 110.0,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black45,
-                              offset: Offset(0, 2),
-                              blurRadius: 6.0,
-                            )
-                          ],
+                  // background image
+                  Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      ClipPath(
+                        clipper: ProfileClipper(),
+                        child: const Image(
+                          width: double.infinity,
+                          image: AssetImage('media/background_image.png'),
+                          fit: BoxFit.cover,
                         ),
-                        child: GestureDetector(
-                          onTap: () {
-                            if (widget.isCurrentUser) {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          GestureDetector(
-                                            child: const Text('Show Image'),
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return AlertDialog(
-                                                        backgroundColor:
-                                                            Colors.transparent,
-                                                        content: SizedBox(
-                                                          width:
-                                                              double.maxFinite,
-                                                          child: Image.network(
-                                                            profile
-                                                                .profileImage,
-                                                            fit: BoxFit.cover,
-                                                          ),
-                                                        ));
-                                                  });
-                                            },
-                                          ),
-                                          const Padding(
-                                              padding: EdgeInsets.all(8.0)),
-                                          GestureDetector(
-                                            child: const Text('Edit Image'),
-                                            onTap: () async {
-                                              final pickedFile =
-                                                  await picker.getImage(
-                                                      source:
-                                                          ImageSource.gallery);
-                                              // Use the pickedFile variable to access the selected image
-                                              await uploadPic(context, token!,
-                                                  File(pickedFile!.path));
-                                              Navigator.of(context).pop();
-                                              // display the image
-                                              setState(() {
-                                                ProfileViewModel.fetchProfile(
-                                                    token!);
-                                              });
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                      ),
+                      Positioned(
+                        top: 60.0,
+                        right: 5.0,
+                        child: widget.isCurrentUser
+                            ? IconButton(
+                                icon: const Icon(Icons.settings),
+                                iconSize: 27.0,
+                                color: AppColors.primaryDark,
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return const Settings();
+                                    },
                                   );
                                 },
-                              );
-                            }
-                          },
-                          child: ClipOval(
-                            child: Image.network(
-                              profile.profileImage,
-                              fit: BoxFit.cover,
-                              width: 105.0,
-                              height: 105.0,
-                              errorBuilder: (BuildContext context,
-                                  Object exception, StackTrace? stackTrace) {
-                                return const Image(
-                                  image: AssetImage('media/profile_image.png'),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      Positioned(
+                          top: 110.0,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black45,
+                                  offset: Offset(0, 2),
+                                  blurRadius: 6.0,
+                                )
+                              ],
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                if (widget.isCurrentUser) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: SingleChildScrollView(
+                                          child: ListBody(
+                                            children: <Widget>[
+                                              GestureDetector(
+                                                child: const Text('Show Image'),
+                                                onTap: () {
+                                                  Navigator.of(context).pop();
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            content: SizedBox(
+                                                              width: double
+                                                                  .maxFinite,
+                                                              child:
+                                                                  Image.network(
+                                                                profile
+                                                                    .profileImage,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                              ),
+                                                            ));
+                                                      });
+                                                },
+                                              ),
+                                              const Padding(
+                                                  padding: EdgeInsets.all(8.0)),
+                                              GestureDetector(
+                                                child: const Text('Edit Image'),
+                                                onTap: () async {
+                                                  final pickedFile =
+                                                      await picker.getImage(
+                                                          source: ImageSource
+                                                              .gallery);
+                                                  // Use the pickedFile variable to access the selected image
+                                                  await uploadPic(
+                                                      context,
+                                                      token!,
+                                                      File(pickedFile!.path));
+                                                  Navigator.of(context).pop();
+                                                  // display the image
+                                                  setState(() {
+                                                    ProfileViewModel
+                                                        .fetchProfile(token!);
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              child: ClipOval(
+                                child: Image.network(
+                                  profile.profileImage,
                                   fit: BoxFit.cover,
                                   width: 105.0,
                                   height: 105.0,
-                                );
-                              },
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                }
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    return const Image(
+                                      image:
+                                          AssetImage('media/profile_image.png'),
+                                      fit: BoxFit.cover,
+                                      width: 105.0,
+                                      height: 105.0,
+                                    );
+                                  },
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(children: <Widget>[
+                            GestureDetector(
+                              onTap: _showFolloingDialog,
+                              child: Column(children: <Widget>[
+                                Text(
+                                  profile.numberOfFollowing.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 17.0,
+                                    fontFamily: 'Mukta Malar',
+                                    fontWeight: FontWeight.w600,
                                   ),
+                                ),
+                                const SizedBox(height: 2.0),
+                                const Text(
+                                  "Followings",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14.0,
+                                    fontFamily: 'Mukta Malar',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ]),
+                            ),
+                          ]),
+                          Column(children: <Widget>[
+                            Text(profile.owner["username"],
+                                style: const TextStyle(
+                                  fontSize: 23.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Mukta Malar',
+                                  letterSpacing: 1.5,
+                                  color: AppColors.primaryDark,
+                                )),
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: Colors.black,
+                                  size: 17.0,
+                                ),
+                                const SizedBox(width: 5.0),
+                                Text(
+                                  profile.location,
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(136, 0, 0, 0),
+                                    fontSize: 16.0,
+                                    fontFamily: 'Mukta Malar',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ]),
+                          Column(children: <Widget>[
+                            GestureDetector(
+                              onTap: _showFollowersDialog,
+                              child: Column(children: <Widget>[
+                                Text(
+                                  _numberOfFollowers.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 17.0,
+                                    fontFamily: 'Mukta Malar',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 2.0),
+                                const Text(
+                                  "Followers",
+                                  style: TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 14.0,
+                                    fontFamily: 'Mukta Malar',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ]),
+                            ),
+                          ])
+                        ],
+                      )),
+                  const SizedBox(height: 25.0),
+                  if (!widget.isCurrentUser)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                              ),
+                              onPressed: () {
+                                // Handle send message action
+                                ChatModel? chatModel =
+                                    messsageController.chatModels.firstWhere(
+                                        (chat) =>
+                                            chat?.targetId ==
+                                            profile.owner["_id"],
+                                        orElse: () => null);
+
+                                chatModel ??= ChatModel(
+                                  name: profile.owner["username"],
+                                  image: profile.profileImage,
+                                  currentMessage: '',
+                                  time: '',
+                                  targetId: profile.owner["_id"],
                                 );
+                                Get.to(() => ConversationScreen(
+                                      sourchat: userId,
+                                      chatModel: chatModel,
+                                    ));
                               },
-                            ),
-                          ),
-                        ),
-                      ))
-                ],
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(children: <Widget>[
-                        GestureDetector(
-                          onTap: _showFolloingDialog,
-                          child: Column(children: <Widget>[
-                            Text(
-                              profile.numberOfFollowing.toString(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 17.0,
-                                fontFamily: 'Mukta Malar',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 2.0),
-                            const Text(
-                              "Followings",
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14.0,
-                                fontFamily: 'Mukta Malar',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ]),
-                      Column(children: <Widget>[
-                        Text(profile.owner["username"],
-                            style: const TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Mukta Malar',
-                              letterSpacing: 1.5,
-                              color: AppColors.primaryDark,
-                            )),
-                        const SizedBox(height: 10.0),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.black,
-                              size: 17.0,
-                            ),
-                            const SizedBox(width: 5.0),
-                            Text(
-                              profile.location,
-                              style: const TextStyle(
-                                color: Color.fromARGB(136, 0, 0, 0),
-                                fontSize: 16.0,
-                                fontFamily: 'Mukta Malar',
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ]),
-                      Column(children: <Widget>[
-                        GestureDetector(
-                          onTap: _showFollowersDialog,
-                          child: Column(children: <Widget>[
-                            Text(
-                              _numberOfFollowers.toString(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 17.0,
-                                fontFamily: 'Mukta Malar',
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 2.0),
-                            const Text(
-                              "Followers",
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 14.0,
-                                fontFamily: 'Mukta Malar',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ])
-                    ],
-                  )),
-              const SizedBox(height: 25.0),
-              if (!widget.isCurrentUser)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          ),
-                          onPressed: () {
-                            // Handle send message action
-                            ChatModel? chatModel = messsageController.chatModels
-                                .firstWhere(
-                                    (chat) =>
-                                        chat?.targetId == profile.owner["_id"],
-                                    orElse: () => null);
-
-                            chatModel ??= ChatModel(
-                              name: profile.owner["username"],
-                              image: profile.profileImage,
-                              currentMessage: '',
-                              time: '',
-                              targetId: profile.owner["_id"],
-                            );
-                            Get.to(() => ConversationScreen(
-                                  sourchat: userId,
-                                  chatModel: chatModel,
-                                ));
-                          },
-                          icon: const Icon(Icons.send,
-                              color: AppColors.primaryDark),
-                          label: const Text(
-                            'Message',
-                            style: TextStyle(color: AppColors.primaryDark),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 30.0),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          ),
-                          onPressed: () async {
-                            bool isFollowing =
-                                await ProfileViewModel.followUser(
-                                    token!, widget.user);
-                            if (isFollowing) {
-                              setState(() {
-                                _numberOfFollowers =
-                                    profile.numberOfFollowers + 1;
-                                isFollowing = true;
-                              });
-                            } else {
-                              setState(() {
-                                _numberOfFollowers =
-                                    profile.numberOfFollowers - 1;
-                                isFollowing = false;
-                              });
-                            }
-                          },
-                          icon: isFollowing
-                              ? const Icon(Icons.person_remove_alt_1,
-                                  color: AppColors.primaryDark)
-                              : const Icon(Icons.person_add_alt_1,
+                              icon: const Icon(Icons.send,
                                   color: AppColors.primaryDark),
-                          label: Text(
-                            isFollowing ? 'Unfollow' : 'Follow',
-                            style:
-                                const TextStyle(color: AppColors.primaryDark),
+                              label: const Text(
+                                'Message',
+                                style: TextStyle(color: AppColors.primaryDark),
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 30.0),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                              ),
+                              onPressed: () async {
+                                bool isFollowing =
+                                    await ProfileViewModel.followUser(
+                                        token!, widget.user);
+                                if (isFollowing) {
+                                  setState(() {
+                                    _numberOfFollowers =
+                                        profile.numberOfFollowers + 1;
+                                    isFollowing = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    _numberOfFollowers =
+                                        profile.numberOfFollowers - 1;
+                                    isFollowing = false;
+                                  });
+                                }
+                              },
+                              icon: isFollowing
+                                  ? const Icon(Icons.person_remove_alt_1,
+                                      color: AppColors.primaryDark)
+                                  : const Icon(Icons.person_add_alt_1,
+                                      color: AppColors.primaryDark),
+                              label: Text(
+                                isFollowing ? 'Unfollow' : 'Follow',
+                                style: const TextStyle(
+                                    color: AppColors.primaryDark),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              const SizedBox(height: 15.0),
+                    ),
+                  const SizedBox(height: 15.0),
 
-              // POSTS AND CAREER TABS ----------------------------------------------
-              TabBar(
-                controller: _tabController,
-                labelColor: AppColors.primary,
-                indicatorColor: AppColors.primary,
-                indicatorWeight: 2.0,
-                labelStyle: const TextStyle(
-                  fontSize: 18.0,
-                  fontFamily: 'Mukta Malar',
-                  fontWeight: FontWeight.w600,
-                ),
-                tabs: const <Widget>[
-                  Tab(text: 'Career'),
-                  Tab(text: 'Posts'),
-                ],
-              ),
-              const SizedBox(height: 10.0),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 3,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.7,
-                  child: TabBarView(
+                  // POSTS AND CAREER TABS ----------------------------------------------
+                  TabBar(
                     controller: _tabController,
-                    children: <Widget>[
-                      CareerFragment(
-                        profile.summary,
-                        profile.status,
-                        profile.education,
-                        profile.skills,
-                        widget.isCurrentUser,
-                      ),
-                      PostsFragment(
-                        id: token!,
-                        isCurrentUser: widget.isCurrentUser,
-                        userId: widget.user,
-                      ),
+                    labelColor: AppColors.primary,
+                    indicatorColor: AppColors.primary,
+                    indicatorWeight: 2.0,
+                    labelStyle: const TextStyle(
+                      fontSize: 18.0,
+                      fontFamily: 'Mukta Malar',
+                      fontWeight: FontWeight.w600,
+                    ),
+                    tabs: const <Widget>[
+                      Tab(text: 'Career'),
+                      Tab(text: 'Posts'),
                     ],
                   ),
-                ),
-              ),
-            ],
-          )));
+                  const SizedBox(height: 10.0),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 3,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: <Widget>[
+                          CareerFragment(
+                            profile.summary,
+                            profile.status,
+                            profile.education,
+                            profile.skills,
+                            widget.isCurrentUser,
+                          ),
+                          PostsFragment(
+                            id: token!,
+                            isCurrentUser: widget.isCurrentUser,
+                            userId: widget.user,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )));
         }
       },
     );

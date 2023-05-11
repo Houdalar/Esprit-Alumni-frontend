@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:esprit_alumni_frontend/view/components/design/app_colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +37,21 @@ class _GeographicalDistributionState extends State<GeographicalDistribution> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            size: 22,
+            color: AppColors.black,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _futureData,
         builder: (context, snapshot) {
@@ -45,7 +61,7 @@ class _GeographicalDistributionState extends State<GeographicalDistribution> {
             return Text('Error: ${snapshot.error}');
           } else {
             return SizedBox(
-                height: MediaQuery.of(context).size.height * 0.8,
+                height: MediaQuery.of(context).size.height * 0.6,
                 child: PieChartWidget(data: snapshot.data!));
           }
         },
@@ -95,7 +111,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                       '${(value['count'] / total * 100).toStringAsFixed(2)}%',
                   radius: 100,
                   titleStyle: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -121,7 +137,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                     color: color,
                   ),
                 ),
-                const SizedBox(width: 4),
+                const SizedBox(width: 5),
                 Text(
                   value['field'],
                   style: const TextStyle(

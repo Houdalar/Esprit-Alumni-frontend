@@ -7,6 +7,7 @@ import '../../../model/serchUser.dart';
 import '../../../viewmodel/profileViewModel.dart';
 import '../../components/constum_componenets/UserSearchResultItem.dart';
 import '../../components/constum_componenets/createPost.dart';
+import '../../components/constum_componenets/filter_options.dart';
 import '../../components/constum_componenets/postitem.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
@@ -27,6 +28,7 @@ class HomePageState extends State<HomePage> {
   bool _isSearchActive = false;
   List<SearchUser> _searchResults = [];
   final _searchSubject = BehaviorSubject<String>();
+  List<String> _selectedFilters = [];
 
   Future<void> _refreshHomePage() async {
     setState(() {});
@@ -78,6 +80,16 @@ class HomePageState extends State<HomePage> {
 
   void _onSearchChanged() {
     _searchSubject.add(_searchController.text);
+  }
+
+  void _applyFilter(String filter) {
+    setState(() {
+      if (_selectedFilters.contains(filter)) {
+        _selectedFilters.remove(filter);
+      } else {
+        _selectedFilters.add(filter);
+      }
+    });
   }
 
   PostItem? _buildChildPost(Map<String, dynamic>? sharedFrom) {
@@ -203,15 +215,46 @@ class HomePageState extends State<HomePage> {
                             ProfileViewModel.getHomepage(widget.id, context),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            final posts = snapshot.data!;
+                            var posts = snapshot.data!;
+                            if (_selectedFilters.isNotEmpty &&
+                                !_selectedFilters.contains('All')) {
+                              posts = posts
+                                  .where((post) =>
+                                      _selectedFilters.contains(post.category))
+                                  .toList();
+                            }
                             return ListView.builder(
                               shrinkWrap: false,
                               itemCount: posts.length + 1,
                               itemBuilder: (context, index) {
                                 if (index == 0) {
-                                  return CreatePost(
-                                    widget.profilePic,
-                                    widget.username,
+                                  return Column(
+                                    children: [
+                                      CreatePost(
+                                          widget.profilePic, widget.username),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.filter_list),
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return FilterOptions(
+                                                    onFilterSelected:
+                                                        _applyFilter,
+                                                    selectedFilters:
+                                                        _selectedFilters,
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   );
                                 } else {
                                   final post = posts[index - 1];
