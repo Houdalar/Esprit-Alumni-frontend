@@ -87,10 +87,9 @@ Esprit is renowned for its exceptional engineering education. Discover the popul
 We've also built an intuitive web dashboard, exclusively for Esprit admins. This powerful tool provides admins with a bird's eye view of the application's userbase, engagement, and other key metrics.
 
 <p align="center">
- <img src="./media/UI/popular.png" alt="UI" width="300" >
-  <img src="./media/UI/web1.png" alt="UI" width="300" >
-   <img src="./media/UI/web2.png" alt="UI" width="300" >
-    <img src="./media/UI/web3.png" alt="UI" width="300" >
+  <img src="./media/UI/web1.PNG" alt="UI" width="300" >
+   <img src="./media/UI/web2.PNG" alt="UI" width="300" >
+    <img src="./media/UI/web3.PNG" alt="UI" width="300" >
 </p>
 
 ## 🖥️ System Requirements
