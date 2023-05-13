@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:esprit_alumni_frontend/view/components/design/app_colors.dart';
+import 'package:esprit_alumni_frontend/view/screens/settings/info_popup.dart';
 import 'package:esprit_alumni_frontend/viewmodel/settings/controllers/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,21 +84,28 @@ class Settings extends GetView<SettingsController> {
                           ),
                           // SettingsSection(
                           //   title: Text(
-                          //     "Notifications",
-                          //     style: TextStyle(color: Colors.grey[600], fontSize: 13.5),
+                          //     "Additionnal information",
+                          //     style: TextStyle(
+                          //         color: Colors.grey[600], fontSize: 13.5),
                           //   ),
                           //   tiles: [
-                          //     SettingsTile.switchTile(
-                          //       onToggle: (value) {},
-                          //       initialValue: true,
-                          //       leading: const Icon(Icons.notifications,
-                          //           color: AppColors.redColor),
-                          //       title: const Text(
-                          //         'Enable notifications',
-                          //         style: TextStyle(fontSize: 17),
-                          //       ),
-                          //       activeSwitchColor: AppColors.redColor,
-                          //     ),
+                          //     SettingsTile.navigation(
+                          //         leading: const Icon(
+                          //           Icons.edit,
+                          //           color: AppColors.redColor,
+                          //         ),
+                          //         title: const Text(
+                          //           'Update user inforamtion',
+                          //           style: TextStyle(fontSize: 17),
+                          //         ),
+                          //         onPressed: (context) {
+                          //           showDialog(
+                          //               context: context,
+                          //               builder: (context) => AlertDialog(
+                          //                     contentPadding: EdgeInsets.all(0),
+                          //                     content: InfoPopup(),
+                          //                   ));
+                          //         }),
                           //   ],
                           // ),
                           SettingsSection(

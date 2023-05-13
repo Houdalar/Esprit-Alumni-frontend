@@ -1,6 +1,7 @@
 import 'package:esprit_alumni_frontend/view/screens/chat/messages_screen.dart';
 import 'package:esprit_alumni_frontend/viewmodel/userViewModel.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../../../model/PostModel.dart';
 import '../../../model/serchUser.dart';
@@ -180,12 +181,7 @@ class HomePageState extends State<HomePage> {
                         child: Center(
                             child: IconButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MessagesScreen()),
-                                  );
+                                  Get.to(() => const MessagesScreen());
                                 },
                                 icon: const Icon(Icons.mail,
                                     color: Colors.black)))),

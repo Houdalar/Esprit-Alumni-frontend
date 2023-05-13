@@ -15,10 +15,15 @@ class MessagesScreen extends StatefulWidget {
 
 class _MessagesScreenState extends State<MessagesScreen> {
   @override
+  void dispose() {
+    Get.delete<MessageController>();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GetBuilder<MessageController>(
         init: MessageController(),
-        initState: (_) {},
         builder: (controller) {
           return Stack(children: [
             GestureDetector(
@@ -45,7 +50,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    Get.back();
                                   },
                                   icon: const Icon(
                                     Icons.arrow_back_ios_new,
@@ -79,27 +84,32 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                         topLeft: Radius.circular(40),
                                         topRight: Radius.circular(40))),
                               ),
-                              controller.conversationsList.isNotEmpty
-                                  ? ListView.builder(
-                                      itemCount:
-                                          controller.conversationsList.length,
-                                      itemBuilder: (context, index) =>
-                                          MessageCard(
-                                        chatModel:
-                                            controller.chatModels[index]!,
-                                        sourchat: controller.userId,
-                                      ),
-                                    )
-                                  : Center(
-                                      child: Text(
-                                        "No Conversations yet !",
-                                        style: GoogleFonts.poppins(
-                                            textStyle: const TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black,
-                                        )),
-                                      ),
-                                    ),
+                              !controller.isLoading.value ||
+                                      controller.conversationsList.isNotEmpty
+                                  ? controller.conversationsList.isNotEmpty &&
+                                          controller.chatModels.isNotEmpty
+                                      ? ListView.builder(
+                                          itemCount: controller
+                                              .conversationsList.length,
+                                          itemBuilder: (context, index) =>
+                                              MessageCard(
+                                            chatModel:
+                                                controller.chatModels[index]!,
+                                            sourchat: controller.userId,
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            "No Conversations yet !",
+                                            style: GoogleFonts.poppins(
+                                                textStyle: const TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            )),
+                                          ),
+                                        )
+                                  : const Center(
+                                      child: CircularProgressIndicator()),
                             ]),
                           )
                         ],
