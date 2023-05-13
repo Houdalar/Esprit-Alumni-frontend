@@ -37,7 +37,7 @@ class UserViewModel extends ChangeNotifier {
         prefs.setString("id", userData["userId"]);
         prefs.setString("username", userData["username"]);
         prefs.setString("profile_image", userData["profile_image"]);
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => NavigationBottom(userData["username"],

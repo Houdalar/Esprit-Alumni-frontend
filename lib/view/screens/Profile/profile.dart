@@ -71,6 +71,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    Get.delete<MessageController>();
     _tabController.dispose();
     super.dispose();
   }
@@ -476,6 +477,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 Get.to(() => ConversationScreen(
                                       sourchat: userId,
                                       chatModel: chatModel,
+                                      profileImage: profile.profileImage,
                                     ));
                               },
                               icon: const Icon(Icons.send,

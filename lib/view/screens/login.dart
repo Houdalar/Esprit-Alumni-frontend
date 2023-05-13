@@ -185,15 +185,7 @@ class LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   //add a chekbox here
-                  Checkbox(
-                      activeColor: AppColors.primaryDark,
-                      value: _rememberMe,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _rememberMe = newValue ?? false;
-                        });
-                      }),
-                  const Text('Remember me'),
+
                   const Spacer(),
                   GestureDetector(
                     child: const Text("Forgot your password ?",

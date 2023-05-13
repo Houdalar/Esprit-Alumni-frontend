@@ -275,7 +275,7 @@ class _LoginPageWState extends State<LoginPageW> {
                                     filled: true,
                                     fillColor: AppColorsH.darkwhite,
                                     prefixIcon: const Icon(
-                                      Icons.password,
+                                      Icons.lock,
                                       color: AppColorsH.darkgray,
                                     ),
                                   ),

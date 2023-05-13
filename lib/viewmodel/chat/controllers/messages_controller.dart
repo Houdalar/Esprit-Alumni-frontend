@@ -14,6 +14,7 @@ class MessageController extends GetxController {
   late var chatModels;
   late var users;
   //RxString? lastMessage;
+  RxBool isLoading = false.obs;
 
   @override
   void onInit() async {
@@ -21,26 +22,30 @@ class MessageController extends GetxController {
     conversationsList = <ConversationModel>[].obs;
     chatModels = <ChatModel?>[].obs;
     users = <User>[].obs;
-    getUserId().then((value) async {
+    getUserId().then((value) {
       userId = value ?? "";
-      await getUserConversations();
+      getUserConversations();
     });
     await getUsers();
+  }
 
-    //.then((allUsers) {
-    //   for (var element in allUsers) {
-    //     users.add(element);
-    //   }
-    //   update();
-    // });
+  @override
+  void onReady() {
+    getUserId().then((value) {
+      userId = value ?? "";
+      getUserConversations();
+    });
+    super.onReady();
   }
 
   @override
   void onClose() {
     super.onClose();
+
     conversationsList = <ConversationModel>[].obs;
     chatModels = <ChatModel?>[].obs;
     users = <User>[].obs;
+
     log("dispoooooooooooooose");
   }
 
@@ -51,6 +56,7 @@ class MessageController extends GetxController {
   }
 
   getUserConversations() async {
+    isLoading.value = true;
     MessagesService.getUserConversations(userId).then((value) {
       conversationsList = <ConversationModel>[].obs;
       conversationsList.addAll(value);
@@ -90,6 +96,8 @@ class MessageController extends GetxController {
         }
       }
     });
+    isLoading.value = false;
+    update();
     conversationsList.refresh();
     log("chatlistModel ${chatModels.length.toString()}");
     log("conversationsList ${conversationsList.length.toString()}");
