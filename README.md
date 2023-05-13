@@ -11,33 +11,86 @@ Welcome to **Esprit Alumni**! Embrace the power of networking within the Esprit 
 - 🛡️ **Secure Authentication**: Safeguard your data with our robust login and sign-up system.
 <p align="center">
  <img src="./media/UI/login.png" alt="login" width="300" >
-  <img src="./media/UI/signup1.png" alt="login" width="300" >
+  <img src="./media/UI/signup1.png" alt="register" width="300" >
+   <img src="./media/UI/signup2.png" alt="register" width="300" >
+    <img src="./media/UI/reset1.png" alt="forgot password" width="300" >
+     <img src="./media/UI/reset2.png" alt="forgot password" width="300" >
+      <img src="./media/UI/reset.png" alt="forgot password" width="300" >
 </p>
 
 - 💬 **Chat**: Establish meaningful connections with Esprit students and alumni in real-time.
+<p align="center">
+ <img src="./media/UI/chat.png" alt="chat" width="300" >
+  <img src="./media/UI/chat2.png" alt="chat" width="300" >
+</p>
+
 - 📝 **Posts**: Share your valuable thoughts, experiences, ideas, job openings, and internships with our thriving community.
+<p align="center">
+ <img src="./media/UI/home.png" alt="posts" width="300" >
+  <img src="./media/UI/p.png" alt="posts" width="300" >
+</p>
+
 - 👍 **Liking and Commenting**: Engage, interact, and create lasting bonds by liking and commenting on posts.
+
+<p align="center">
+ <img src="./media/UI/post.png" alt="Liking" width="300" >
+  <img src="./media/UI/cmnt.png" alt="Liking" width="300" >
+   <img src="./media/UI/notif.png" alt="Liking" width="300" >
+</p>
+
 - 👥 **Following**: Stay in the loop with the latest updates from your favorite alumni and classmates.
+<p align="center">
+ <img src="./media/UI/f.png" alt="UI" width="300" >
+  <img src="./media/UI/fl.png" alt="UI" width="300" >
+</p>
+
 - 📇 **Profile Management**: Showcase your unique skills and experiences, and let your personality shine!
+
+<p align="center">
+ <img src="./media/UI/profile.png" alt="UI" width="300" >
+  <img src="./media/UI/profile2.png" alt="UI" width="300" >
+</p>
+
+
 - 📊 **Statistics**: Delve into powerful insights on Esprit Alumni with our geographical distribution, in-demand field analysis, and popular fields within the Esprit community.
+
+<p align="center">
+ <img src="./media/UI/stat.png" alt="UI" width="300" >
+</p>
 
 ### 🌍 Geographical Distribution
 
 Explore the global presence of Esprit Alumni with our interactive map, fueled by data scraped from LinkedIn.
 
-![Esprit Alumni Distribution Map](./assets/map.png)
+<p align="center">
+ <img src="./media/UI/geo.png" alt="UI" width="300" >
+</p>
 
 ### 📈 In-demand Fields
 
 Stay ahead of the curve by uncovering the most sought-after fields across various countries, including Tunisia, Germany, the Netherlands, and more.
 
-![Esprit Alumni In-demand Fields](./assets/indemandfields.png)
+<p align="center">
+ <img src="./media/UI/indemand.png" alt="UI" width="300" >
+</p>
 
 ### 🔥 Popular Fields among Esprit Students
 
 Esprit is renowned for its exceptional engineering education. Discover the popular fields where Esprit students excel, such as web development and other engineering disciplines.
 
-![Esprit Alumni Popular Fields](./assets/popularfields.png)
+<p align="center">
+ <img src="./media/UI/popular.png" alt="UI" width="300" >
+</p>
+
+## 📊 Web Dashboard
+
+We've also built an intuitive web dashboard, exclusively for Esprit admins. This powerful tool provides admins with a bird's eye view of the application's userbase, engagement, and other key metrics.
+
+<p align="center">
+  <img src="./media/UI/web1.PNG" alt="UI" width="800" >
+   <img src="./media/UI/web2.PNG" alt="UI" width="800" >
+    <img src="./media/UI/web3.PNG" alt="UI" width="800" >
+</p>
 
 ## 🖥️ System Requirements
 
